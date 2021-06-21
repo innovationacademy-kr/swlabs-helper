@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout.html" th:with="currentPage='index'">
+    <head>
+        <title>Home</title>
+    </head>
+
+    <div layout:fragment="custom-content">
+        <h2> hello world! </h2>
+    </div>
+</html>
