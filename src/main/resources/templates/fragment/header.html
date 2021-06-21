@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thyemleaf.org">
+    <div th:fragment="fragment-header" class="container header">
+        <header  class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <div th:if="${userName} != null" class="dropdown text-end me-auto">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="${user.getPicture()}" alt="${user.name}" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                </ul>
+            </div>
+            <div th:if="${userName == null}" class="me-auto">
+                <button type="button" class="btn btn-primary" role="button"
+                        onclick="location.href='/oauth2/authorize/intra42'">42 Login</button>
+            </div>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a href="/" class="nav-link"
+                       th:classappend="${currentPage} == 'index' ? 'active' : '' " >홈</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link"
+                       th:classappend="${currentPage} == 'set-time' ? 'active' : '' " >시간 설정</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link"
+                       th:classappend="${currentPage} == 'new-team' ? 'active' : '' " >팀 만들기</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link"
+                       th:classappend="${currentPage} == 'list-team' ? 'active' : '' " >팀 목록</a>
+                </li>
+            </ul>
+        </header>
+    </div>
+</html>
