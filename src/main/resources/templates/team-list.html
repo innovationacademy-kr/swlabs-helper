@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout.html" th:with="currentPage='team_list'">
+<head>
+    <title>Home</title>
+</head>
+
+<div layout:fragment="custom-content">
+    <h2> 매칭된 팀 목록 </h2>
+
+    <div class="inquery">
+
+    </div>
+
+    <div class="list-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">프로젝트 명칭</th>
+                <th scope="col">장소</th>
+                <th scope="col">희망 일자</th>
+                <th scope="col">희망 시간</th>
+                <th scope="col">총 모집 인원</th>
+                <th scope="col">현재 인원</th>
+                <th scope="col">남은 인원</th>
+                <th scope="col">담당 멘토</th>
+                <th scope="col">작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-danger">취소하기</button></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+</html>
