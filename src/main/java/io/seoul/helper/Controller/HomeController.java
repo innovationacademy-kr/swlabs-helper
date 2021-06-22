@@ -10,4 +10,9 @@ public class HomeController {
    public String home() {
       return "index";
    }
+
+   @GetMapping(value = "/set-time")
+   public String time() {
+      return "set-time";
+   }
 }
