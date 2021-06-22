@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@SpringBootTest
+@SpringBootTest()
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserRepositoryTest {
     @Autowired
@@ -122,6 +122,25 @@ public class UserRepositoryTest {
                     fail("fail : cannot find User : " + user.getNickname()));
             checkUserEqual(cmp, user);
         }
+    }
+
+    @Test
+    public void updateUserTest() {
+        User bfuser = userlist.get(0);
+        User afuser = User.builder()
+                .nickname("help_tester0")
+                .picture("new_pic_url")
+                .email(bfuser.getEmail())
+                .role(bfuser.getRole())
+                .fullname("new_fullname")
+                .build();
+        Optional<User> find = repo.findById(bfuser.getId());
+        User target = Optional.ofNullable(find).map(o -> o.get()).orElseGet(() ->
+                fail("fail : cannot find User : " + afuser.getNickname()));
+        target.update(afuser.getNickname(), afuser.getFullname(), afuser.getPicture());
+        repo.save(target);
+        checkUserEqual(target, afuser);
+        userlist.set(0, target);
     }
 
     public void checkUserEqual(User u1, User u2) {
