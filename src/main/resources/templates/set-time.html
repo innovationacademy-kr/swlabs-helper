@@ -13,70 +13,89 @@
     <form class="m-3" action="/teams/new" method="post">
         <legend>시간 설정 폼</legend>
 
-        <div class="mb-3">
-            <label for="project_name" class="form-label">프로젝트 명칭</label>
-            <select class="form-select" id="project_name">
-                <option selected>프로젝트 선택하기</option>
-                <option value="1">ft_printf</option>
-                <option value="2">get_next_line</option>
-                <option value="3">ft_libft</option>
-            </select>
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="project_name" class="form-label">프로젝트 명칭</label>
+                    <select class="form-select" id="project_name">
+                        <option selected>프로젝트 선택하기</option>
+                        <option value="1">ft_printf</option>
+                        <option value="2">get_next_line</option>
+                        <option value="3">ft_libft</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="place" class="form-label">장소</label>
+                    <select class="form-select" id="place">
+                        <option selected>장소 선택하기</option>
+                        <option value="1">개포</option>
+                        <option value="2">서초</option>
+                        <option value="3">온라인</option>
+                        <option value="3">상관없음</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="people" class="form-label">참여 인원</label>
+                    <select class="form-select" id="people">
+                        <option selected>참여 인원 선택하기</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">상관없음</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="col-6">
+                <!-- todo: datepicker-->
+                <div class="mb-3">
+                    <label for="people" class="form-label">날짜</label>
+                    <select class="form-select" aria-label="Date">
+                        <option selected>날짜 선택하기</option>
+                        <option value="1">1/1</option>
+                        <option value="2">1/2</option>
+                        <option value="3">1/3</option>
+                        <option value="3">1/4</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="place" class="form-label">장소</label>
-            <select class="form-select" id="place">
-                <option selected>장소 선택하기</option>
-                <option value="1">개포</option>
-                <option value="2">서초</option>
-                <option value="3">온라인</option>
-                <option value="3">상관없음</option>
-            </select>
-        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="people" class="form-label">시작 시간</label>
+                    <select class="form-select" aria-label="Date">
+                        <option selected>시작 시간 선택하기</option>
+                        <option value="1">00:00</option>
+                        <option value="2">01:00</option>
+                        <option value="3">02:00</option>
+                        <option value="3">03:00</option>
+                    </select>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label for="people" class="form-label">참여 인원</label>
-            <select class="form-select" id="people">
-                <option selected>참여 인원 선택하기</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">상관없음</option>
-            </select>
-        </div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="people" class="form-label">종료 시간</label>
+                    <select class="form-select" aria-label="Date">
+                        <option selected>종료 시간 선택하기</option>
+                        <option value="1">00:00</option>
+                        <option value="2">01:00</option>
+                        <option value="3">02:00</option>
+                        <option value="3">03:00</option>
+                    </select>
+                </div>
+            </div>
 
-        <!-- todo: datepicker-->
-        <div class="mb-3">
-            <label for="people" class="form-label">날짜</label>
-            <select class="form-select" aria-label="Date">
-                <option selected>날짜 선택하기</option>
-                <option value="1">1/1</option>
-                <option value="2">1/2</option>
-                <option value="3">1/3</option>
-                <option value="3">1/4</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="people" class="form-label">시작 시간</label>
-            <select class="form-select" aria-label="Date">
-                <option selected>시작 시간 선택하기</option>
-                <option value="1">00:00</option>
-                <option value="2">01:00</option>
-                <option value="3">02:00</option>
-                <option value="3">03:00</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="people" class="form-label">종료 시간</label>
-            <select class="form-select" aria-label="Date">
-                <option selected>종료 시간 선택하기</option>
-                <option value="1">00:00</option>
-                <option value="2">01:00</option>
-                <option value="3">02:00</option>
-                <option value="3">03:00</option>
-            </select>
         </div>
 
         <button class="btn btn-primary" type="submit">완료</button>
