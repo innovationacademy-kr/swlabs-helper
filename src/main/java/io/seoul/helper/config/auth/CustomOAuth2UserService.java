@@ -1,9 +1,9 @@
-package com.example.login42.config.auth;
+package io.seoul.helper.config.auth;
 
-import com.example.login42.config.auth.dto.OAuthAttributes;
-import com.example.login42.config.auth.dto.SessionUser;
-import com.example.login42.domain.user.User;
-import com.example.login42.domain.user.UserRepository;
+import io.seoul.helper.config.auth.dto.OAuthAttributes;
+import io.seoul.helper.config.auth.dto.SessionUser;
+import io.seoul.helper.domain.user.User;
+import io.seoul.helper.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -42,10 +42,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User saveOrUpate(OAuthAttributes attributes) {
-        User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+        User user = userRepository.findUserByEmail(attributes.getEmail())
+                .map(entity -> entity.update(attributes.getNickname(), attributes.getFullname(),attributes.getPicture()))
                 .orElse(attributes.toEntity());
-
         return userRepository.save(user);
     }
 }

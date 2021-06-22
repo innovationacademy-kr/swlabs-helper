@@ -1,6 +1,6 @@
-package com.example.login42.config.auth;
+package io.seoul.helper.config.auth;
 
-import com.example.login42.domain.user.Role;
+import io.seoul.helper.domain.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

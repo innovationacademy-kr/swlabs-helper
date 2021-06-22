@@ -38,10 +38,14 @@ public class User {
         this.role = role;
     }
 
-    public User updateProfile(String nickname, String fullname, String picture) {
+    public User update(String nickname, String fullname, String picture) {
         this.nickname = nickname;
         this.fullname = fullname;
         this.picture = picture;
         return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 }

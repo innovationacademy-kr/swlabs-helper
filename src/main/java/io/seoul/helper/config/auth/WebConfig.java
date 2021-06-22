@@ -1,4 +1,4 @@
-package com.example.login42.config.auth;
+package io.seoul.helper.config.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

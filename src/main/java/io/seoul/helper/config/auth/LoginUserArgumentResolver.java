@@ -1,6 +1,6 @@
-package com.example.login42.config.auth;
+package io.seoul.helper.config.auth;
 
-import com.example.login42.config.auth.dto.SessionUser;
+import io.seoul.helper.config.auth.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

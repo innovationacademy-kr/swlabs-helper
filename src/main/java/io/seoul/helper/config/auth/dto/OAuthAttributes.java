@@ -1,7 +1,7 @@
-package com.example.login42.config.auth.dto;
+package io.seoul.helper.config.auth.dto;
 
-import com.example.login42.domain.user.Role;
-import com.example.login42.domain.user.User;
+import io.seoul.helper.domain.user.Role;
+import io.seoul.helper.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,15 +11,18 @@ import java.util.Map;
 public class OAuthAttributes {
     private Map<String, Object> attributes;
     private String nameAttributeKey;
-    private String name;
+    private String nickname;
+    private String fullname;
     private String email;
     private String picture;
 
     @Builder
-    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture) {
+    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String nickname,
+                           String fullname, String email, String picture) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
-        this.name = name;
+        this.nickname = nickname;
+        this.fullname = fullname;
         this.email = email;
         this.picture = picture;
     }
@@ -30,7 +33,8 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofIntra42(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
-                .name((String)attributes.get("login"))
+                .nickname((String)attributes.get("login"))
+                .fullname((String)attributes.get("displayname"))
                 .email((String)attributes.get("email"))
                 .picture((String)attributes.get("image_url"))
                 .attributes(attributes)
@@ -40,10 +44,11 @@ public class OAuthAttributes {
 
     public User toEntity() {
         return User.builder()
-                .name(name)
+                .nickname(nickname)
+                .fullname(fullname)
                 .email(email)
                 .picture(picture)
-                .role(Role.GUEST)
+                .role(Role.USER)
                 .build();
     }
 }
