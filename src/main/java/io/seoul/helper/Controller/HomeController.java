@@ -2,7 +2,6 @@ package io.seoul.helper.Controller;
 
 import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.domain.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-   @GetMapping(value = "/team-list")
+   @GetMapping(value = "/list_team")
    public String teamList() {
-      return "team-list";
+      return "list_team";
    }
 
    @GetMapping(value = "/")
@@ -24,8 +23,8 @@ public class HomeController {
       return "index";
    }
 
-   @GetMapping(value = "/set-time")
+   @GetMapping(value = "/set_time")
    public String time() {
-      return "set-time";
+      return "set_time";
    }
 }

@@ -23,16 +23,16 @@
                        th:classappend="${currentPage} == 'index' ? 'active' : '' " >홈</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/" class="nav-link"
-                       th:classappend="${currentPage} == 'set-time' ? 'active' : '' " >시간 설정</a>
+                    <a href="/set_time" class="nav-link"
+                       th:classappend="${currentPage} == 'set_time' ? 'active' : '' " >시간 설정</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/" class="nav-link"
-                       th:classappend="${currentPage} == 'new-team' ? 'active' : '' " >팀 만들기</a>
+                    <a href="/create_team" class="nav-link"
+                       th:classappend="${currentPage} == 'create_team' ? 'active' : '' " >팀 만들기</a>
                 </li>
                 <li class="nav-item">
-                    <a href="/" class="nav-link"
-                       th:classappend="${currentPage} == 'list-team' ? 'active' : '' " >팀 목록</a>
+                    <a href="/list_team" class="nav-link"
+                       th:classappend="${currentPage} == 'list_team' ? 'active' : '' " >팀 목록</a>
                 </li>
             </ul>
         </header>
