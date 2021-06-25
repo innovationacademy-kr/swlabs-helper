@@ -8,14 +8,14 @@
     <th:block layout:fragment="custom-head"></th:block>
 </head>
 <body>
-    <div th:replace="fragment/header.html :: fragment-header"/>
+<div th:replace="fragment/header.html :: fragment-header"/>
 
-    <!-- use this block for page content -->
-    <th:block layout:fragment="custom-content" class="container"></th:block>
+<!-- use this block for page content -->
+<th:block layout:fragment="custom-content" class="container"></th:block>
 
-    <footer th:replace="/fragment/footer.html :: fragment-footer"></footer>
+<footer th:replace="fragment/footer.html :: fragment-footer"></footer>
 
-    <!-- use this block if you need other footer for page -->
-    <th:block layout:fragment="custom-footer"></th:block>
+<!-- use this block if you need other footer for page -->
+<th:block layout:fragment="custom-footer"></th:block>
 </body>
 </html>
