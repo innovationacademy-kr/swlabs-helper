@@ -1,26 +1,12 @@
 package io.seoul.helper.repository;
 
-import io.seoul.helper.domain.user.Role;
-import io.seoul.helper.domain.user.User;
-import io.seoul.helper.repository.user.UserRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest()
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserRepositoryTest {
+    /*
     @Autowired
     UserRepository repo;
 
@@ -150,4 +136,5 @@ public class UserRepositoryTest {
         assertThat(u1.getPicture(), is(equalTo(u2.getPicture())));
         assertThat(u1.getRole(), is(equalTo(u2.getRole())));
     }
+     */
 }
