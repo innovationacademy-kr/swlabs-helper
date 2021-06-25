@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <!-- common title setting-->
+    <title layout:title-pattern="$CONTENT_TITLE :: $DECORATOR_TITLE">Helper 42</title>
+    <th:block th:replace="fragment/head.html :: fragment-head"/>
+    <!-- use this block if you need other head for page-->
+    <th:block layout:fragment="custom-head"></th:block>
+</head>
+<body>
+    <div th:replace="fragment/header.html :: fragment-header"/>
+
+    <!-- use this block for page content -->
+    <th:block layout:fragment="custom-content" class="container"></th:block>
+
+    <footer th:replace="/fragment/footer.html :: fragment-footer"></footer>
+
+    <!-- use this block if you need other footer for page -->
+    <th:block layout:fragment="custom-footer"></th:block>
+</body>
+</html>
