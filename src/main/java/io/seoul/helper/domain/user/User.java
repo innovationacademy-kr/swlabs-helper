@@ -1,16 +1,17 @@
 package io.seoul.helper.domain.user;
 
 import lombok.Builder;
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor @Getter
+@NoArgsConstructor
+@Getter
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -21,7 +22,7 @@ public class User {
 
     @Column(nullable = false)
     private String email;
-
+   
     @Column
     private String picture;
 

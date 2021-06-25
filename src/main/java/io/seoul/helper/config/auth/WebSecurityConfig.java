@@ -16,13 +16,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
-                    .authorizeRequests()
-                    .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**",
-                            "/login**", "/home**", "/callback/", "/error") //로그인이 없어도 접근 가능한 구역
-                    .permitAll()
+                .authorizeRequests()
+                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**",
+                        "/login**", "/home**", "/callback/", "/error") //로그인이 없어도 접근 가능한 구역
+                .permitAll()
                 .antMatchers("/api/v1/**").hasRole(Role.USER.name())    //해당 권한을 가진 유저만 사용 가능
                 .anyRequest().authenticated()
-                    .and()
+                .and()
                 .logout().logoutSuccessUrl("/") //logout에 대한 설정부분
                 .and()
                 .oauth2Login()              //oauth로 로그인시 작동하게 될 내용
