@@ -7,12 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class HomeController {
-
-   @GetMapping(value = "/list_team")
-   public String teamList() {
-      return "list_team";
-   }
+public class PageController {
 
    @GetMapping(value = "/")
    public String home(Model model, @LoginUser SessionUser user) {
@@ -23,8 +18,18 @@ public class HomeController {
       return "index";
    }
 
+   @GetMapping(value = "/list_team")
+   public String teamList() {
+      return "list_team";
+   }
+
    @GetMapping(value = "/set_time")
    public String time() {
       return "set_time";
+   }
+
+   @GetMapping(value = "/create_team")
+   public String createTeam() {
+      return "create_team";
    }
 }
