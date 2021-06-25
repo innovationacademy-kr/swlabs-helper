@@ -22,7 +22,7 @@ import java.util.Collections;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
     private final HttpSession httpSession;
-
+   
     @Override       //가져온 유저정보를 저장하는 부분
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
@@ -43,7 +43,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private User saveOrUpate(OAuthAttributes attributes) {
         User user = userRepository.findUserByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getNickname(), attributes.getFullname(),attributes.getPicture()))
+                .map(entity -> entity.update(attributes.getNickname(), attributes.getFullname(), attributes.getPicture()))
                 .orElse(attributes.toEntity());
         return userRepository.save(user);
     }

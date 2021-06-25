@@ -33,10 +33,10 @@ public class OAuthAttributes {
 
     private static OAuthAttributes ofIntra42(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
-                .nickname((String)attributes.get("login"))
-                .fullname((String)attributes.get("displayname"))
-                .email((String)attributes.get("email"))
-                .picture((String)attributes.get("image_url"))
+                .nickname((String) attributes.get("login"))
+                .fullname((String) attributes.get("displayname"))
+                .email((String) attributes.get("email"))
+                .picture((String) attributes.get("image_url"))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
