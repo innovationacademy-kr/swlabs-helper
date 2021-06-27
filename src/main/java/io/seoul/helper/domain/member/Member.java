@@ -2,6 +2,7 @@ package io.seoul.helper.domain.member;
 
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,11 @@ public class Member {
     @Column(name = "member_role", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
+
+    @Builder
+    public Member(Team team, User user, MemberRole role) {
+        this.team = team;
+        this.user = user;
+        this.role = role;
+    }
 }

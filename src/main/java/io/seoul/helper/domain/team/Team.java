@@ -2,6 +2,7 @@ package io.seoul.helper.domain.team;
 
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.project.Project;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,5 +46,16 @@ public class Team {
 
     public Long getCurrentMemberCount() {
         return new Long(members.size());
+    }
+
+    @Builder
+    public Team(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount, TeamLocation location, TeamStatus status, Project project) {
+        this.members = members;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.maxMemberCount = maxMemberCount;
+        this.location = location;
+        this.status = status;
+        this.project = project;
     }
 }
