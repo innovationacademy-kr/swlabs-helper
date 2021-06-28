@@ -20,13 +20,13 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
-    @Column(name = "team_start_time", nullable = false)
+    @Column(name = "team_start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "team_end_time", nullable = false)
+    @Column(name = "team_end_time")
     private LocalDateTime endTime;
 
     @Column(name = "team_max_member_count", nullable = false)

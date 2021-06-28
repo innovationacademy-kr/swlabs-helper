@@ -16,7 +16,7 @@ public class TeamApiController {
     @Autowired
     TeamService teamService;
 
-    @PostMapping(value = "/api/v1/create_team")
+    @PostMapping(value = "/api/v1/teams")
     public Long create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
         try {
             return teamService.createNewTeamWish(user, requestDto);

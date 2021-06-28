@@ -20,13 +20,14 @@ public class TeamService {
     private final UserRepository userRepo;
     private final TeamRepository teamRepo;
     private final MemberRepository memberRepo;
-    private final ProjectRepository projectRepository;
+    private final ProjectRepository projectRepo;
 
-    public TeamService(UserRepository userRepo, TeamRepository teamRepo, MemberRepository memberRepo, ProjectRepository projectRepository) {
+    public TeamService(UserRepository userRepo, TeamRepository teamRepo, MemberRepository memberRepo,
+                       ProjectRepository projectRepo) {
         this.userRepo = userRepo;
         this.teamRepo = teamRepo;
         this.memberRepo = memberRepo;
-        this.projectRepository = projectRepository;
+        this.projectRepo = projectRepo;
     }
 
     @Transactional
@@ -34,7 +35,7 @@ public class TeamService {
         if (currentUser == null) new Exception("not login");
         User user = userRepo.findUserByNickname(currentUser.getNickname())
                 .orElseThrow(() -> new Exception("invalid user"));
-        Project project = projectRepository.findProjectByName(requestDto.getProjectName()).
+        Project project = projectRepo.findProjectByName(requestDto.getProjectName()).
                 orElseThrow(() -> new Exception("invalid project"));
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
