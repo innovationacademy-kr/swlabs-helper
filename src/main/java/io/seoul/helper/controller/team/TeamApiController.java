@@ -4,16 +4,14 @@ import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.dto.ResultResponseDto;
 import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
+import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
-import io.seoul.helper.domain.team.TeamLocation;
-import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -33,16 +31,14 @@ public class TeamApiController {
     }
 
     @GetMapping(value = "/api/v1/teams")
-    public ResultResponseDto teamList(
-            @RequestParam(value = "offset", required = false, defaultValue = "0") Long offset,
-            @RequestParam(value = "limit", required = false, defaultValue = "10") Long limit,
-            @RequestParam(value = "startTime", required = false) LocalDateTime startTime,
-            @RequestParam(value = "endTime", required = false) LocalDateTime endTime,
-            @RequestParam(value = "status", required = false, defaultValue = "READY") TeamStatus status,
-            @RequestParam(value = "location", required = false) TeamLocation location) {
+    public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) {
+        //todo: startTime 와 endTime 의 시간 유효성 Field 검증 로직 필요
+
         List<TeamResponseDto> teams = teamService.findTeams();
-        
-        System.out.println("controller test");
+
+        log.info("offset={}, limit={}, startTime={}, endTime={}, status={}, location={}",
+                requestDto.getOffset(), requestDto.getLimit(), requestDto.getStartTime(),
+                requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation());
 
         return ResultResponseDto.builder()
                 .statusCode((long) HttpStatus.OK.value())
