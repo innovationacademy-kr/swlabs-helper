@@ -4,8 +4,8 @@
 name: remote ssh command for deploy
 on:
   push:
-    # main 브랜치에서만 작동합니다.
-    branches: [main]
+    # develop 브랜치에서만 작동합니다.
+    branches: [develop]
     paths-ignore:
       - 'README.md'
       - 'docs/**'
@@ -28,5 +28,5 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd git/helper-release/scripts
+            cd git/helper-dev/scripts
             sh deploy.sh
