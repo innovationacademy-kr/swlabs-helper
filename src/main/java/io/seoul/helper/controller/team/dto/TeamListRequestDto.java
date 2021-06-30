@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class TeamListRequestDto {
-    private Long offset;
-    private Long limit;
+    private int offset;
+    private int limit;
     private TeamStatus status;
     private TeamLocation location;
 
@@ -21,7 +21,7 @@ public class TeamListRequestDto {
     private LocalDateTime endTime;
 
     public TeamListRequestDto() {
-        this.offset = 0L;
-        this.limit = 10L;
+        this.offset = 0;
+        this.limit = 10;
     }
 }
