@@ -10,10 +10,10 @@ import javax.persistence.*;
 @Getter
 public class Project {
     @Id
-    @Column(name = "project_id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_name")
+    @Column
     private String name;
 }
