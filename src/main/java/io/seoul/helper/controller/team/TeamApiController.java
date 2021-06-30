@@ -33,8 +33,7 @@ public class TeamApiController {
     @GetMapping(value = "/api/v1/teams")
     public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) {
         //todo: startTime 와 endTime 의 시간 유효성 Field 검증 로직 필요
-
-        List<TeamResponseDto> teams = teamService.findTeams();
+        List<TeamResponseDto> teams = teamService.findTeams(requestDto);
 
         log.info("offset={}, limit={}, startTime={}, endTime={}, status={}, location={}",
                 requestDto.getOffset(), requestDto.getLimit(), requestDto.getStartTime(),

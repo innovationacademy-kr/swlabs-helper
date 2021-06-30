@@ -2,6 +2,7 @@ package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
+import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -75,7 +77,11 @@ public class TeamService {
     }
 
     @Transactional
-    public List<TeamResponseDto> findTeams() {
-        return null;
+    public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
+        List<Team> teams = teamRepo.findTeamsByQueryParameters(
+                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation());
+        return teams.stream()
+                .map(team -> new TeamResponseDto(team))
+                .collect(Collectors.toList());
     }
 }
