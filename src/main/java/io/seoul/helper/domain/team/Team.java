@@ -16,32 +16,32 @@ import java.util.List;
 @Getter
 public class Team {
     @Id
-    @Column(name = "team_id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
-    @Column(name = "team_start_time")
+    @Column
     private LocalDateTime startTime;
 
-    @Column(name = "team_end_time")
+    @Column
     private LocalDateTime endTime;
 
-    @Column(name = "team_max_member_count", nullable = false)
+    @Column(nullable = false)
     private Long maxMemberCount;
 
-    @Column(name = "team_location")
+    @Column
     @Enumerated(value = EnumType.STRING)
     private TeamLocation location;
 
-    @Column(name = "team_status")
+    @Column
     @Enumerated(value = EnumType.STRING)
     private TeamStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "team_project_id")
+    @JoinColumn(name = "project_id")
     private Project project;
 
     public Long getCurrentMemberCount() {

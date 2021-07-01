@@ -13,19 +13,19 @@ import javax.persistence.*;
 @Getter
 public class Member {
     @Id
-    @Column(name = "member_id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_team_id", nullable = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name = "member_user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "member_role", nullable = false)
+    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 

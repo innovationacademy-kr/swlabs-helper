@@ -14,24 +14,24 @@ import java.util.List;
 @Getter
 public class User {
     @Id
-    @Column(name = "user_id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_nickname", nullable = false)
+    @Column(nullable = false)
     private String nickname;
 
-    @Column(name = "user_fullname", nullable = false)
+    @Column(nullable = false)
     private String fullname;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(name = "user_picture")
+    @Column
     private String picture;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "user_role", nullable = false)
+    @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "user")
