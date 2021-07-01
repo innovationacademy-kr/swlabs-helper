@@ -6,6 +6,7 @@ import io.seoul.helper.controller.dto.ResultResponseDto;
 import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
+import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
 import io.seoul.helper.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class TeamApiController {
         try {
             return teamService.createNewTeamWish(user, requestDto);
         } catch (Exception e) {
-            log.error("failed to create new teamwish : " + e.getMessage());
+            log.error("failed to create new teamWish : " + e.getMessage() + "\n\n" + e.getCause());
             return -1L;
         }
     }
@@ -43,6 +44,30 @@ public class TeamApiController {
                 .statusCode((long) HttpStatus.OK.value())
                 .count((long) (teams == null ? 0 : teams.size()))
                 .data(teams)
+                .build();
+    }
+
+    @PutMapping(value = "/api/v1/teams/{id}")
+    public ResultResponseDto update(@LoginUser SessionUser user,
+                                    @PathVariable Long id,
+                                    @RequestBody TeamUpdateRequestDto requestDto) {
+        TeamResponseDto data;
+        try {
+            data = teamService.updateTeamWish(user, id, requestDto);
+        } catch (Exception e) {
+            log.error("failed to update teamWish : " + e.getMessage() + "\n\n" + e.getCause());
+            log.error(e.getMessage() + "\n\n" + e.getCause());
+            return ResultResponseDto.builder()
+                    .statusCode((long) HttpStatus.BAD_REQUEST.value())
+                    .count(0L)
+                    .data(e.getMessage())
+                    .build();
+
+        }
+        return ResultResponseDto.builder()
+                .statusCode((long) HttpStatus.OK.value())
+                .count(1L)
+                .data(data)
                 .build();
     }
 }

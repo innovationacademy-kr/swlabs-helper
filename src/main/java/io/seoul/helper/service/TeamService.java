@@ -4,10 +4,12 @@ import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
+import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.project.Project;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.project.ProjectRepository;
@@ -16,7 +18,9 @@ import io.seoul.helper.repository.user.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,11 +41,8 @@ public class TeamService {
 
     @Transactional
     public Long createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        if (currentUser == null) new Exception("not login");
-        User user = userRepo.findUserByNickname(currentUser.getNickname())
-                .orElseThrow(() -> new Exception("invalid user"));
-        Project project = projectRepo.findProjectByName(requestDto.getProjectName()).
-                orElseThrow(() -> new Exception("invalid project"));
+        User user = findUser(currentUser);
+        Project project = findProject(requestDto.getProjectName());
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
@@ -51,6 +52,23 @@ public class TeamService {
                 .build();
         memberRepo.save(member);
         return team.getId();
+    }
+
+    public TeamResponseDto updateTeamWish(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
+        User user = findUser(currentUser);
+        Team team = findTeam(teamId);
+        Project project = findProject(requestDto.getProjectName());
+        Member member = memberRepo.findMemberByTeamAndUser(team, user)
+                .orElseThrow(() -> new Exception("Not This Team Member"));
+
+        if (member.getRole() != MemberRole.MENTEE || team.getStatus() != TeamStatus.WAITING)
+            throw new Exception("This team cannot change");
+        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
+        team.updateTeam(requestDto.getStartTime(), requestDto.getEndTime(),
+                requestDto.getMaxMemeberCount(), requestDto.getLocation(), project);
+        teamRepo.save(team);
+
+        return new TeamResponseDto(team);
     }
 
     public void createNewTeam() {
@@ -85,5 +103,32 @@ public class TeamService {
         return teams.stream()
                 .map(team -> new TeamResponseDto(team))
                 .collect(Collectors.toList());
+    }
+
+    private User findUser(SessionUser currentUser) throws Exception {
+        if (currentUser == null) throw new Exception("not login");
+        return userRepo.findUserByNickname(currentUser.getNickname())
+                .orElseThrow(() -> new EntityNotFoundException("invalid user"));
+    }
+
+    private Team findTeam(Long teamId) throws EntityNotFoundException {
+        return teamRepo.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
+    }
+
+    private Project findProject(Long projectId) throws EntityNotFoundException {
+        return projectRepo.findById(projectId).
+                orElseThrow(() -> new EntityNotFoundException("invalid project"));
+    }
+
+    private Project findProject(String projectName) throws EntityNotFoundException {
+        return projectRepo.findProjectByName(projectName).
+                orElseThrow(() -> new EntityNotFoundException("invalid project"));
+    }
+
+    private void checkTimeValid(LocalDateTime startTime, LocalDateTime endTime) throws Exception {
+        if (startTime != null && endTime != null &&
+                (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
+            throw new IllegalArgumentException("Invalid Time");
     }
 }
