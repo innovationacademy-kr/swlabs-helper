@@ -88,5 +88,3 @@ insert into member (id, team_id, user_id, role)
 values (17, 9, 2, 'MENTEE');
 insert into member (id, team_id, user_id, role)
 values (18, 9, 3, 'MENTOR');
-
-
