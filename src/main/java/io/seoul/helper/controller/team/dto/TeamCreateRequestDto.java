@@ -7,25 +7,28 @@ import io.seoul.helper.domain.team.TeamStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 public class TeamCreateRequestDto {
+    @DateTimeFormat
     private LocalDateTime startTime;
+    @DateTimeFormat
     private LocalDateTime endTime;
     private TeamLocation location;
-    private Long maxMemeberCount;
+    private Long maxMemberCount;
     private String projectName;
 
     @Builder
     public TeamCreateRequestDto(LocalDateTime startTime, LocalDateTime endTime, TeamLocation location,
-                                Long maxMemeberCount, String projectName) {
+                                Long maxMemberCount, String projectName) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        this.maxMemeberCount = maxMemeberCount;
+        this.maxMemberCount = maxMemberCount;
         this.projectName = projectName;
     }
 
@@ -33,9 +36,9 @@ public class TeamCreateRequestDto {
         Team entity = Team.builder().startTime(startTime)
                 .endTime(endTime)
                 .location(location)
-                .maxMemberCount(maxMemeberCount)
+                .maxMemberCount(maxMemberCount)
                 .status(TeamStatus.WAITING)
-                .maxMemberCount(maxMemeberCount)
+                .maxMemberCount(maxMemberCount)
                 .project(project)
                 .build();
         return entity;
