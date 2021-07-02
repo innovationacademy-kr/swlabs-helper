@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ~/.bash_profile
+
 cd ..
 
 APP_NAME=helper-dev
