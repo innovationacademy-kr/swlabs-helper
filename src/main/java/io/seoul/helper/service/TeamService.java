@@ -13,22 +13,24 @@ import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.project.ProjectRepository;
 import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class TeamService {
+
     private final UserRepository userRepo;
     private final TeamRepository teamRepo;
     private final MemberRepository memberRepo;
     private final ProjectRepository projectRepo;
 
-    public TeamService(UserRepository userRepo, TeamRepository teamRepo, MemberRepository memberRepo,
-                       ProjectRepository projectRepo) {
+    public TeamService(UserRepository userRepo, TeamRepository teamRepo,
+        MemberRepository memberRepo,
+        ProjectRepository projectRepo) {
         this.userRepo = userRepo;
         this.teamRepo = teamRepo;
         this.memberRepo = memberRepo;
@@ -36,19 +38,22 @@ public class TeamService {
     }
 
     @Transactional
-    public Long createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        if (currentUser == null) new Exception("not login");
+    public Long createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto)
+        throws Exception {
+        if (currentUser == null) {
+            new Exception("not login");
+        }
         User user = userRepo.findUserByNickname(currentUser.getNickname())
-                .orElseThrow(() -> new Exception("invalid user"));
+            .orElseThrow(() -> new Exception("invalid user"));
         Project project = projectRepo.findProjectByName(requestDto.getProjectName()).
-                orElseThrow(() -> new Exception("invalid project"));
+            orElseThrow(() -> new Exception("invalid project"));
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
-                .team(team)
-                .user(user)
-                .role(MemberRole.MENTEE)
-                .build();
+            .team(team)
+            .user(user)
+            .role(MemberRole.MENTEE)
+            .build();
         memberRepo.save(member);
         return team.getId();
     }
@@ -80,10 +85,26 @@ public class TeamService {
     @Transactional
     public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         List<Team> teams = teamRepo.findTeamsByQueryParameters(
-                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation(),
-                PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
-        return teams.stream()
+            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+            requestDto.getLocation(),
+            PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
+        if (requestDto.getUserNickname() != null) {
+            User user = userRepo.findUserByNickname(requestDto.getUserNickname()).get();
+            List<Member> members = memberRepo.findMembersByUser(user);
+            List<Team> foundTeam = new ArrayList<>();
+            for (Member member : members) {
+                for (Team team : teams) {
+                    if (member.getTeam() == team) {
+                        foundTeam.add(team);
+                    }
+                }
+            }
+            return foundTeam.stream()
                 .map(team -> new TeamResponseDto(team))
                 .collect(Collectors.toList());
+        }
+        return teams.stream()
+            .map(team -> new TeamResponseDto(team))
+            .collect(Collectors.toList());
     }
 }
