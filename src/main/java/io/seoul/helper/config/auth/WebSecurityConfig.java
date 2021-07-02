@@ -2,6 +2,7 @@ package io.seoul.helper.config.auth;
 
 import io.seoul.helper.domain.user.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +19,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**",
-                        "/login**", "/home**", "/callback/", "/error") //로그인이 없어도 접근 가능한 구역
+                        "/login**", "/home**", "/callback/", "/error")//로그인이 없어도 접근 가능한 구역
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/**")
                 .permitAll()
                 .antMatchers("/api/v1/**").hasRole(Role.USER.name())    //해당 권한을 가진 유저만 사용 가능
                 .anyRequest().authenticated()
