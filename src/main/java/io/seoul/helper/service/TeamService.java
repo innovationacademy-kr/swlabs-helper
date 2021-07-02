@@ -80,8 +80,8 @@ public class TeamService {
     @Transactional
     public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         List<Team> teams = teamRepo.findTeamsByQueryParameters(
-                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation()
-                , PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
+                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation(),
+                PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
         return teams.stream()
                 .map(team -> new TeamResponseDto(team))
                 .collect(Collectors.toList());
