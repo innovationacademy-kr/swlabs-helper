@@ -33,18 +33,19 @@ public class TeamApiController {
 
     @GetMapping(value = "/api/v1/teams")
     public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) {
-        //todo: startTime 와 endTime 의 시간 유효성 Field 검증 로직 필요
-        List<TeamResponseDto> teams = teamService.findTeams(requestDto);
-
-        log.info("offset={}, limit={}, startTime={}, endTime={}, status={}, location={}",
-                requestDto.getOffset(), requestDto.getLimit(), requestDto.getStartTime(),
-                requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation());
-
-        return ResultResponseDto.builder()
-                .statusCode(HttpStatus.OK.value())
-                .count((teams == null ? 0 : teams.size()))
-                .data(teams)
-                .build();
+        try {
+            List<TeamResponseDto> teams = teamService.findTeams(requestDto);
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .count(teams == null ? 0 : teams.size())
+                    .data(teams)
+                    .build();
+        } catch (Exception e) {
+            log.error("fail to find team list" + e.getMessage());
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .build();
+        }
     }
 
     @PutMapping(value = "/api/v1/team/{id}")

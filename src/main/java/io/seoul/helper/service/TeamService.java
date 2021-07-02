@@ -21,18 +21,21 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
+
     private final UserRepository userRepo;
     private final TeamRepository teamRepo;
     private final MemberRepository memberRepo;
     private final ProjectRepository projectRepo;
 
-    public TeamService(UserRepository userRepo, TeamRepository teamRepo, MemberRepository memberRepo,
-                       ProjectRepository projectRepo) {
+    public TeamService(UserRepository userRepo, TeamRepository teamRepo,
+        MemberRepository memberRepo,
+        ProjectRepository projectRepo) {
         this.userRepo = userRepo;
         this.teamRepo = teamRepo;
         this.memberRepo = memberRepo;
@@ -46,10 +49,10 @@ public class TeamService {
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
-                .team(team)
-                .user(user)
-                .role(MemberRole.MENTEE)
-                .build();
+            .team(team)
+            .user(user)
+            .role(MemberRole.MENTEE)
+            .build();
         memberRepo.save(member);
         return team.getId();
     }
@@ -112,15 +115,31 @@ public class TeamService {
         memberRepo.delete(member);
         teamRepo.delete(team);
     }
-
+    
     @Transactional
     public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         List<Team> teams = teamRepo.findTeamsByQueryParameters(
-                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation(),
-                PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
-        return teams.stream()
+            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+            requestDto.getLocation(),
+            PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
+        if (requestDto.getUserNickname() != null) {
+            User user = userRepo.findUserByNickname(requestDto.getUserNickname()).get();
+            List<Member> members = memberRepo.findMembersByUser(user);
+            List<Team> foundTeam = new ArrayList<>();
+            for (Member member : members) {
+                for (Team team : teams) {
+                    if (member.getTeam() == team) {
+                        foundTeam.add(team);
+                    }
+                }
+            }
+            return foundTeam.stream()
                 .map(team -> new TeamResponseDto(team))
                 .collect(Collectors.toList());
+        }
+        return teams.stream()
+            .map(team -> new TeamResponseDto(team))
+            .collect(Collectors.toList());
     }
 
     private User findUser(SessionUser currentUser) throws Exception {
@@ -149,5 +168,4 @@ public class TeamService {
                 (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
             throw new IllegalArgumentException("Invalid Time");
     }
-
 }
