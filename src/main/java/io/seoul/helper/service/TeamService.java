@@ -54,7 +54,8 @@ public class TeamService {
         return team.getId();
     }
 
-    public TeamResponseDto updateTeamWish(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
+    @Transactional
+    public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Team team = findTeam(teamId);
         Project project = findProject(requestDto.getProjectName());
@@ -71,35 +72,52 @@ public class TeamService {
         return new TeamResponseDto(team);
     }
 
-    public void createNewTeam() {
-
+    @Transactional
+    public void joinTeam(SessionUser sessionUser, Long id) throws Exception {
+        User user = findUser(sessionUser);
+        Team team = findTeam(id);
+        if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
+            throw new Exception("Already joined");
+        if (team.getStatus() != TeamStatus.READY)
+            throw new Exception("This Team is not ready");
+        if (team.getCurrentMemberCount() >= team.getMaxMemberCount())
+            throw new Exception("member is full");
+        Member member = Member.builder()
+                .team(team)
+                .user(user)
+                .role(MemberRole.MENTEE)
+                .build();
+        memberRepo.save(member);
     }
 
-    public void joinTeam() {
-
+    @Transactional
+    public void outTeam(SessionUser sessionUser, Long id) throws Exception {
+        User user = findUser(sessionUser);
+        Team team = findTeam(id);
+        Member member = memberRepo.findMemberByTeamAndUser(team, user)
+                .orElseThrow(() -> new Exception("Not this team member"));
+        if (team.getStatus() != TeamStatus.READY)
+            throw new Exception("This team is already running");
+        memberRepo.delete(member);
     }
 
-    public void getJoinableTeamList() {
-
-    }
-
-    public void getJoinedTeamList() {
-
-    }
-
-    public void getMyTeamList() {
-
-    }
-
-    public void getTeamInfo() {
-
+    @Transactional
+    public void deleteTeam(SessionUser sessionUser, Long id) throws Exception {
+        User user = findUser(sessionUser);
+        Team team = findTeam(id);
+        Member member = memberRepo.findMemberByTeamAndUser(team, user)
+                .orElseThrow(() -> new Exception("Not this team member"));
+        if (team.getStatus() != TeamStatus.WAITING)
+            throw new Exception("This Team is already Matched!");
+        memberRepo.delete(member);
+        teamRepo.delete(team);
     }
 
     @Transactional
     public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         List<Team> teams = teamRepo.findTeamsByQueryParameters(
-                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation()
-                , PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
+                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(), requestDto.getLocation(),
+                PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
         return teams.stream()
                 .map(team -> new TeamResponseDto(team))
                 .collect(Collectors.toList());
@@ -131,4 +149,5 @@ public class TeamService {
                 (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
             throw new IllegalArgumentException("Invalid Time");
     }
+
 }
