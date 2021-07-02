@@ -48,9 +48,30 @@ public class Team {
         return new Long(members.size());
     }
 
+    
+    public void updateTeam(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount,
+                           TeamLocation location, Project project) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.maxMemberCount = maxMemberCount;
+        this.location = location;
+        this.project = project;
+    }
+
+    public void updateTeamReady(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.maxMemberCount = maxMemberCount;
+        this.status = TeamStatus.READY;
+    }
+
+    public void updateTeamEnd() {
+        this.status = TeamStatus.END;
+    }
+
     @Builder
-    public Team(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount, TeamLocation location, TeamStatus status, Project project) {
-        this.members = members;
+    public Team(Long id, LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount,
+                TeamLocation location, TeamStatus status, Project project) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxMemberCount = maxMemberCount;
