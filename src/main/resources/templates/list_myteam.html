@@ -13,8 +13,8 @@
     <div class="inquery">
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-primary" onclick="location.href='/list_team'">모든 팀</button>
-                <button type="button" class="btn btn-outline-primary" onclick="location.href='/list_myteam'">내가 속한 팀</button>
+                <button type="button" class="btn btn-outline-primary" onclick="location.href='/list_team'">모든 팀</button>
+                <button type="button" class="btn btn-primary" onclick="location.href='/list_myteam'">내가 속한 팀</button>
             </div>
         </div>
     </div>
@@ -54,8 +54,8 @@
                 <td th:text="${team.currentMemberCount}">2</td>
                 <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
                 <td>
-                    <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
-                    <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}" th:text="${team.getNicknameByMentor()}">멘토</span>
+                    <span th:if="${#strings.contains(team.getNicknameByMento(),'empty')}">미지정</span>
+                    <span th:unless="${#strings.contains(team.getNicknameByMento(),'empty')}" th:text="${team.getNicknameByMento()}">멘토</span>
                 </td>
                 <td><button type="button" class="btn btn-primary">참여하기</button></td>
             </tr>
