@@ -62,7 +62,7 @@ public class TeamResponseDto {
         return optional.get();
     }
 
-    public String getNicknameByMento() {
+    public String getNicknameByMentor() {
         MemberRole memberRole = MemberRole.MENTOR;
         Optional<String> optional = Optional.of("empty");
 
