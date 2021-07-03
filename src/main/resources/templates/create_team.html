@@ -41,7 +41,7 @@
                     <span th:text="${#temporals.hour(team.endTime)}">종료시간</span>:<span
                         th:text="${#temporals.hour(team.endTime)}"></span>
                 </td>
-                <td th:text="${team.members[0].nickname}"></td>
+                <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
                     <button type="button" class="btn btn-primary"
                             th:onclick="|location.href='@{/create_team/{id}(id=${team.teamId})}'|">
