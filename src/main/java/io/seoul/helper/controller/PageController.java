@@ -2,17 +2,15 @@ package io.seoul.helper.controller;
 
 import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
-
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
-import io.seoul.helper.service.TeamService;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.repository.team.TeamRepository;
+import io.seoul.helper.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,10 +62,10 @@ public class PageController {
     }
 
     @GetMapping(value = "/create_team")
-    public String createTeam(Model model,
-                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                             @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
+    public String createTeam(Model model, @LoginUser SessionUser user,
+                             @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
 
+        int size = 10;
         TeamStatus status = TeamStatus.WAITING;
         Page<Team> teamPage = teamRepo.findAllByStatus(status, PageRequest.of(page - 1, size));
         Page<TeamResponseDto> teams = teamPage.map(team -> new TeamResponseDto(team));
@@ -81,10 +79,9 @@ public class PageController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-
+        model.addAttribute("user", user);
         return "create_team";
     }
-
 
 
 }

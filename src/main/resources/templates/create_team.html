@@ -28,29 +28,30 @@
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">팀 아이디</th>
                 <td th:text="${team.projectName}">프로젝트 명칭</td>
-                <td th:text="${team.location} ?: '상관 없음'">장소</td>
+                <td>
+                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
+                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
+                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                </td>
                 <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
                     <div th:if="${team.startTime} AND ${team.endTime}">
-                        <span th:text="${#temporals.month(team.startTime)}">월</span> /
-                        <span th:text="${#temporals.day(team.startTime)}">일</span>
+                        <span th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</span>
                     </div>
                     <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
                 <td>
                     <div th:if="${team.startTime} AND ${team.endTime}">
-                        <span th:text="${#temporals.hour(team.startTime)}">시작시간</span>:<span
-                            th:text="${#temporals.hour(team.startTime)}"></span>
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
-                        <span th:text="${#temporals.hour(team.endTime)}">종료시간</span>:<span
-                            th:text="${#temporals.hour(team.endTime)}"></span>
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                     </div>
                     <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
                     <button type="button" class="btn btn-primary"
-                            th:onclick="|location.href='@{/create_team/{id}(id=${team.teamId})}'|">
+                            th:onclick="|location.href='@{/create_team/{id}(id=${team.teamId})}/edit'|">
                         세부사항 확인
                     </button>
                 </td>
@@ -58,14 +59,14 @@
             </tbody>
         </table>
 
-        <!-- reference: https://www.baeldung.com/spring-thymeleaf-pagination-->
+        <!-- reference: https://www.baeldung.com/spring-thymeleaf-pagination -->
         <nav aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
                 <li class="page-item"
                     th:each="pageNumber : ${pageNumbers}"
                     th:classappend="${pageNumber == teams.number + 1} ? 'active'">
 
-                    <a class="page-link" th:href="@{/create_team(size=${teams.size}, page=${pageNumber})}"
+                    <a class="page-link" th:href="@{/create_team(page=${pageNumber})}"
                        th:text=${pageNumber}>
                     </a>
                 </li>
