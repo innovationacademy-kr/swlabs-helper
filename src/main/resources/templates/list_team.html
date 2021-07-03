@@ -11,12 +11,7 @@
     <h2> 매칭된 팀 목록 </h2>
 
     <div class="inquery">
-        <div class="row">
-            <div class="col">
-                <button type="button" class="btn btn-primary" onclick="location.href='/list_team'">모든 팀</button>
-                <button type="button" class="btn btn-outline-primary" onclick="location.href='/list_myteam'">내가 속한 팀</button>
-            </div>
-        </div>
+
     </div>
 
     <div class="list-container">
@@ -36,28 +31,53 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="team : ${teams}">
-                <th scope="row" th:text="${team.teamId}">ID</th>
-                <td th:text="${team.projectName}">ProjectName</td>
-                <td>
-                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
-                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
-                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
-                </td>
-                <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
-                <td>
-                    <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
-                    ~
-                    <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
-                </td>
-                <td th:text="${team.maxMemberCount}">3</td>
-                <td th:text="${team.currentMemberCount}">2</td>
-                <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
-                <td>
-                    <span th:if="${#strings.contains(team.getNicknameByMento(),'empty')}">미지정</span>
-                    <span th:unless="${#strings.contains(team.getNicknameByMento(),'empty')}" th:text="${team.getNicknameByMento()}">멘토</span>
-                </td>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
                 <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td>Born2beroot</td>
+                <td>개포</td>
+                <td>6/18</td>
+                <td>13:00 - 15:00</td>
+                <td>3</td>
+                <td>2</td>
+                <td>1</td>
+                <td>hwon</td>
+                <td><button type="button" class="btn btn-danger">취소하기</button></td>
             </tr>
             </tbody>
         </table>
