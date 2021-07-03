@@ -65,23 +65,14 @@ public class PageController {
     public String createTeam(Model model, @LoginUser SessionUser user,
                              @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
 
-        int size = 10;
         TeamStatus status = TeamStatus.WAITING;
-        Page<Team> teamPage = teamRepo.findAllByStatus(status, PageRequest.of(page - 1, size));
-        Page<TeamResponseDto> teams = teamPage.map(team -> new TeamResponseDto(team));
+
+        TeamListRequestDto dto = new TeamListRequestDto();
+        dto.setStatus(status);
+        List<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
-
-        int totalPages = teams.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
         model.addAttribute("user", user);
         return "create_team";
     }
-
-
 }

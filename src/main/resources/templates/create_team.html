@@ -25,7 +25,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="team : ${teams}">
+            <tr th:each="team : ${teams}" th:if="${team.getNicknameByMentee()} != ${user.nickname}">
                 <th scope="row" th:text="${team.teamId}">팀 아이디</th>
                 <td th:text="${team.projectName}">프로젝트 명칭</td>
                 <td>
