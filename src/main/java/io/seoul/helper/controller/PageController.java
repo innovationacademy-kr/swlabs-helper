@@ -35,6 +35,16 @@ public class PageController {
         return "list_team";
     }
 
+    @GetMapping(value = "/list_myteam")
+    public String myTeamList(Model model, @LoginUser SessionUser user) {
+        TeamListRequestDto dto = new TeamListRequestDto();
+        dto.setUserNickname(user.getNickname());
+        List<TeamResponseDto> teams = teamService.findTeams(dto);
+        model.addAttribute("teams", teams);
+        model.addAttribute("user", user);
+        return "list_myteam";
+    }
+
     @GetMapping(value = "/set_time")
     public String time() {
         return "set_time";
