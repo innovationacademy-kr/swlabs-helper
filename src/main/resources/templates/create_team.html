@@ -28,18 +28,24 @@
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">팀 아이디</th>
                 <td th:text="${team.projectName}">프로젝트 명칭</td>
-                <td th:text="${team.location}">장소</td>
-                <td th:text="${team.maxMemberCount}">3</td>
+                <td th:text="${team.location} ?: '상관 없음'">장소</td>
+                <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
-                    <span th:text="${#temporals.month(team.startTime)}">월</span> /
-                    <span th:text="${#temporals.day(team.startTime)}">일</span>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.month(team.startTime)}">월</span> /
+                        <span th:text="${#temporals.day(team.startTime)}">일</span>
+                    </div>
+                    <div th:unless="${team.startTime} OR ${team.endTime}" th:text="상관없음"></div>
                 </td>
                 <td>
-                    <span th:text="${#temporals.hour(team.startTime)}">시작시간</span>:<span
-                        th:text="${#temporals.hour(team.startTime)}"></span>
-                    ~
-                    <span th:text="${#temporals.hour(team.endTime)}">종료시간</span>:<span
-                        th:text="${#temporals.hour(team.endTime)}"></span>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.hour(team.startTime)}">시작시간</span>:<span
+                            th:text="${#temporals.hour(team.startTime)}"></span>
+                        ~
+                        <span th:text="${#temporals.hour(team.endTime)}">종료시간</span>:<span
+                            th:text="${#temporals.hour(team.endTime)}"></span>
+                    </div>
+                    <div th:unless="${team.startTime} OR ${team.endTime}" th:text="상관없음"></div>
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
