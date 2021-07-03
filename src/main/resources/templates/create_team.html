@@ -35,7 +35,7 @@
                         <span th:text="${#temporals.month(team.startTime)}">월</span> /
                         <span th:text="${#temporals.day(team.startTime)}">일</span>
                     </div>
-                    <div th:unless="${team.startTime} OR ${team.endTime}" th:text="상관없음"></div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
                 <td>
                     <div th:if="${team.startTime} AND ${team.endTime}">
@@ -45,7 +45,7 @@
                         <span th:text="${#temporals.hour(team.endTime)}">종료시간</span>:<span
                             th:text="${#temporals.hour(team.endTime)}"></span>
                     </div>
-                    <div th:unless="${team.startTime} OR ${team.endTime}" th:text="상관없음"></div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
@@ -58,26 +58,19 @@
             </tbody>
         </table>
 
-        <nav th:with="start=${(pages.number/maxPage)*maxPage + 1},
-                  end=(${(pages.totalPages == 0) ? 1 : (start + (maxPage - 1) < pages.totalPages ? start + (maxPage - 1) : pages.totalPages)})"
-             aria-label="Page navigation">
+        <!-- reference: https://www.baeldung.com/spring-thymeleaf-pagination-->
+        <nav aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
-                <li th:if="${start > 1}">
-                    <a class="page-link" th:href="@{/create_team?(page=0)}" th:text="'<<'"></a></li>
-                </li>
-                <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(page=${start - maxPage})}" th:text="'<'"></a>
-                </li>
-                <li th:each="page: ${#numbers.sequence(start, end)}">
-                    <a class="page-link" th:href="@{/create_team?(page=${page-1})}" th:text="${page}"></a></li>
-                </li>
-                <li th:if="${end < pages.totalPages}">
-                    <a class="page-link" th:href="@{/create_team?(page=${start + maxPage})}" th:text="'>'"></a>
-                </li>
-                <li th:if="${end < pages.totalPages}">
-                    <a class="page-link" th:href="@{/create_team?(page=${pages.totalPages-1})}" th:text="'>>'"></a></li>
+                <li class="page-item"
+                    th:each="pageNumber : ${pageNumbers}"
+                    th:classappend="${pageNumber == teams.number + 1} ? 'active'">
+
+                    <a class="page-link" th:href="@{/create_team(size=${teams.size}, page=${pageNumber})}"
+                       th:text=${pageNumber}>
+                    </a>
                 </li>
             </ul>
         </nav>
+
     </div>
 </html>
