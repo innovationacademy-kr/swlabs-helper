@@ -4,27 +4,18 @@ import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
-import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamStatus;
-import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 public class PageController {
-    @Autowired
-    private TeamRepository teamRepo;
-
     @Autowired
     private TeamService teamService;
 
