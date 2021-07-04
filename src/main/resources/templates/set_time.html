@@ -335,7 +335,7 @@
                     data: JSON.stringify({
                         startTime: start_date.format("YYYY-MM-DDTHH:mm"),
                         endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                        location: location,
+                        location: location(),
                         maxMemberCount: parseInt(mexPeopleCount),
                         projectName: projectName
                     }),

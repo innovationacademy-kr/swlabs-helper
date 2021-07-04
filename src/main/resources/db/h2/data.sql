@@ -11,9 +11,17 @@ insert into user (id, email, fullname, nickname, picture, role)
 values (5, 'tester005@gmail.com', 'tester005', 'test5', 'none', 'USER');
 insert into user (id, email, fullname, nickname, picture, role)
 values (6, 'tester006@gmail.com', 'tester006', 'test6', 'none', 'USER');
+insert into user (id, email, fullname, nickname, picture, role)
+values (7, 'hwon@student.42seoul.kr', 'Hyunjin Won', 'hwon', 'https://cdn.intra.42.fr/users/hwon.jpg', 'ADMIN');
+insert into user (id, email, fullname, nickname, picture, role)
+values (8, 'ychoi@student.42seoul.kr', 'Youngho Choi', 'ychoi', 'https://cdn.intra.42.fr/users/ychoi.jpg', 'ADMIN');
+insert into user (id, email, fullname, nickname, picture, role)
+values (9, 'minkang@student.42seoul.kr', 'Mincheol Kang', 'minkang', 'https://cdn.intra.42.fr/users/minkang.jpg',
+        'ADMIN');
 
 /*project*/
-insert into project (id, name)
+insert
+into project (id, name)
 values (1, 'custom');
 insert into project (id, name)
 values (2, 'ft_libft');
