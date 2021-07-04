@@ -21,13 +21,24 @@ public class TeamApiController {
     TeamService teamService;
 
     @PostMapping(value = "/api/v1/team")
-    public Long create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
+    public ResultResponseDto create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
+        TeamResponseDto data;
         try {
-            return teamService.createNewTeamWish(user, requestDto);
+            data = teamService.createNewTeamWish(user, requestDto);
         } catch (Exception e) {
             log.error("failed to create new teamWish : " + e.getMessage() + "\n\n" + e.getCause());
-            return -1L;
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
         }
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OK")
+                .count(1)
+                .data(data)
+                .build();
     }
 
     @GetMapping(value = "/api/v1/teams")

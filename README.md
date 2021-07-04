@@ -17,10 +17,12 @@ This project use spring-security so you need to set redirect_url like this
 
 ``{baseUrl}:{port}/login/oauth2/intra42``
 
-This is for mariadb Setting
+This project support h2 embedded db for local
 
-please use mariadb10.3 or over version
+but if you want to use -dev.properties for mariadb setting
 
-- ${HELPER42_DB_NAME
-- ${HELPER42_DB_USERNAME
-- ${HELPER42_DB_PASSWORD
+please use mariadb10.3 or over version and regist env below
+
+- ${HELPER42_DB_NAME}
+- ${HELPER42_DB_USERNAME}
+- ${HELPER42_DB_PASSWORD}

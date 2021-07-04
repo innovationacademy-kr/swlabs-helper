@@ -43,18 +43,20 @@ public class TeamService {
     }
 
     @Transactional
-    public Long createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
+    public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Project project = findProject(requestDto.getProjectName());
+        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
                 .team(team)
                 .user(user)
                 .role(MemberRole.MENTEE)
+                .creator(true)
                 .build();
         memberRepo.save(member);
-        return team.getId();
+        return new TeamResponseDto(team);
     }
 
     @Transactional
