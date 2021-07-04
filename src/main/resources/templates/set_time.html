@@ -93,68 +93,8 @@
             </div>
         </div>
     </div>
-    <!--
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create_team_modal">
-        새로 만들기
-    </button>
-    <div class="modal fade" id="create_team_modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <h2> 시간 설정 </h2>
-            <form class="m-3 needs-validation" method="post" id="create_team_form">
-                <legend>시간 설정 폼</legend>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label for="project_name" class="form-label">프로젝트 명칭</label>
-                            <select class="form-select" id="project_name" required>
-                                <option selected disabled value="">프로젝트 선택하기</option>
-                                <option value="1">ft_printf</option>
-                                <option value="2">get_next_line</option>
-                                <option value="3">ft_libft</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label for="location" class="form-label">장소</label>
-                            <select class="form-select" id="location" required>
-                                <option selected disabled value="">장소 선택하기</option>
-                                <option value="GAEPO">개포</option>
-                                <option value="SEOCHO">서초</option>
-                                <option value="ONLINE">온라인</option>
-                                <option value="ETC">상관없음</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label for="max_people_count" class="form-label">참여 인원</label>
-                            <input class="form-control" id="max_people_count" th:type="number" th:min="2" required>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label for="datepicker" class="form-label">날짜</label>
-                            <input id="datepicker" class="form-control" required/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="demo__body py-3">
-                        <input id="time_range_slider" type="text">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="me-auto"></div>
-                    <button class="btn btn-primary" type="submit">완료</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    -->
+    <!-- list -->
     <div class="list-container">
         <table class="table">
             <thead>
@@ -368,7 +308,13 @@
                 return;
             }
             const projectName = $('#project_name option:selected').text();
-            const location = $('#location option:selected').attr("value");
+            const location = function () {
+                const select_loc = $('#location option:selected').attr("value");
+                if (select_loc == "ETC")
+                    return null
+                else
+                    return select_loc;
+            }
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());
             const [start, end] = $('#time_range_slider').val().split(';')

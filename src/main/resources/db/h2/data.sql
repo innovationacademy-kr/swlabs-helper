@@ -16,7 +16,7 @@ values (6, 'tester006@gmail.com', 'tester006', 'test6', 'none', 'USER');
 insert into project (id, name)
 values (1, 'custom');
 insert into project (id, name)
-values (2, 'libft');
+values (2, 'ft_libft');
 insert into project (id, name)
 values (3, 'ft_printf');
 insert into project (id, name)
