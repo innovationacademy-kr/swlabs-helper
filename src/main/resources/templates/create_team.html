@@ -4,130 +4,74 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default_layout.html" th:with="currentPage='create_team'">
 <head>
-  <title>Create team</title>
+    <title>Create team</title>
 </head>
 
 <div layout:fragment="custom-content">
-  <h2>멘티 목록</h2>
-  <div class="inquery">
+    <h2>멘티 목록</h2>
 
-  </div>
-  <div class="list-container">
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">프로젝트 명칭</th>
-        <th scope="col">장소</th>
-        <th scope="col">희망 인원</th>
-        <th scope="col">희망 일자</th>
-        <th scope="col">희망 시간</th>
-        <th scope="col">개설자</th>
-        <th scope="col">작업</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
-      <tr>
-        <th scope="row">1</th>
-        <td>Born2beroot</td>
-        <td>개포</td>
-        <td>3</td>
-        <td>6/18</td>
-        <td>13:00 - 15:00</td>
-        <td>hwon</td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">세부 정보 확인</button></td>
-      </tr>
+    <div class="list-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">프로젝트 명칭</th>
+                <th scope="col">장소</th>
+                <th scope="col">희망 인원</th>
+                <th scope="col">희망 일자</th>
+                <th scope="col">희망 시간</th>
+                <th scope="col">개설자</th>
+                <th scope="col">작업</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="team : ${teams}" th:if="${team.getNicknameByMentee()} != ${user.nickname}">
+                <th scope="row" th:text="${team.teamId}">팀 아이디</th>
+                <td th:text="${team.projectName}">프로젝트 명칭</td>
+                <td>
+                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
+                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
+                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                </td>
+                <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
+                <td>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                        ~
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td th:text="${team.getNicknameByMentee()}"></td>
+                <td>
+                    <button type="button" class="btn btn-primary"
+                            th:onclick="|location.href='@{/create_team/{id}(id=${team.teamId})}/edit'|">
+                        세부사항 확인
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-      </tbody>
-    </table>
+        <!-- reference: https://www.baeldung.com/spring-thymeleaf-pagination -->
+        <nav aria-label="Page navigation">
+            <ul class=" pagination justify-content-center">
+                <li class="page-item"
+                    th:each="pageNumber : ${pageNumbers}"
+                    th:classappend="${pageNumber == teams.number + 1} ? 'active'">
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
+                    <a class="page-link" th:href="@{/create_team(page=${pageNumber})}"
+                       th:text=${pageNumber}>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
     </div>
-
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-    </nav>
-
-
-  </div>
-
-
-
-
-
-
-</div>
 </html>
