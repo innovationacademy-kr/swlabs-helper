@@ -34,8 +34,8 @@ public class TeamService {
     private final ProjectRepository projectRepo;
 
     public TeamService(UserRepository userRepo, TeamRepository teamRepo,
-        MemberRepository memberRepo,
-        ProjectRepository projectRepo) {
+                       MemberRepository memberRepo,
+                       ProjectRepository projectRepo) {
         this.userRepo = userRepo;
         this.teamRepo = teamRepo;
         this.memberRepo = memberRepo;
@@ -43,18 +43,20 @@ public class TeamService {
     }
 
     @Transactional
-    public Long createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
+    public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Project project = findProject(requestDto.getProjectName());
+        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
-            .team(team)
-            .user(user)
-            .role(MemberRole.MENTEE)
-            .build();
+                .team(team)
+                .user(user)
+                .role(MemberRole.MENTEE)
+                .creator(true)
+                .build();
         memberRepo.save(member);
-        return team.getId();
+        return new TeamResponseDto(team);
     }
 
     @Transactional
@@ -115,13 +117,13 @@ public class TeamService {
         memberRepo.delete(member);
         teamRepo.delete(team);
     }
-    
+
     @Transactional
     public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         List<Team> teams = teamRepo.findTeamsByQueryParameters(
-            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-            requestDto.getLocation(),
-            PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
+                requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                requestDto.getLocation(),
+                PageRequest.of(requestDto.getOffset(), requestDto.getLimit()));
         if (requestDto.getUserNickname() != null) {
             User user = userRepo.findUserByNickname(requestDto.getUserNickname()).get();
             List<Member> members = memberRepo.findMembersByUser(user);
@@ -134,12 +136,12 @@ public class TeamService {
                 }
             }
             return foundTeam.stream()
-                .map(team -> new TeamResponseDto(team))
-                .collect(Collectors.toList());
+                    .map(team -> new TeamResponseDto(team))
+                    .collect(Collectors.toList());
         }
         return teams.stream()
-            .map(team -> new TeamResponseDto(team))
-            .collect(Collectors.toList());
+                .map(team -> new TeamResponseDto(team))
+                .collect(Collectors.toList());
     }
 
     private User findUser(SessionUser currentUser) throws Exception {

@@ -4,6 +4,7 @@ create table member
     role    varchar(255) not null,
     team_id bigint       not null,
     user_id bigint       not null,
+    creator smallint(1) not null,
     primary key (id)
 );
 create table project
