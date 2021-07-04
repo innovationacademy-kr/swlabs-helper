@@ -74,7 +74,7 @@
                     <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 card m-3">
                         <div class="card-body text-center">
                             <h5 th:text="${team.projectName}" class="card-title">Project Title</h5>
-                            <h6 th:text="${#temporals.format(team.startTime, 'YYYY/dd/MM')}" class="card-subtitle mb-2 text-muted">2021/07/04</h6>
+                            <h6 th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}" class="card-subtitle mb-2 text-muted">2021/07/04</h6>
                             <div class="mt-2">
                                 <p class="card-text">
                                     <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
