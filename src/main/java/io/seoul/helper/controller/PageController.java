@@ -7,12 +7,11 @@ import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 public class PageController {
@@ -29,21 +28,29 @@ public class PageController {
     }
 
     @GetMapping(value = "/list_team")
-    public String teamList(Model model, @LoginUser SessionUser user) {
+    public String teamList(Model model, @LoginUser SessionUser user,
+                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         TeamListRequestDto dto = new TeamListRequestDto();
-        List<TeamResponseDto> teams = teamService.findTeams(dto);
+        dto.setOffset(offset);
+        Page<TeamResponseDto> teams = teamService.findTeams(dto);
+
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        
         return "list_team";
     }
 
     @GetMapping(value = "/list_myteam")
-    public String myTeamList(Model model, @LoginUser SessionUser user) {
+    public String myTeamList(Model model, @LoginUser SessionUser user,
+                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setUserNickname(user.getNickname());
-        List<TeamResponseDto> teams = teamService.findTeams(dto);
+        dto.setOffset(offset);
+        Page<TeamResponseDto> teams = teamService.findTeams(dto);
+
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+
         return "list_myteam";
     }
 
@@ -54,16 +61,18 @@ public class PageController {
 
     @GetMapping(value = "/create_team")
     public String createTeam(Model model, @LoginUser SessionUser user,
-                             @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
 
         TeamStatus status = TeamStatus.WAITING;
 
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setStatus(status);
-        List<TeamResponseDto> teams = teamService.findTeams(dto);
+        dto.setOffset(offset);
+        Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+
         return "create_team";
     }
 }

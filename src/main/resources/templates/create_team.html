@@ -59,16 +59,28 @@
             </tbody>
         </table>
 
-        <!-- reference: https://www.baeldung.com/spring-thymeleaf-pagination -->
-        <nav aria-label="Page navigation">
+        <nav th:with="
+                  maxPage=${5},
+                  start=${(teams.number/maxPage)*maxPage + 1},
+                  end=(${(teams.totalPages == 0) ? 1 : (start + (maxPage - 1) < teams.totalPages ? start + (maxPage - 1) : teams.totalPages)})"
+             aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=0)}" th:text="'<<'"></a>
+                </li>
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start - 2})}" th:text="'<'"></a>
+                </li>
                 <li class="page-item"
-                    th:each="pageNumber : ${pageNumbers}"
-                    th:classappend="${pageNumber == teams.number + 1} ? 'active'">
-
-                    <a class="page-link" th:href="@{/create_team(page=${pageNumber})}"
-                       th:text=${pageNumber}>
-                    </a>
+                    th:each="offset: ${#numbers.sequence(start, end)}"
+                    th:classappend="${offset == teams.number + 1} ? 'active'">
+                    <a class="page-link" th:href="@{/create_team?(offset=${offset - 1})}" th:text="${offset}"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
                 </li>
             </ul>
         </nav>

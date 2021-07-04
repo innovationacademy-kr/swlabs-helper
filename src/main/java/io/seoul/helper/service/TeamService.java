@@ -15,6 +15,7 @@ import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.project.ProjectRepository;
 import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,8 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -118,11 +117,11 @@ public class TeamService {
     }
 
     @Transactional
-    public List<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
-        List<Team> teams;
+    public Page<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
+        Page<Team> teams;
         String nickName = requestDto.getUserNickname();
         Pageable pageable = PageRequest.of(
-                requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.ASC, "id");
+                requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
 
         if (nickName == null) {
             teams = teamRepo.findTeamsByQueryParameters(
@@ -134,9 +133,7 @@ public class TeamService {
                     requestDto.getLocation(), nickName, pageable);
         }
 
-        return teams.stream()
-                .map(team -> new TeamResponseDto(team))
-                .collect(Collectors.toList());
+        return teams.map(team -> new TeamResponseDto(team));
     }
 
     private User findUser(SessionUser currentUser) throws Exception {
