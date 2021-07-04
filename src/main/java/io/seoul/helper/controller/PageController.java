@@ -48,7 +48,11 @@ public class PageController {
     }
 
     @GetMapping(value = "/set_time")
-    public String time() {
+    public String time(Model model, @LoginUser SessionUser user) {
+        if (user != null) {
+            model.addAttribute("userNickname", user.getNickname());
+            model.addAttribute("user", user);
+        }
         return "set_time";
     }
 

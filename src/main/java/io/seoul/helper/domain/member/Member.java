@@ -29,10 +29,14 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
+    @Column(nullable = false)
+    private Boolean creator;
+
     @Builder
-    public Member(Team team, User user, MemberRole role) {
+    public Member(Team team, User user, MemberRole role, Boolean creator) {
         this.team = team;
         this.user = user;
         this.role = role;
+        this.creator = creator;
     }
 }
