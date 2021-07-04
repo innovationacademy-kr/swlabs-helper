@@ -21,7 +21,21 @@ public class PageController {
 
     @GetMapping(value = "/")
     public String home(Model model, @LoginUser SessionUser user) {
+        if (user == null){
+            TeamListRequestDto dto = new TeamListRequestDto();
+            List<TeamResponseDto> teams = teamService.findTeams(dto);
+            model.addAttribute("teams", teams);
+        }
         if (user != null) {
+            TeamListRequestDto allTeamDto = new TeamListRequestDto();
+            List<TeamResponseDto> allTeams = teamService.findTeams(allTeamDto);
+            model.addAttribute("allTeams", allTeams);
+
+            TeamListRequestDto myTeamDto = new TeamListRequestDto();
+            myTeamDto.setUserNickname(user.getNickname());
+            List<TeamResponseDto> myTeams = teamService.findTeams(myTeamDto);
+            model.addAttribute("myTeams", myTeams);
+
             model.addAttribute("userNickname", user.getNickname());
             model.addAttribute("user", user);
         }
