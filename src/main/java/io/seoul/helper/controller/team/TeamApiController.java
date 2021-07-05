@@ -36,7 +36,6 @@ public class TeamApiController {
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("OK")
-                .count(1)
                 .data(data)
                 .build();
     }
@@ -69,13 +68,11 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .data(e.getMessage())
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(1)
                 .data(data)
                 .build();
     }
@@ -90,14 +87,12 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
                 .data(null)
                 .build();
     }
@@ -111,14 +106,12 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
                 .data(null)
                 .build();
     }
@@ -132,14 +125,12 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
                 .data(null)
                 .build();
     }
