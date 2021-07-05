@@ -1,14 +1,12 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
-import io.seoul.helper.controller.team.dto.TeamListRequestDto;
-import io.seoul.helper.controller.team.dto.TeamResponseDto;
-import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
+import io.seoul.helper.controller.team.dto.*;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.project.Project;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
@@ -24,6 +22,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -45,7 +46,7 @@ public class TeamService {
     @Transactional
     public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
-        Project project = findProject(requestDto.getProjectName());
+        Project project = findProject(requestDto.getProjectId());
         checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
@@ -163,5 +164,14 @@ public class TeamService {
         if (startTime != null && endTime != null &&
                 (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
             throw new IllegalArgumentException("Invalid Time");
+    }
+
+    public List<TeamLocationDto> findAllLocation() {
+        return Arrays.stream(TeamLocation.values()).map((o) -> {
+            return TeamLocationDto.builder()
+                    .id(o.getId())
+                    .name(o.getName())
+                    .build();
+        }).collect(Collectors.toList());
     }
 }

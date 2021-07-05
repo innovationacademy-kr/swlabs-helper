@@ -36,11 +36,11 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label for="project_name" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="project_name" required>
+                                    <select th:name="test" class="form-select" id="project_name" required>
                                         <option selected disabled value="">프로젝트 선택하기</option>
-                                        <option value="1">ft_printf</option>
-                                        <option value="2">get_next_line</option>
-                                        <option value="3">ft_libft</option>
+                                        <option th:each="project : ${projects}"
+                                                th:value="${project.id}"
+                                                th:utext="${project.name}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -50,10 +50,9 @@
                                     <label for="location" class="form-label">장소</label>
                                     <select class="form-select" id="location" required>
                                         <option selected disabled value="">장소 선택하기</option>
-                                        <option value="GAEPO">개포</option>
-                                        <option value="SEOCHO">서초</option>
-                                        <option value="ONLINE">온라인</option>
-                                        <option value="ETC">상관없음</option>
+                                        <option th:each="loc : ${locations}"
+                                                th:value="${loc.id}"
+                                                th:utext="${loc.name}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -245,76 +244,14 @@
 
         $('#datepicker').next().attr("role", "icon");
 
-        /* form submit 사용 시 적용할 것 */
-        /*
-        window.onload = function () {
-            $('#create_team_form').submit(function (e) {
-                e.preventDefault()
-                const form = document.getElementById('create_team_form');
-                if (form.checkValidity() == false) {
-                    form.classList.add("was-validated");
-                    return;
-                }
-                const projectName = $('#project_name option:selected').text();
-                const location = $('#location option:selected').attr("value");
-                const mexPeopleCount = $('#max_people_count').val();
-                const date = moment($('#datepicker').val());
-                const [start, end] = $('#time_range_slider').val().split(';')
-                const start_date = moment(parseInt(start)).set({
-                    'year': date.year(),
-                    'month': date.month(),
-                    'date': date.date()
-                })
-                const end_date = moment(parseInt(end)).set({
-                    'year': date.year(),
-                    'month': date.month(),
-                    'date': date.date()
-                })
-
-                $.ajax({
-                        type: "POST",
-                        url: "./api/v1/team",
-                        data: JSON.stringify({
-                            startTime: start_date.format("YYYY-MM-DDTHH:mm"),
-                            endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                            location: location,
-                            maxMemberCount: parseInt(mexPeopleCount),
-                            projectName: projectName
-                        }),
-                        dataType: "JSON",
-                        contentType: 'application/json',
-                        success: (data) => {
-                            console.log(data);
-                            if (data.statusCode != 200) {
-                                alert("등록을 실패했습니다.\n" + data.message);
-                            } else {
-                                alert("등록되었습니다.")
-                                window.location.href = '/';
-                            }
-                        },
-                        error: (request, status, error) => {
-                            alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
-                                + request.responseText + "\nerror:" + error);
-                        }
-                    }
-                )
-            })
-        }
-        */
         function submit_team() {
             const form = document.getElementById('create_team_form');
             if (form.checkValidity() == false) {
                 form.classList.add("was-validated");
                 return;
             }
-            const projectName = $('#project_name option:selected').text();
-            const location = function () {
-                const select_loc = $('#location option:selected').attr("value");
-                if (select_loc == "ETC")
-                    return null
-                else
-                    return select_loc;
-            }
+            const projectId = $('#project_name option:selected').attr("value");
+            const location = $('#location option:selected').val();
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());
             const [start, end] = $('#time_range_slider').val().split(';')
@@ -335,9 +272,9 @@
                     data: JSON.stringify({
                         startTime: start_date.format("YYYY-MM-DDTHH:mm"),
                         endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                        location: location(),
+                        location: location,
                         maxMemberCount: parseInt(mexPeopleCount),
-                        projectName: projectName
+                        projectId: projectId
                     }),
                     dataType: "JSON",
                     contentType: 'application/json',

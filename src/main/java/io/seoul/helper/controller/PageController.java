@@ -5,6 +5,7 @@ import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.team.TeamStatus;
+import io.seoul.helper.service.ProjectService;
 import io.seoul.helper.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PageController {
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private ProjectService projectService;
 
     @GetMapping(value = "/")
     public String home(Model model, @LoginUser SessionUser user) {
@@ -74,6 +78,8 @@ public class PageController {
             model.addAttribute("userNickname", user.getNickname());
             model.addAttribute("user", user);
         }
+        model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("locations", teamService.findAllLocation());
         return "set_time";
     }
 

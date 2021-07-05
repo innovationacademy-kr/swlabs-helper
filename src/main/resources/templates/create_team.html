@@ -5,11 +5,86 @@
       layout:decorator="layout/default_layout.html" th:with="currentPage='create_team'">
 <head>
     <title>Create team</title>
+    <!-- Plugin CSS file with desired ski n-->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 </head>
 
 <div layout:fragment="custom-content">
-    <h2>멘티 목록</h2>
+    <!-- Modal -->
+    <div class="modal fade" id="team_detail_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">시간 설정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h2> 시간 설정 </h2>
+                    <form class="m-3 needs-validation" method="post" id="create_team_form">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="project_name" class="form-label">프로젝트 명칭</label>
+                                    <select class="form-select" id="project_name" required>
+                                        <option selected disabled value="">프로젝트 선택하기</option>
+                                        <option value="1">ft_printf</option>
+                                        <option value="2">get_next_line</option>
+                                        <option value="3">ft_libft</option>
+                                    </select>
+                                </div>
+                            </div>
 
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="location" class="form-label">장소</label>
+                                    <select class="form-select" id="location" required>
+                                        <option selected disabled value="">장소 선택하기</option>
+                                        <option value="GAEPO">개포</option>
+                                        <option value="SEOCHO">서초</option>
+                                        <option value="ONLINE">온라인</option>
+                                        <option value="ETC">상관없음</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="max_people_count" class="form-label">참여 인원</label>
+                                    <input class="form-control" id="max_people_count" th:type="number" th:min="2"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="datepicker" class="form-label">날짜</label>
+                                    <input id="datepicker" class="form-control" required/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="demo__body py-3">
+                                <input id="time_range_slider" type="text">
+                            </div>
+                        </div>
+                        <!--
+                        <div class="row">
+                            <div class="me-auto"></div>
+                            <button class="btn btn-primary" type="submit">완료</button>
+                        </div>
+                        -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="submit_team()">생성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>멘티 목록</h2>
     <div class="list-container">
         <table class="table">
             <thead>
@@ -28,11 +103,7 @@
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">팀 아이디</th>
                 <td th:text="${team.projectName}">프로젝트 명칭</td>
-                <td>
-                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
-                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
-                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
-                </td>
+                <td th:text="${team.location.getName()}"></td>
                 <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
                     <div th:if="${team.startTime} AND ${team.endTime}">
@@ -50,8 +121,7 @@
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
-                    <button type="button" class="btn btn-primary"
-                            th:onclick="|location.href='@{/create_team/{id}(id=${team.teamId})}/edit'|">
+                    <button type="button" class="btn btn-primary" th:onclick="onclick_detail([[${team}]])">
                         세부사항 확인
                     </button>
                 </td>
@@ -84,7 +154,109 @@
                 </li>
             </ul>
         </nav>
-
     </div>
+</div>
+
+<div layout:fragment="custom-footer">
+    <!--slider plugin -->
+    <!--link : https://github.com/IonDen/ion.rangeSlider-->
+    <!--jQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--Plugin JavaScript file-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+    <!--datepicker plugin-->
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <!--Moment plugin-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        var lang = "ko-KR";
+        var year = 2018;
+
+        function timeToTS(date) {
+            return date.valueOf();
+        }
+
+        function tsToTime(ts) {
+            var d = new Date(ts);
+
+            return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: true});
+        }
+
+
+        function onclick_detail(team) {
+            console.log(team);
+            var detail_modal = new bootstrap.Modal(document.getElementById('team_detail_modal'))
+            detail_modal.show();
+            $("#time_range_slider").ionRangeSlider({
+                skin: "round",
+                type: "double",
+                grid: true,
+                min: timeToTS(new Date(team.startTime)),
+                max: timeToTS(new Date(team.endTime)),
+                from: timeToTS(new Date(team.startTime)),
+                to: timeToTS(new Date(team.endTime)),
+                step: 900000,
+                prettify: tsToTime
+            }).addClass("irs-hidden-input");
+
+        }
+
+        function submit_team() {
+            const form = document.getElementById('create_team_form');
+            if (form.checkValidity() == false) {
+                form.classList.add("was-validated");
+                return;
+            }
+            const projectName = $('#project_name option:selected').text();
+            const location = function () {
+                const select_loc = $('#location option:selected').attr("value");
+                if (select_loc == "ETC")
+                    return null
+                else
+                    return select_loc;
+            }
+            const mexPeopleCount = $('#max_people_count').val();
+            const date = moment($('#datepicker').val());
+            const [start, end] = $('#time_range_slider').val().split(';')
+            const start_date = moment(parseInt(start)).set({
+                'year': date.year(),
+                'month': date.month(),
+                'date': date.date()
+            })
+            const end_date = moment(parseInt(end)).set({
+                'year': date.year(),
+                'month': date.month(),
+                'date': date.date()
+            })
+
+            $.ajax({
+                    type: "POST",
+                    url: "./api/v1/team",
+                    data: JSON.stringify({
+                        startTime: start_date.format("YYYY-MM-DDTHH:mm"),
+                        endTime: end_date.format("YYYY-MM-DDTHH:mm"),
+                        location: location(),
+                        maxMemberCount: parseInt(mexPeopleCount),
+                        projectName: projectName
+                    }),
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        console.log(data);
+                        if (data.statusCode != 200) {
+                            alert("등록을 실패했습니다.\n" + data.message);
+                        } else {
+                            alert("등록되었습니다.")
+                            window.location.href = '/';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
 </div>
 </html>
