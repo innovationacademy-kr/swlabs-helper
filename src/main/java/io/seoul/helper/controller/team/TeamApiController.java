@@ -10,10 +10,9 @@ import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
 import io.seoul.helper.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -45,10 +44,9 @@ public class TeamApiController {
     @GetMapping(value = "/api/v1/teams")
     public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) {
         try {
-            List<TeamResponseDto> teams = teamService.findTeams(requestDto);
+            Page<TeamResponseDto> teams = teamService.findTeams(requestDto);
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.OK.value())
-                    .count(teams == null ? 0 : teams.size())
                     .data(teams)
                     .build();
         } catch (Exception e) {

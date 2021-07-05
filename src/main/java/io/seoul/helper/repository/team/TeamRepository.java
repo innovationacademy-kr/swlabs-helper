@@ -10,16 +10,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    @Query("SELECT t FROM Team t WHERE (:status is null or t.status = :status) and " +
+    @Query("SELECT t FROM Team t " +
+            "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTime is null or t.startTime > :startTime) and " +
             "(:endTime is null or t.endTime < :endTime)")
-    List<Team> findTeamsByQueryParameters(LocalDateTime startTime, LocalDateTime endTime,
+    Page<Team> findTeamsByQueryParameters(LocalDateTime startTime, LocalDateTime endTime,
                                           TeamStatus status, TeamLocation location, Pageable pageable);
 
-    Page<Team> findAllByStatus(TeamStatus status, Pageable pageable);
+    @Query("SELECT DISTINCT t FROM Team t " +
+            "JOIN t.members m JOIN m.user u " +
+            "WHERE (:status is null or t.status = :status) and " +
+            "(:location is null or t.location = :location) and " +
+            "(:startTime is null or t.startTime > :startTime) and " +
+            "(:endTime is null or t.endTime < :endTime) and " +
+            ":userNickname = u.nickname ")
+    Page<Team> findTeamsByUserNickname(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
+                                       TeamLocation location, String userNickname, Pageable pageable);
 }

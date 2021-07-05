@@ -62,13 +62,29 @@
             </tbody>
         </table>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <nav th:with="
+                  maxPage=${5},
+                  start=${(teams.number/maxPage)*maxPage + 1},
+                  end=(${(teams.totalPages == 0) ? 1 : (start + (maxPage - 1) < teams.totalPages ? start + (maxPage - 1) : teams.totalPages)})"
+             aria-label="Page navigation">
+            <ul class=" pagination justify-content-center">
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/list_myteam?(offset=0)}" th:text="'<<'"></a>
+                </li>
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/list_myteam?(offset=${start - 2})}" th:text="'<'"></a>
+                </li>
+                <li class="page-item"
+                    th:each="offset: ${#numbers.sequence(start, end)}"
+                    th:classappend="${offset == teams.number + 1} ? 'active'">
+                    <a class="page-link" th:href="@{/list_myteam?(offset=${offset - 1})}" th:text="${offset}"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/list_myteam?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/list_myteam?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                </li>
             </ul>
         </nav>
     </div>
