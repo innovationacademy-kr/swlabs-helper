@@ -14,7 +14,8 @@
         <div class="row">
             <div class="col">
                 <button type="button" class="btn btn-primary" onclick="location.href='/list_team'">모든 팀</button>
-                <button type="button" class="btn btn-outline-primary" onclick="location.href='/list_myteam'">내가 속한 팀</button>
+                <button type="button" class="btn btn-outline-primary" onclick="location.href='/list_myteam'">내가 속한 팀
+                </button>
             </div>
         </div>
     </div>
@@ -43,6 +44,7 @@
                     <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
                     <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
                     <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                    <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
                 </td>
                 <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
                 <td>
@@ -55,9 +57,12 @@
                 <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
                 <td>
                     <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
-                    <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}" th:text="${team.getNicknameByMentor()}">멘토</span>
+                    <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
+                          th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
-                <td><button type="button" class="btn btn-primary">참여하기</button></td>
+                <td>
+                    <button type="button" class="btn btn-primary">참여하기</button>
+                </td>
             </tr>
             </tbody>
         </table>

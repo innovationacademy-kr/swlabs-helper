@@ -32,6 +32,7 @@
                     <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
                     <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
                     <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                    <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
                 </td>
                 <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
