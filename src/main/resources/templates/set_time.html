@@ -53,7 +53,7 @@
                                         <option value="GAEPO">개포</option>
                                         <option value="SEOCHO">서초</option>
                                         <option value="ONLINE">온라인</option>
-                                        <option value="ETC">상관없음</option>
+                                        <option value="NONE">상관없음</option>
                                     </select>
                                 </div>
                             </div>
@@ -243,64 +243,9 @@
             }
         });
 
+        /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
         $('#datepicker').next().attr("role", "icon");
 
-        /* form submit 사용 시 적용할 것 */
-        /*
-        window.onload = function () {
-            $('#create_team_form').submit(function (e) {
-                e.preventDefault()
-                const form = document.getElementById('create_team_form');
-                if (form.checkValidity() == false) {
-                    form.classList.add("was-validated");
-                    return;
-                }
-                const projectName = $('#project_name option:selected').text();
-                const location = $('#location option:selected').attr("value");
-                const mexPeopleCount = $('#max_people_count').val();
-                const date = moment($('#datepicker').val());
-                const [start, end] = $('#time_range_slider').val().split(';')
-                const start_date = moment(parseInt(start)).set({
-                    'year': date.year(),
-                    'month': date.month(),
-                    'date': date.date()
-                })
-                const end_date = moment(parseInt(end)).set({
-                    'year': date.year(),
-                    'month': date.month(),
-                    'date': date.date()
-                })
-
-                $.ajax({
-                        type: "POST",
-                        url: "./api/v1/team",
-                        data: JSON.stringify({
-                            startTime: start_date.format("YYYY-MM-DDTHH:mm"),
-                            endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                            location: location,
-                            maxMemberCount: parseInt(mexPeopleCount),
-                            projectName: projectName
-                        }),
-                        dataType: "JSON",
-                        contentType: 'application/json',
-                        success: (data) => {
-                            console.log(data);
-                            if (data.statusCode != 200) {
-                                alert("등록을 실패했습니다.\n" + data.message);
-                            } else {
-                                alert("등록되었습니다.")
-                                window.location.href = '/';
-                            }
-                        },
-                        error: (request, status, error) => {
-                            alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
-                                + request.responseText + "\nerror:" + error);
-                        }
-                    }
-                )
-            })
-        }
-        */
         function submit_team() {
             const form = document.getElementById('create_team_form');
             if (form.checkValidity() == false) {
@@ -308,13 +253,7 @@
                 return;
             }
             const projectName = $('#project_name option:selected').text();
-            const location = function () {
-                const select_loc = $('#location option:selected').attr("value");
-                if (select_loc == "ETC")
-                    return null
-                else
-                    return select_loc;
-            }
+            const location = $('#location option:selected').attr("value");
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());
             const [start, end] = $('#time_range_slider').val().split(';')
@@ -335,7 +274,7 @@
                     data: JSON.stringify({
                         startTime: start_date.format("YYYY-MM-DDTHH:mm"),
                         endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                        location: location(),
+                        location: location,
                         maxMemberCount: parseInt(mexPeopleCount),
                         projectName: projectName
                     }),
