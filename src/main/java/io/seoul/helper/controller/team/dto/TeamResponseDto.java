@@ -30,7 +30,7 @@ public class TeamResponseDto {
         this.teamId = team.getId();
         this.projectName = team.getProject().getName();
         this.maxMemberCount = team.getMaxMemberCount();
-        this.currentMemberCount = team.getMaxMemberCount() - team.getMembers().size();
+        this.currentMemberCount = (long) team.getMembers().size();
         this.status = team.getStatus();
         this.location = team.getLocation();
         this.startTime = team.getStartTime();

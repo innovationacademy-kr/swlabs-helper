@@ -3,11 +3,145 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default_layout.html" th:with="currentPage='index'">
-    <head>
-        <title>Home</title>
-    </head>
+<head>
+    <title>Home</title>
+</head>
 
-    <div layout:fragment="custom-content">
-        <h2> hello world! </h2>
+<div layout:fragment="custom-content">
+    <div th:if="${user == null}">
+        <!-- Guest Mode -->
+        <div class="p-3 mt-3 border rounded bg-dark bg-gradient">
+            <div>
+                <h2 class="text-light">42 Helper에 오신것을 환영합니다.</h2>
+                <p class="text-light">42 Helper는 42 Seoul 카뎃들의 활발한 동료학습을 지원하기 위한 공간입니다.<br/>
+                    지금 42에 로그인 하면 아래의 멘토링 팀에 참여할 수 있습니다!</p>
+            </div>
+        </div>
+        <hr/>
+        <h3>참여를 기다리고 있는 팀</h3>
+        <div class="list-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">프로젝트 명칭</th>
+                    <th scope="col">장소</th>
+                    <th scope="col">희망 일자</th>
+                    <th scope="col">희망 시간</th>
+                    <th scope="col">총 모집 인원</th>
+                    <th scope="col">현재 인원</th>
+                    <th scope="col">남은 인원</th>
+                    <th scope="col">담당 멘토</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="team : ${teams}">
+                    <th scope="row" th:text="${team.teamId}">ID</th>
+                    <td th:text="${team.projectName}">ProjectName</td>
+                    <td>
+                        <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
+                        <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
+                        <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                        <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
+                    </td>
+                    <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
+                    <td>
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                        ~
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </td>
+                    <td th:text="${team.maxMemberCount}">3</td>
+                    <td th:text="${team.currentMemberCount}">2</td>
+                    <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
+                    <td>
+                        <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
+                        <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
+                              th:text="${team.getNicknameByMentor()}">멘토</span>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
     </div>
+    <div th:if="${user != null}">
+        <!-- Login Mode -->
+        <h3>나의 팀</h3>
+        <div class="p-3 mt-3 border rounded bg-secondary bg-gradient">
+            <!--                <div class="d-flex flex-wrap">-->
+            <div class="row">
+
+
+                <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 card m-3">
+                    <div class="card-body text-center">
+                        <h5 th:text="${team.projectName}" class="card-title">Project Title</h5>
+                        <h6 th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"
+                            class="card-subtitle mb-2 text-muted">2021/07/04</h6>
+                        <div class="mt-2">
+                            <p class="card-text">
+                                <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
+                                <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
+                                <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                                <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
+                                / <span th:text="${team.currentMemberCount}">현재인원</span> 명
+                            </p>
+                            <button type="button" class="btn btn-primary">상세 보기</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <hr/>
+        <h3>현재 멘토링 대기중인 모든 팀</h3>
+        <div class="list-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">프로젝트 명칭</th>
+                    <th scope="col">장소</th>
+                    <th scope="col">희망 일자</th>
+                    <th scope="col">희망 시간</th>
+                    <th scope="col">총 모집 인원</th>
+                    <th scope="col">현재 인원</th>
+                    <th scope="col">남은 인원</th>
+                    <th scope="col">담당 멘토</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="team : ${allTeams}">
+                    <th scope="row" th:text="${team.teamId}">ID</th>
+                    <td th:text="${team.projectName}">ProjectName</td>
+                    <td>
+                        <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
+                        <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
+                        <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
+                        <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
+                    </td>
+                    <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
+                    <td>
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                        ~
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </td>
+                    <td th:text="${team.maxMemberCount}">3</td>
+                    <td th:text="${team.currentMemberCount}">2</td>
+                    <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
+                    <td>
+                        <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
+                        <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
+                              th:text="${team.getNicknameByMentor()}">멘토</span>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</div>
 </html>

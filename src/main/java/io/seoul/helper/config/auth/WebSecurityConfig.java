@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/**")
                 .permitAll()
-                .antMatchers("/api/v1/**").hasRole(Role.USER.name())    //해당 권한을 가진 유저만 사용 가능
+                .antMatchers("/api/v1/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutSuccessUrl("/") //logout에 대한 설정부분

@@ -1,6 +1,5 @@
 package io.seoul.helper.controller.team.dto;
 
-import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.TeamLocation;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class TeamUpdateRequestDto {
-    private MemberRole memberRole;
     @DateTimeFormat
     private LocalDateTime startTime;
     @DateTimeFormat

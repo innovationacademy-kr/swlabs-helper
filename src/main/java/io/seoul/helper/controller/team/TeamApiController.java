@@ -10,10 +10,9 @@ import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
 import io.seoul.helper.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,28 +21,40 @@ public class TeamApiController {
     TeamService teamService;
 
     @PostMapping(value = "/api/v1/team")
-    public Long create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
+    public ResultResponseDto create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
+        TeamResponseDto data;
         try {
-            return teamService.createNewTeamWish(user, requestDto);
+            data = teamService.createNewTeamWish(user, requestDto);
         } catch (Exception e) {
             log.error("failed to create new teamWish : " + e.getMessage() + "\n\n" + e.getCause());
-            return -1L;
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
         }
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OK")
+                .data(data)
+                .build();
     }
 
     @GetMapping(value = "/api/v1/teams")
     public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) {
         try {
-            List<TeamResponseDto> teams = teamService.findTeams(requestDto);
+            Page<TeamResponseDto> teams = teamService.findTeams(requestDto);
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.OK.value())
-                    .count(teams == null ? 0 : teams.size())
+                    .message("OK")
                     .data(teams)
                     .build();
         } catch (Exception e) {
             log.error("fail to find team list" + e.getMessage());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null)
                     .build();
         }
     }
@@ -60,13 +71,13 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
+                    .message(e.getMessage())
                     .data(e.getMessage())
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(1)
+                .message("OK")
                 .data(data)
                 .build();
     }
@@ -81,14 +92,13 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
+                .message("OK")
                 .data(null)
                 .build();
     }
@@ -102,14 +112,13 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
+                .message("OK")
                 .data(null)
                 .build();
     }
@@ -123,14 +132,13 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .count(0)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
-                .count(0)
+                .message("OK")
                 .data(null)
                 .build();
     }
