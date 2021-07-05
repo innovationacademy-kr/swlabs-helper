@@ -46,12 +46,15 @@ public class TeamApiController {
             Page<TeamResponseDto> teams = teamService.findTeams(requestDto);
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.OK.value())
+                    .message("OK")
                     .data(teams)
                     .build();
         } catch (Exception e) {
             log.error("fail to find team list" + e.getMessage());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null)
                     .build();
         }
     }
@@ -68,11 +71,13 @@ public class TeamApiController {
             log.error(e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
                     .data(e.getMessage())
                     .build();
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
+                .message("OK")
                 .data(data)
                 .build();
     }
@@ -93,6 +98,7 @@ public class TeamApiController {
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
+                .message("OK")
                 .data(null)
                 .build();
     }
@@ -112,6 +118,7 @@ public class TeamApiController {
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
+                .message("OK")
                 .data(null)
                 .build();
     }
@@ -131,6 +138,7 @@ public class TeamApiController {
         }
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
+                .message("OK")
                 .data(null)
                 .build();
     }
