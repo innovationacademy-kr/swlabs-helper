@@ -36,7 +36,7 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label for="project_name" class="form-label">프로젝트 명칭</label>
-                                    <select th:name="test" class="form-select" id="project_name" required>
+                                    <select class="form-select" id="project_name" required>
                                         <option selected disabled value="">프로젝트 선택하기</option>
                                         <option th:each="project : ${projects}"
                                                 th:value="${project.id}"
@@ -242,6 +242,7 @@
             }
         });
 
+        /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
         $('#datepicker').next().attr("role", "icon");
 
         function submit_team() {
@@ -251,7 +252,7 @@
                 return;
             }
             const projectId = $('#project_name option:selected').attr("value");
-            const location = $('#location option:selected').val();
+            const location = $('#location option:selected').attr("value");
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());
             const [start, end] = $('#time_range_slider').val().split(';')

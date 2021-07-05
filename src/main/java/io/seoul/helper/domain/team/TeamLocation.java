@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum TeamLocation {
     GAEPO(0L, "LOCATION_GAEPO", "개포동"),
     SEOCHO(1L, "LOCATION_SEOCHO", "서초동"),
-    ONLINE(2L, "LOCATION_ONLINE", "온라인");
+    ONLINE(2L, "LOCATION_ONLINE", "온라인"),
+    NONE(3L, "LOCATION_NONE", "상관없음");
 
     private final Long id;
     private final String key;
