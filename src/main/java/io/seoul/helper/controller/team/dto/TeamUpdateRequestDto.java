@@ -16,16 +16,16 @@ public class TeamUpdateRequestDto {
     @DateTimeFormat
     private LocalDateTime endTime;
     private TeamLocation location;
-    private Long maxMemeberCount;
-    private String projectName;
+    private Long maxMemberCount;
+    private Long projectId;
 
     @Builder
     public TeamUpdateRequestDto(LocalDateTime startTime, LocalDateTime endTime, TeamLocation location,
-                                Long maxMemeberCount, String projectName) {
+                                Long maxMemberCount, Long projectId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
-        this.maxMemeberCount = maxMemeberCount;
-        this.projectName = projectName;
+        this.maxMemberCount = maxMemberCount;
+        this.projectId = projectId;
     }
 }

@@ -37,12 +37,8 @@
                 <tbody>
                 <tr th:each="team : ${teams}">
                     <th scope="row" th:text="${team.teamId}">ID</th>
-                    <td th:text="${team.projectName}">ProjectName</td>
-                    <td>
-                        <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
-                        <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
-                        <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
-                    </td>
+                    <td th:text="${team.project.getName()}">ProjectName</td>
+                    <td th:text="${team.location.getName()}"></td>
                     <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                     <td>
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
@@ -74,7 +70,7 @@
 
                 <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 card m-3">
                     <div class="card-body text-center">
-                        <h5 th:text="${team.projectName}" class="card-title">Project Title</h5>
+                        <h5 th:text="${team.project.getName()}" class="card-title">Project Title</h5>
                         <h6 th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"
                             class="card-subtitle mb-2 text-muted">2021/07/04</h6>
                         <div class="mt-2">
@@ -107,7 +103,7 @@
                 <tbody>
                 <tr th:each="team : ${allTeams}">
                     <th scope="row" th:text="${team.teamId}">ID</th>
-                    <td th:text="${team.projectName}">ProjectName</td>
+                    <td th:text="${team.project.getName()}">ProjectName</td>
                     <td th:text="${team.location.getName()}"></td>
                     <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                     <td>

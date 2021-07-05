@@ -35,12 +35,12 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="project_name" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="project_name" required>
+                                    <label for="select_project" class="form-label">프로젝트 명칭</label>
+                                    <select class="form-select" id="select_project" required>
                                         <option selected disabled value="">프로젝트 선택하기</option>
-                                        <option th:each="project : ${projects}"
-                                                th:value="${project.id}"
-                                                th:utext="${project.name}"></option>
+                                        <option th:each="proj : ${projects}"
+                                                th:value="${proj.id}"
+                                                th:utext="${proj.name}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -251,7 +251,7 @@
                 form.classList.add("was-validated");
                 return;
             }
-            const projectId = $('#project_name option:selected').attr("value");
+            const projectId = $('#select_project option:selected').attr("value");
             const location = $('#location option:selected').attr("value");
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());

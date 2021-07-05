@@ -25,25 +25,25 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="project_name" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="project_name" required>
-                                        <option selected disabled value="">프로젝트 선택하기</option>
-                                        <option value="1">ft_printf</option>
-                                        <option value="2">get_next_line</option>
-                                        <option value="3">ft_libft</option>
+                                    <label for="select_project" class="form-label">프로젝트 명칭</label>
+                                    <select class="form-select" id="select_project" required disabled>
+                                        <option selected disabled="disabled" value="">프로젝트 선택하기</option>
+                                        <option th:each="proj : ${projects}"
+                                                th:value="${proj.id}"
+                                                th:utext="${proj.name}"></option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="location" class="form-label">장소</label>
-                                    <select class="form-select" id="location" required>
-                                        <option selected disabled value="">장소 선택하기</option>
-                                        <option value="GAEPO">개포</option>
-                                        <option value="SEOCHO">서초</option>
-                                        <option value="ONLINE">온라인</option>
-                                        <option value="ETC">상관없음</option>
+                                    <label for="select_location" class="form-label">장소</label>
+                                    <select class="form-select" id="select_location" required disabled>
+                                        <option selected value="">장소 선택하기</option>
+                                        <option th:each="loc : ${locations}"
+                                                th:value="${loc.id}"
+                                                th:utext="${loc.name}"></option>
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -51,29 +51,23 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="max_people_count" class="form-label">참여 인원</label>
-                                    <input class="form-control" id="max_people_count" th:type="number" th:min="2"
-                                           required>
+                                    <label for="input_max_member_count" class="form-label">참여 인원</label>
+                                    <input class="form-control" id="input_max_member_count" th:type="number" th:min="2"
+                                           required readonly>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="datepicker" class="form-label">날짜</label>
-                                    <input id="datepicker" class="form-control" required/>
+                                    <label for="input_datepicker" class="form-label">날짜</label>
+                                    <input id="input_datepicker" class="form-control" required readonly/>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="demo__body py-3">
-                                <input id="time_range_slider" type="text">
+                                <input id="input_time_range_slider" type="text">
                             </div>
                         </div>
-                        <!--
-                        <div class="row">
-                            <div class="me-auto"></div>
-                            <button class="btn btn-primary" type="submit">완료</button>
-                        </div>
-                        -->
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -102,7 +96,7 @@
             <tbody>
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">팀 아이디</th>
-                <td th:text="${team.projectName}">프로젝트 명칭</td>
+                <td th:text="${team.project.getName()}">프로젝트 명칭</td>
                 <td th:text="${team.location.getName()}"></td>
                 <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
@@ -121,7 +115,8 @@
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
-                    <button type="button" class="btn btn-primary" th:onclick="onclick_detail([[${team}]])">
+                    <button type="button" class="btn btn-primary"
+                            th:onclick="onclick_detail([[${team}]], [[${team.location.getId()}]])">
                         세부사항 확인
                     </button>
                 </td>
@@ -183,11 +178,10 @@
         }
 
 
-        function onclick_detail(team) {
-            console.log(team);
+        function onclick_detail(team, loc_id) {
             var detail_modal = new bootstrap.Modal(document.getElementById('team_detail_modal'))
             detail_modal.show();
-            $("#time_range_slider").ionRangeSlider({
+            $("#input_time_range_slider").ionRangeSlider({
                 skin: "round",
                 type: "double",
                 grid: true,
@@ -199,6 +193,18 @@
                 prettify: tsToTime
             }).addClass("irs-hidden-input");
 
+            const selected_opt_project = $("#select_project option[value='" + team.project.id + "']");
+            selected_opt_project.attr("selected", "selected");
+
+            const selected_opt_location = $("#select_location option[value='" + loc_id + "']");
+            selected_opt_location.attr("selected", "selected");
+            if (loc_id == 0) { // Enum TeamLocation NONE id
+                $('#select_location').removeAttr('disabled');
+            }
+
+            $('#input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
+            $('#input_max_member_count').val(team.maxMemberCount);
+            $('#create_team_form').attr('team_id', team.teamId);
         }
 
         function submit_team() {
@@ -207,17 +213,11 @@
                 form.classList.add("was-validated");
                 return;
             }
-            const projectName = $('#project_name option:selected').text();
-            const location = function () {
-                const select_loc = $('#location option:selected').attr("value");
-                if (select_loc == "ETC")
-                    return null
-                else
-                    return select_loc;
-            }
-            const mexPeopleCount = $('#max_people_count').val();
-            const date = moment($('#datepicker').val());
-            const [start, end] = $('#time_range_slider').val().split(';')
+            const projectId = $('#select_project option:selected').attr("value");
+            const location = $('#select_location option:selected').attr("value");
+            const maxMemberCount = $('#input_max_member_count').val();
+            const date = moment($('#input_datepicker').val());
+            const [start, end] = $('#input_time_range_slider').val().split(';')
             const start_date = moment(parseInt(start)).set({
                 'year': date.year(),
                 'month': date.month(),
@@ -230,23 +230,23 @@
             })
 
             $.ajax({
-                    type: "POST",
-                    url: "./api/v1/team",
+                    type: "PUT",
+                    url: "./api/v1/team/" + $('#create_team_form').attr('team_id'),
                     data: JSON.stringify({
                         startTime: start_date.format("YYYY-MM-DDTHH:mm"),
                         endTime: end_date.format("YYYY-MM-DDTHH:mm"),
-                        location: location(),
-                        maxMemberCount: parseInt(mexPeopleCount),
-                        projectName: projectName
+                        location: location,
+                        maxMemberCount: parseInt(maxMemberCount),
+                        projectId: projectId
                     }),
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {
                         console.log(data);
                         if (data.statusCode != 200) {
-                            alert("등록을 실패했습니다.\n" + data.message);
+                            alert("팀 생성에 실패했습니다.\n" + data.message);
                         } else {
-                            alert("등록되었습니다.")
+                            alert("팀이 등록되었습니다.")
                             window.location.href = '/';
                         }
                     },

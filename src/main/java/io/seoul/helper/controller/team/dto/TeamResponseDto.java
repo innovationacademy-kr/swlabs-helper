@@ -1,5 +1,6 @@
 package io.seoul.helper.controller.team.dto;
 
+import io.seoul.helper.controller.project.dto.ProjectDto;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamLocation;
@@ -16,7 +17,7 @@ public class TeamResponseDto {
     private Long teamId;
     private Long maxMemberCount;
     private Long currentMemberCount;
-    private String projectName;
+    private ProjectDto project;
 
     private TeamStatus status;
     private TeamLocation location;
@@ -28,7 +29,10 @@ public class TeamResponseDto {
 
     public TeamResponseDto(Team team) {
         this.teamId = team.getId();
-        this.projectName = team.getProject().getName();
+        this.project = ProjectDto.builder()
+                .id(team.getProject().getId())
+                .name(team.getProject().getName())
+                .build();
         this.maxMemberCount = team.getMaxMemberCount();
         this.currentMemberCount = (long) team.getMembers().size();
         this.status = team.getStatus();

@@ -39,7 +39,7 @@
             <tbody>
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">ID</th>
-                <td th:text="${team.projectName}">ProjectName</td>
+                <td th:text="${team.project.getName()}">ProjectName</td>
                 <td th:text="${team.location.getName()}"></td>
                 <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
                 <td>

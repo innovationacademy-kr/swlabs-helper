@@ -41,6 +41,8 @@ public class PageController {
 
             model.addAttribute("userNickname", user.getNickname());
             model.addAttribute("user", user);
+            model.addAttribute("projects", projectService.findAllProjects());
+            model.addAttribute("locations", teamService.findAllLocation());
         }
         return "index";
     }
@@ -54,6 +56,8 @@ public class PageController {
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("locations", teamService.findAllLocation());
 
         return "list_team";
     }
@@ -68,6 +72,8 @@ public class PageController {
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("locations", teamService.findAllLocation());
 
         return "list_myteam";
     }
@@ -96,6 +102,8 @@ public class PageController {
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("locations", teamService.findAllLocation());
 
         return "create_team";
     }

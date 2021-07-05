@@ -64,17 +64,19 @@ public class TeamService {
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Team team = findTeam(teamId);
-        Project project = findProject(requestDto.getProjectName());
-        Member member = memberRepo.findMemberByTeamAndUser(team, user)
-                .orElseThrow(() -> new Exception("Not This Team Member"));
-
-        if (member.getRole() != MemberRole.MENTEE || team.getStatus() != TeamStatus.WAITING)
-            throw new Exception("This team cannot change");
-        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
+        Project project = findProject(requestDto.getProjectId());
+        if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
+            throw new Exception("Not valid member");
+        checkTimeValid(team.getStartTime(), team.getEndTime(), requestDto.getStartTime(), requestDto.getEndTime());
         team.updateTeam(requestDto.getStartTime(), requestDto.getEndTime(),
-                requestDto.getMaxMemeberCount(), requestDto.getLocation(), project);
-        teamRepo.save(team);
-
+                requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
+        team = teamRepo.save(team);
+        memberRepo.save(Member.builder()
+                .team(team)
+                .user(user)
+                .role(MemberRole.MENTOR)
+                .creator(false)
+                .build());
         return new TeamResponseDto(team);
     }
 
@@ -164,6 +166,13 @@ public class TeamService {
         if (startTime != null && endTime != null &&
                 (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
             throw new IllegalArgumentException("Invalid Time");
+    }
+
+    private void checkTimeValid(LocalDateTime preStartTime, LocalDateTime preEndTime, LocalDateTime newStartTime, LocalDateTime newEndTime) throws Exception {
+        if (newStartTime.isAfter(newEndTime) || newStartTime.isEqual(newEndTime))
+            throw new IllegalArgumentException("Invalid Time");
+        if (preStartTime.isAfter(newStartTime) || preEndTime.isBefore(newEndTime))
+            throw new IllegalArgumentException("Out of valid time bound");
     }
 
     public List<TeamLocationDto> findAllLocation() {
