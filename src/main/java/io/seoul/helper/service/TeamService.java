@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TeamService {
@@ -121,21 +123,37 @@ public class TeamService {
     @Transactional
     public Page<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         Page<Team> teams;
-        String nickName = requestDto.getUserNickname();
         Pageable pageable = PageRequest.of(
                 requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
 
-        if (nickName == null) {
+        if (requestDto.getNickname() != null) {
+            List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname());
+
+            teams = teamRepo.findTeamsByTeamIdIn(
+                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                    requestDto.getLocation(), teamIds, pageable);
+        } else if (requestDto.getExcludeNickname() != null) {
+            List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname());
+
+            teams = teamRepo.findTeamsByTeamIdNotIn(
+                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                    requestDto.getLocation(), teamIds, pageable);
+        } else {
             teams = teamRepo.findTeamsByQueryParameters(
                     requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
                     requestDto.getLocation(), pageable);
-        } else {
-            teams = teamRepo.findTeamsByUserNickname(
-                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                    requestDto.getLocation(), nickName, pageable);
         }
 
         return teams.map(team -> new TeamResponseDto(team));
+    }
+
+    private List<Long> findTeamIdsByNickname(String nickName) {
+        User user = userRepo.getUserByNickname(nickName);
+        List<Member> members = memberRepo.findMembersByUser(user);
+
+        return members.stream()
+                .map(m -> m.getTeam().getId())
+                .collect(Collectors.toList());
     }
 
     private User findUser(SessionUser currentUser) throws Exception {
