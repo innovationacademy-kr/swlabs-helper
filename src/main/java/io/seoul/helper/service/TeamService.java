@@ -93,6 +93,7 @@ public class TeamService {
         Member member = Member.builder()
                 .team(team)
                 .user(user)
+                .creator(false)
                 .role(MemberRole.MENTEE)
                 .build();
         memberRepo.save(member);
