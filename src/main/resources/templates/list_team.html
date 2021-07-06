@@ -41,7 +41,7 @@
                 <th scope="row" th:text="${team.teamId}">ID</th>
                 <td th:text="${team.project.getName()}">ProjectName</td>
                 <td th:text="${team.location.getName()}"></td>
-                <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
+                <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                 <td>
                     <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                     ~
@@ -102,7 +102,6 @@
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {
-                        console.log(data);
                         if (data.statusCode != 200) {
                             alert("참여에 실패했습니다.\n" + data.message);
                         } else {

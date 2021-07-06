@@ -117,7 +117,7 @@
                 <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
                     <div th:if="${team.startTime} AND ${team.endTime}">
-                        <span th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</span>
+                        <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</span>
                     </div>
                     <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
@@ -275,7 +275,6 @@
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {
-                        console.log(data);
                         if (data.statusCode != 200) {
                             alert("등록을 실패했습니다.\n" + data.message);
                         } else {
