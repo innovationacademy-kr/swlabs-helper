@@ -39,14 +39,9 @@
             <tbody>
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">ID</th>
-                <td th:text="${team.projectName}">ProjectName</td>
-                <td>
-                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
-                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
-                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
-                    <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
-                </td>
-                <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
+                <td th:text="${team.project.getName()}">ProjectName</td>
+                <td th:text="${team.location.getName()}"></td>
+                <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                 <td>
                     <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                     ~
@@ -61,7 +56,7 @@
                           th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary">참여하기</button>
+                    <button type="button" class="btn btn-primary" th:onclick="onclick_join([[${team}]])">참여하기</button>
                 </td>
             </tr>
             </tbody>
@@ -94,5 +89,33 @@
         </nav>
     </div>
 
+</div>
+<div layout:fragment="custom-footer">
+    <!--jQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function onclick_join(team) {
+            $.ajax({
+                    type: "POST",
+                    url: "./api/v1/team/" + team.teamId + "/join",
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert("참여에 실패했습니다.\n" + data.message);
+                        } else {
+                            alert("참여되었습니다.")
+                            window.location.href = '/list_team';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("참여에 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
 </div>
 </html>

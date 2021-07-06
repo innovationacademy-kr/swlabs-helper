@@ -20,16 +20,16 @@ public class TeamCreateRequestDto {
     private LocalDateTime endTime;
     private TeamLocation location;
     private Long maxMemberCount;
-    private String projectName;
+    private Long projectId;
 
     @Builder
     public TeamCreateRequestDto(LocalDateTime startTime, LocalDateTime endTime, TeamLocation location,
-                                Long maxMemberCount, String projectName) {
+                                Long maxMemberCount, Long projectId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.maxMemberCount = maxMemberCount;
-        this.projectName = projectName;
+        this.projectId = projectId;
     }
 
     public Team toEntity(Project project) {

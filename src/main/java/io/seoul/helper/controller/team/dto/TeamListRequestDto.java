@@ -3,17 +3,19 @@ package io.seoul.helper.controller.team.dto;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
-import java.time.LocalDateTime;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
+
 @Data
 public class TeamListRequestDto {
-
     private int offset;
     private int limit;
-    private String userNickname;
+    private String nickname;
+    private String excludeNickname;
     private MemberRole memberRole;
+    private boolean isCreateor;
     private TeamStatus status;
     private TeamLocation location;
 

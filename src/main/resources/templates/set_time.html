@@ -35,12 +35,12 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="project_name" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="project_name" required>
+                                    <label for="select_project" class="form-label">프로젝트 명칭</label>
+                                    <select class="form-select" id="select_project" required>
                                         <option selected disabled value="">프로젝트 선택하기</option>
-                                        <option value="1">ft_printf</option>
-                                        <option value="2">get_next_line</option>
-                                        <option value="3">ft_libft</option>
+                                        <option th:each="proj : ${projects}"
+                                                th:value="${proj.id}"
+                                                th:utext="${proj.name}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -50,10 +50,9 @@
                                     <label for="location" class="form-label">장소</label>
                                     <select class="form-select" id="location" required>
                                         <option selected disabled value="">장소 선택하기</option>
-                                        <option value="GAEPO">개포</option>
-                                        <option value="SEOCHO">서초</option>
-                                        <option value="ONLINE">온라인</option>
-                                        <option value="NONE">상관없음</option>
+                                        <option th:each="loc : ${locations}"
+                                                th:value="${loc.id}"
+                                                th:utext="${loc.name}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -96,6 +95,7 @@
 
     <!-- list -->
     <div class="list-container">
+        <h2>멘티 목록</h2>
         <table class="table">
             <thead>
             <tr>
@@ -110,89 +110,59 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
+            <tr th:each="team : ${teams}">
+                <th scope="row" th:text="${team.teamId}">팀 아이디</th>
+                <td th:text="${team.project.getName()}">프로젝트 명칭</td>
+                <td th:text="${team.location.getName()}"></td>
+                <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                        ~
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td th:text="${team.getNicknameByMentee()}"></td>
+                <td>
+                    <button type="button" class="btn btn-danger"
+                            th:onclick="onclick_delete([[${team}]])">
+                        삭제
+                    </button>
                 </td>
             </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-dark" disabled>팀매칭 완료</button>
-                </td>
-            </tr>
-
             </tbody>
         </table>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <nav th:with="
+                  maxPage=${5},
+                  start=${(teams.number/maxPage)*maxPage + 1},
+                  end=(${(teams.totalPages == 0) ? 1 : (start + (maxPage - 1) < teams.totalPages ? start + (maxPage - 1) : teams.totalPages)})"
+             aria-label="Page navigation">
+            <ul class=" pagination justify-content-center">
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=0)}" th:text="'<<'"></a>
+                </li>
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start - 2})}" th:text="'<'"></a>
+                </li>
+                <li class="page-item"
+                    th:each="offset: ${#numbers.sequence(start, end)}"
+                    th:classappend="${offset == teams.number + 1} ? 'active'">
+                    <a class="page-link" th:href="@{/create_team?(offset=${offset - 1})}" th:text="${offset}"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -226,8 +196,8 @@
             skin: "round",
             type: "double",
             grid: true,
-            min: timeToTS(new Date(2020, 1, 1, 0, 0, 0)),
-            max: timeToTS(new Date(2020, 1, 1, 24, 0, 0)),
+            min: timeToTS(new Date(2020, 1, 1, 0, 0, 1)),
+            max: timeToTS(new Date(2020, 1, 2, 24, 0, 0)),
             from: timeToTS(new Date(2020, 1, 1, 9, 0, 0)),
             to: timeToTS(new Date(2020, 1, 1, 18, 0, 0)),
             step: 900000,
@@ -246,13 +216,37 @@
         /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
         $('#datepicker').next().attr("role", "icon");
 
+        function onclick_delete(team) {
+            $.ajax({
+                    type: "DELETE",
+                    url: "./api/v1/team/" + team.teamId,
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        console.log(data);
+                        if (data.statusCode != 200) {
+                            alert("삭제했습니다.\n" + data.message);
+                        } else {
+                            alert("삭제되었습니다.")
+                            window.location.href = '/set_time';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+
         function submit_team() {
             const form = document.getElementById('create_team_form');
             if (form.checkValidity() == false) {
                 form.classList.add("was-validated");
                 return;
             }
-            const projectName = $('#project_name option:selected').text();
+            const projectId = $('#select_project option:selected').attr("value");
             const location = $('#location option:selected').attr("value");
             const mexPeopleCount = $('#max_people_count').val();
             const date = moment($('#datepicker').val());
@@ -276,17 +270,16 @@
                         endTime: end_date.format("YYYY-MM-DDTHH:mm"),
                         location: location,
                         maxMemberCount: parseInt(mexPeopleCount),
-                        projectName: projectName
+                        projectId: projectId
                     }),
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {
-                        console.log(data);
                         if (data.statusCode != 200) {
                             alert("등록을 실패했습니다.\n" + data.message);
                         } else {
                             alert("등록되었습니다.")
-                            window.location.href = '/';
+                            window.location.href = '/set_time';
                         }
                     },
                     error: (request, status, error) => {
