@@ -27,7 +27,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "(:location is null or t.location = :location) and " +
             "(:startTime is null or t.startTime > :startTime) and " +
             "(:endTime is null or t.endTime < :endTime) and " +
-            ":userNickname = u.nickname ")
+            ":userNickname = u.nickname and " +
+            ":isCreator = m.creator")
     Page<Team> findTeamsByUserNickname(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
-                                       TeamLocation location, String userNickname, Pageable pageable);
+                                       TeamLocation location, String userNickname, Pageable pageable, boolean isCreator);
 }

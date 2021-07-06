@@ -79,11 +79,18 @@ public class PageController {
     }
 
     @GetMapping(value = "/set_time")
-    public String time(Model model, @LoginUser SessionUser user) {
+    public String time(Model model, @LoginUser SessionUser user,
+                       @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         if (user != null) {
             model.addAttribute("userNickname", user.getNickname());
             model.addAttribute("user", user);
         }
+        TeamListRequestDto dto = new TeamListRequestDto();
+        dto.setUserNickname(user.getNickname());
+        dto.setCreateor(true);
+        dto.setOffset(offset);
+        Page<TeamResponseDto> teams = teamService.findTeams(dto);
+        model.addAttribute("teams", teams);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
         return "set_time";

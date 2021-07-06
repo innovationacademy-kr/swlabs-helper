@@ -135,7 +135,7 @@ public class TeamService {
         } else {
             teams = teamRepo.findTeamsByUserNickname(
                     requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                    requestDto.getLocation(), nickName, pageable);
+                    requestDto.getLocation(), nickName, pageable, requestDto.isCreateor());
         }
 
         return teams.map(team -> new TeamResponseDto(team));

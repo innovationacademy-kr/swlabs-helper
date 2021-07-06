@@ -95,6 +95,7 @@
 
     <!-- list -->
     <div class="list-container">
+        <h2>멘티 목록</h2>
         <table class="table">
             <thead>
             <tr>
@@ -109,89 +110,59 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
+            <tr th:each="team : ${teams}">
+                <th scope="row" th:text="${team.teamId}">팀 아이디</th>
+                <td th:text="${team.project.getName()}">프로젝트 명칭</td>
+                <td th:text="${team.location.getName()}"></td>
+                <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td>
+                    <div th:if="${team.startTime} AND ${team.endTime}">
+                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                        ~
+                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </div>
+                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                </td>
+                <td th:text="${team.getNicknameByMentee()}"></td>
+                <td>
+                    <button type="button" class="btn btn-danger"
+                            th:onclick="onclick_delete([[${team}]])">
+                        삭제
+                    </button>
                 </td>
             </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-danger">삭제</button>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Born2beroot</td>
-                <td>개포</td>
-                <td>3</td>
-                <td>6/18</td>
-                <td>13:00 - 15:00</td>
-                <td>hwon</td>
-                <td>
-                    <button type="button" class="btn btn-dark" disabled>팀매칭 완료</button>
-                </td>
-            </tr>
-
             </tbody>
         </table>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        <nav th:with="
+                  maxPage=${5},
+                  start=${(teams.number/maxPage)*maxPage + 1},
+                  end=(${(teams.totalPages == 0) ? 1 : (start + (maxPage - 1) < teams.totalPages ? start + (maxPage - 1) : teams.totalPages)})"
+             aria-label="Page navigation">
+            <ul class=" pagination justify-content-center">
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=0)}" th:text="'<<'"></a>
+                </li>
+                <li th:if="${start > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start - 2})}" th:text="'<'"></a>
+                </li>
+                <li class="page-item"
+                    th:each="offset: ${#numbers.sequence(start, end)}"
+                    th:classappend="${offset == teams.number + 1} ? 'active'">
+                    <a class="page-link" th:href="@{/create_team?(offset=${offset - 1})}" th:text="${offset}"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                </li>
+                <li th:if="${end < teams.totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/create_team?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -245,6 +216,30 @@
         /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
         $('#datepicker').next().attr("role", "icon");
 
+        function onclick_delete(team) {
+            $.ajax({
+                    type: "DELETE",
+                    url: "./api/v1/team/" + team.teamId,
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        console.log(data);
+                        if (data.statusCode != 200) {
+                            alert("삭제했습니다.\n" + data.message);
+                        } else {
+                            alert("삭제되었습니다.")
+                            window.location.href = '/set_time';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+
         function submit_team() {
             const form = document.getElementById('create_team_form');
             if (form.checkValidity() == false) {
@@ -285,7 +280,7 @@
                             alert("등록을 실패했습니다.\n" + data.message);
                         } else {
                             alert("등록되었습니다.")
-                            window.location.href = '/';
+                            window.location.href = '/set_time';
                         }
                     },
                     error: (request, status, error) => {

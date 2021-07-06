@@ -14,6 +14,7 @@ public class TeamListRequestDto {
     private int limit;
     private String userNickname;
     private MemberRole memberRole;
+    private boolean isCreateor;
     private TeamStatus status;
     private TeamLocation location;
 
