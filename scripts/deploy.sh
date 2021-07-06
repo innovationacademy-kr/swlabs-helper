@@ -35,3 +35,5 @@ nohup java -jar $JAR_PATH --spring.config.location=classpath:/application.proper
 sleep 5
 CURRENT_PID=$(pgrep -f $APP_NAME)
 echo ">>>> New PID: $CURRENT_PID"
+
+curl -X POST -H 'Content-type: application/json' --data '{"text":"42Helper-release '$CURRENT_PID' finished!"}' $HELPER42_WEBHOOK
