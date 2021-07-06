@@ -51,7 +51,7 @@ insert into team (id, start_time, end_time, location, max_member_count, status,
 values (6, '2021-07-06 15:00:00', '2021-07-06 16:00:00', 'GAEPO', 3, 'WAITING', 3);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (7, '2021-07-10 13:00:00', '2021-07-10 15:00:00', 'ONLINE', 2, 'READY', 4);
+values (7, '2021-07-10 13:00:00', '2021-07-10 15:00:00', 'ONLINE', 10, 'READY', 4);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
 values (8, '2021-07-10 12:00:00', '2021-07-10 15:00:00', 'ONLINE', 3, 'WAITING', 4);
