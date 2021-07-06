@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class TeamListRequestDto {
-
     private int offset;
     private int limit;
     private String nickname;
     private String excludeNickname;
     private MemberRole memberRole;
+    private boolean isCreateor;
     private TeamStatus status;
     private TeamLocation location;
 

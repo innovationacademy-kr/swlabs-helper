@@ -39,13 +39,8 @@
             <tbody>
             <tr th:each="team : ${teams}">
                 <th scope="row" th:text="${team.teamId}">ID</th>
-                <td th:text="${team.projectName}">ProjectName</td>
-                <td>
-                    <span th:if="${team.location.toString().equals('GAEPO')}">개포</span>
-                    <span th:if="${team.location.toString().equals('SEOCHO')}">서초</span>
-                    <span th:if="${team.location.toString().equals('ONLINE')}">온라인</span>
-                    <span th:if="${team.location.toString().equals('NONE')}">상관없음</span>
-                </td>
+                <td th:text="${team.project.getName()}">ProjectName</td>
+                <td th:text="${team.location.getName()}"></td>
                 <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
                 <td>
                     <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>

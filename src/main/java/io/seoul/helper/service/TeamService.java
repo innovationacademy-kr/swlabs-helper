@@ -1,14 +1,12 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
-import io.seoul.helper.controller.team.dto.TeamListRequestDto;
-import io.seoul.helper.controller.team.dto.TeamResponseDto;
-import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
+import io.seoul.helper.controller.team.dto.*;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.project.Project;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class TeamService {
     @Transactional
     public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
-        Project project = findProject(requestDto.getProjectName());
+        Project project = findProject(requestDto.getProjectId());
         checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
@@ -65,17 +64,19 @@ public class TeamService {
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Team team = findTeam(teamId);
-        Project project = findProject(requestDto.getProjectName());
-        Member member = memberRepo.findMemberByTeamAndUser(team, user)
-                .orElseThrow(() -> new Exception("Not This Team Member"));
-
-        if (member.getRole() != MemberRole.MENTEE || team.getStatus() != TeamStatus.WAITING)
-            throw new Exception("This team cannot change");
-        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
+        Project project = findProject(requestDto.getProjectId());
+        if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
+            throw new Exception("Not valid member");
+        checkTimeValid(team.getStartTime(), team.getEndTime(), requestDto.getStartTime(), requestDto.getEndTime());
         team.updateTeam(requestDto.getStartTime(), requestDto.getEndTime(),
-                requestDto.getMaxMemeberCount(), requestDto.getLocation(), project);
-        teamRepo.save(team);
-
+                requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
+        team = teamRepo.save(team);
+        memberRepo.save(Member.builder()
+                .team(team)
+                .user(user)
+                .role(MemberRole.MENTOR)
+                .creator(false)
+                .build());
         return new TeamResponseDto(team);
     }
 
@@ -127,13 +128,13 @@ public class TeamService {
                 requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
 
         if (requestDto.getNickname() != null) {
-            List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname());
+            List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
 
             teams = teamRepo.findTeamsByTeamIdIn(
                     requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
                     requestDto.getLocation(), teamIds, pageable);
         } else if (requestDto.getExcludeNickname() != null) {
-            List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname());
+            List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
 
             teams = teamRepo.findTeamsByTeamIdNotIn(
                     requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
@@ -143,13 +144,16 @@ public class TeamService {
                     requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
                     requestDto.getLocation(), pageable);
         }
-
         return teams.map(team -> new TeamResponseDto(team));
     }
 
-    private List<Long> findTeamIdsByNickname(String nickName) {
+    private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator) {
         User user = userRepo.getUserByNickname(nickName);
-        List<Member> members = memberRepo.findMembersByUser(user);
+        List<Member> members;
+        if (isCreator)
+            members = memberRepo.findMembersByUserAndCreator(user, true);
+        else
+            members = memberRepo.findMembersByUser(user);
 
         return members.stream()
                 .map(m -> m.getTeam().getId())
@@ -181,5 +185,21 @@ public class TeamService {
         if (startTime != null && endTime != null &&
                 (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
             throw new IllegalArgumentException("Invalid Time");
+    }
+
+    private void checkTimeValid(LocalDateTime preStartTime, LocalDateTime preEndTime, LocalDateTime newStartTime, LocalDateTime newEndTime) throws Exception {
+        if (newStartTime.isAfter(newEndTime) || newStartTime.isEqual(newEndTime))
+            throw new IllegalArgumentException("Invalid Time");
+        if (preStartTime.isAfter(newStartTime) || preEndTime.isBefore(newEndTime))
+            throw new IllegalArgumentException("Out of valid time bound");
+    }
+
+    public List<TeamLocationDto> findAllLocation() {
+        return Arrays.stream(TeamLocation.values()).map((o) -> {
+            return TeamLocationDto.builder()
+                    .id(o.getId())
+                    .name(o.getName())
+                    .build();
+        }).collect(Collectors.toList());
     }
 }
