@@ -1,0 +1,32 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- common title setting-->
+  <title>Error page</title>
+  <th:block th:replace="fragment/head.html :: fragment-head"/>
+  <!--  &lt;!&ndash; use this block if you need other head for page&ndash;&gt;-->
+  <!--  <th:block layout:fragment="custom-head"></th:block>-->
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div
+          class="error-template position-absolute top-50 start-50 translate-middle rounded border border-1 p-2 pb-5 text-center"
+          style="background-color: #000;">
+        <img src="https://http.cat/400" alt="400"/>
+        <div class="error-details">
+          <span class="text-light">페이지를 찾을 수 없거나 권한이 없습니다.</span>
+        </div>
+        <div class="error-actions mt-5">
+          <a href="/" class="btn btn-light btn-lg">
+            <i class="bi bi-house"></i> 첫 화면으로 돌아가기 </a>
+          <a href="https://github.com/innovationacademy-kr/swlabs-helper/issues"
+             class="btn btn-outline-light btn-lg">
+            <i class="bi bi-github"></i> 제보하기 </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
