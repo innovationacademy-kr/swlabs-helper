@@ -15,4 +15,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findMembersByUser(User user);
 
+    List<Member> findMembersByUserAndCreator(User user, boolean isCreator);
 }

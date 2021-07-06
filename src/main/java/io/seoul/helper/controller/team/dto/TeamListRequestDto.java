@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class TeamListRequestDto {
     private int offset;
     private int limit;
-    private String userNickname;
+    private String nickname;
+    private String excludeNickname;
     private MemberRole memberRole;
     private boolean isCreateor;
     private TeamStatus status;

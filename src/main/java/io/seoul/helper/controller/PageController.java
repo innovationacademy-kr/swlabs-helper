@@ -35,7 +35,7 @@ public class PageController {
             model.addAttribute("allTeams", allTeams);
 
             TeamListRequestDto myTeamDto = new TeamListRequestDto();
-            myTeamDto.setUserNickname(user.getNickname());
+            myTeamDto.setNickname(user.getNickname());
             Page<TeamResponseDto> myTeams = teamService.findTeams(myTeamDto);
             model.addAttribute("myTeams", myTeams);
 
@@ -66,7 +66,7 @@ public class PageController {
     public String myTeamList(Model model, @LoginUser SessionUser user,
                              @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         TeamListRequestDto dto = new TeamListRequestDto();
-        dto.setUserNickname(user.getNickname());
+        dto.setNickname(user.getNickname());
         dto.setOffset(offset);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
@@ -86,7 +86,7 @@ public class PageController {
             model.addAttribute("user", user);
         }
         TeamListRequestDto dto = new TeamListRequestDto();
-        dto.setUserNickname(user.getNickname());
+        dto.setNickname(user.getNickname());
         dto.setCreateor(true);
         dto.setOffset(offset);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
@@ -105,6 +105,7 @@ public class PageController {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setStatus(status);
         dto.setOffset(offset);
+        dto.setExcludeNickname(user.getNickname());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
