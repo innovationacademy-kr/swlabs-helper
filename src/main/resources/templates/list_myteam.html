@@ -55,7 +55,7 @@
                           th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary">참여하기</button>
+                    <button type="button" class="btn btn-danger" th:onclick="onclick_out([[${team}]])">탈퇴</button>
                 </td>
             </tr>
             </tbody>
@@ -88,5 +88,33 @@
         </nav>
     </div>
 
+</div>
+<div layout:fragment="custom-footer">
+    <!--jQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function onclick_out(team) {
+            $.ajax({
+                    type: "DELETE",
+                    url: "./api/v1/team/" + team.teamId + "/out",
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert("탈퇴에 실패했습니다.\n" + data.message);
+                        } else {
+                            alert("탍퇴되었습니다.")
+                            window.location.href = '/list_myteam';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("탈퇴에 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
 </div>
 </html>

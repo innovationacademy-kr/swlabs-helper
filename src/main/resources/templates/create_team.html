@@ -166,6 +166,7 @@
     <script>
         var lang = "ko-KR";
         var year = 2018;
+        var locations = "[[${locations}]]"
 
         function timeToTS(date) {
             return date.valueOf();
@@ -242,7 +243,6 @@
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {
-                        console.log(data);
                         if (data.statusCode != 200) {
                             alert("팀 생성에 실패했습니다.\n" + data.message);
                         } else {
