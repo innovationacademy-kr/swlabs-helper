@@ -41,7 +41,7 @@
                 <th scope="row" th:text="${team.teamId}">ID</th>
                 <td th:text="${team.project.getName()}">ProjectName</td>
                 <td th:text="${team.location.getName()}"></td>
-                <td th:text="${#temporals.format(team.startTime, 'dd/MM')}">날짜</td>
+                <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                 <td>
                     <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                     ~
