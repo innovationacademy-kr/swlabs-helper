@@ -60,21 +60,22 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="max_people_count" class="form-label">참여 인원</label>
-                                    <input class="form-control" id="max_people_count" th:type="number" th:min="2"
+                                    <label for="input_max_member_count" class="form-label">참여 인원</label>
+                                    <input class="form-control" id="input_max_member_count" th:type="number" th:min="2"
                                            required>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
-                                    <label for="datepicker" class="form-label">날짜</label>
-                                    <input id="datepicker" class="form-control" required/>
+                                    <label for="input_datepicker" class="form-label">날짜</label>
+                                    <input id="input_datepicker" class="form-control" required/>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="demo__body py-3">
-                                <input id="time_range_slider" type="text">
+                                <label for="input_time_rangeslider" class="form-label">희망 시간</label>
+                                <input id="input_time_rangeslider" type="text">
                             </div>
                         </div>
                         <!--
@@ -179,32 +180,37 @@
     <!--Moment plugin-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
-        var lang = "ko-KR";
-        var year = 2018;
+        const s_year = 2021;
+        const s_month = 6;
+        const s_date = 10;
 
-        function timeToTS(date) {
-            return date.valueOf();
+        function timeToTS(m) {
+            return m.valueOf();
         }
 
         function tsToTime(ts) {
-            var d = new Date(ts);
+            var m = moment(ts);
 
-            return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: true});
+            m.toISOString();
+            if (m.hour() == 0 && m.date() > s_date)
+                return "24:00";
+            else
+                return m.format("HH:mm");
         }
 
-        $("#time_range_slider").ionRangeSlider({
+        $("#input_time_rangeslider").ionRangeSlider({
             skin: "round",
             type: "double",
             grid: true,
-            min: timeToTS(new Date(2020, 1, 1, 0, 0, 1)),
-            max: timeToTS(new Date(2020, 1, 2, 24, 0, 0)),
-            from: timeToTS(new Date(2020, 1, 1, 9, 0, 0)),
-            to: timeToTS(new Date(2020, 1, 1, 18, 0, 0)),
+            min: timeToTS(moment(new Date(s_year, s_month, s_date, 0, 0, 1))),
+            max: timeToTS(moment(new Date(s_year, s_month, s_date + 1, 0, 0, 0))),
+            from: timeToTS(moment(new Date(s_year, s_month, s_date, 6, 0, 0))),
+            to: timeToTS(moment(new Date(s_year, s_month, s_date, 18, 0, 0))),
             step: 900000,
             prettify: tsToTime
         }).addClass("irs-hidden-input");
 
-        $('#datepicker').datepicker({
+        $('#input_datepicker').datepicker({
             uiLibrary: 'bootstrap4',
             format: 'yyyy-mm-dd',
             minDate: function () {
@@ -214,7 +220,7 @@
         });
 
         /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
-        $('#datepicker').next().attr("role", "icon");
+        $('#input_datepicker').next().attr("role", "icon");
 
         function onclick_delete(team) {
             $.ajax({
@@ -248,26 +254,21 @@
             }
             const projectId = $('#select_project option:selected').attr("value");
             const location = $('#location option:selected').attr("value");
-            const mexPeopleCount = $('#max_people_count').val();
-            const date = moment($('#datepicker').val());
-            const [start, end] = $('#time_range_slider').val().split(';')
-            const start_date = moment(parseInt(start)).set({
-                'year': date.year(),
-                'month': date.month(),
-                'date': date.date()
-            })
-            const end_date = moment(parseInt(end)).set({
-                'year': date.year(),
-                'month': date.month(),
-                'date': date.date()
-            })
+            const mexPeopleCount = $('#input_max_member_count').val();
+            const date = moment($('#input_datepicker').val());
+            var [start, end] = $('#input_time_rangeslider').val().split(';')
+            const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
+            start = parseInt(start) - offset_date;
+            end = parseInt(end) - offset_date;
+            const start_date = date.valueOf() + start;
+            const end_date = date.valueOf() + end;
 
             $.ajax({
                     type: "POST",
                     url: "./api/v1/team",
                     data: JSON.stringify({
-                        startTime: start_date.format("YYYY-MM-DDTHH:mm"),
-                        endTime: end_date.format("YYYY-MM-DDTHH:mm"),
+                        startTime: moment(start_date).format("YYYY-MM-DDTHH:mm"),
+                        endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
                         location: location,
                         maxMemberCount: parseInt(mexPeopleCount),
                         projectId: projectId

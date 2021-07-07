@@ -149,7 +149,7 @@ public class TeamService {
     }
 
     private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator) {
-        User user = userRepo.getUserByNickname(nickName);
+        User user = userRepo.findUserByNickname(nickName).get();
         List<Member> members;
         if (isCreator)
             members = memberRepo.findMembersByUserAndCreator(user, true);
@@ -164,6 +164,12 @@ public class TeamService {
     private User findUser(SessionUser currentUser) throws Exception {
         if (currentUser == null) throw new Exception("not login");
         return userRepo.findUserByNickname(currentUser.getNickname())
+                .orElseThrow(() -> new EntityNotFoundException("invalid user"));
+    }
+
+    private User findUser(String nickname) throws Exception {
+        if (nickname == null) throw new Exception("not login");
+        return userRepo.findUserByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException("invalid user"));
     }
 
