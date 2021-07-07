@@ -180,27 +180,51 @@
         var year = 2018;
         var locations = "[[${locations}]]"
 
-        function timeToTS(date) {
-            return date.valueOf();
+        var s_year = 2021;
+        var s_month = 6;
+        var s_date = 10;
+
+        function timeToTS(m) {
+            return m.valueOf();
         }
 
         function tsToTime(ts) {
-            var d = new Date(ts);
+            var m = moment(ts);
 
-            return d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: true});
+            m.toISOString();
+            if (m.hour() == 0 && m.date() > s_date)
+                return "24:00";
+            else
+                return m.format("HH:mm");
         }
+
+        $("#input_time_rangeslider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            grid: true,
+            min: timeToTS(moment(new Date(s_year, s_month, s_date, 0, 0, 1))),
+            max: timeToTS(moment(new Date(s_year, s_month, s_date + 1, 0, 0, 0))),
+            from: timeToTS(moment(new Date(s_year, s_month, s_date, 6, 0, 0))),
+            to: timeToTS(moment(new Date(s_year, s_month, s_date, 18, 0, 0))),
+            step: 900000,
+            prettify: tsToTime
+        }).addClass("irs-hidden-input");
 
         function onclick_detail(team, loc_id) {
             var detail_modal = new bootstrap.Modal(document.getElementById('team_detail_modal'))
             detail_modal.show();
+            const s_moment = moment(team.startTime);
+            s_year = s_moment.year();
+            s_month = s_moment.month();
+            s_date = s_moment.date();
             $("#input_time_range_slider").ionRangeSlider({
                 skin: "round",
                 type: "double",
                 grid: true,
-                min: timeToTS(new Date(team.startTime)),
-                max: timeToTS(new Date(team.endTime)),
-                from: timeToTS(new Date(team.startTime)),
-                to: timeToTS(new Date(team.endTime)),
+                min: timeToTS(moment(new Date(team.startTime))),
+                max: timeToTS(moment(new Date(team.endTime))),
+                from: timeToTS(moment(new Date(team.startTime))),
+                to: timeToTS(moment(new Date(team.endTime))),
                 step: 900000,
                 prettify: tsToTime
             }).addClass("irs-hidden-input");
@@ -235,24 +259,19 @@
             const location = $('#select_location option:selected').attr("value");
             const maxMemberCount = $('#input_max_member_count').val();
             const date = moment($('#input_datepicker').val());
-            const [start, end] = $('#input_time_range_slider').val().split(';')
-            const start_date = moment(parseInt(start)).set({
-                'year': date.year(),
-                'month': date.month(),
-                'date': date.date()
-            })
-            const end_date = moment(parseInt(end)).set({
-                'year': date.year(),
-                'month': date.month(),
-                'date': date.date()
-            })
+            var [start, end] = $('#input_time_rangeslider').val().split(';')
+            const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
+            start = parseInt(start) - offset_date;
+            end = parseInt(end) - offset_date;
+            const start_date = date.valueOf() + start;
+            const end_date = date.valueOf() + end;
 
             $.ajax({
                     type: "PUT",
                     url: "./api/v1/team/" + $('#create_team_form').attr('team_id'),
                     data: JSON.stringify({
-                        startTime: start_date.format("YYYY-MM-DDTHH:mm"),
-                        endTime: end_date.format("YYYY-MM-DDTHH:mm"),
+                        startTime: moment(start_date).format("YYYY-MM-DDTHH:mm"),
+                        endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
                         location: location,
                         maxMemberCount: parseInt(maxMemberCount),
                         projectId: projectId
