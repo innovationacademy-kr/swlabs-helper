@@ -68,7 +68,7 @@
                         </div>
                         <div class="row">
                             <div class="demo__body py-3">
-                                <input id="input_time_range_slider" type="text">
+                                <input id="input_time_rangeslider" type="text">
                             </div>
                         </div>
                     </form>
@@ -198,18 +198,6 @@
                 return m.format("HH:mm");
         }
 
-        $("#input_time_rangeslider").ionRangeSlider({
-            skin: "round",
-            type: "double",
-            grid: true,
-            min: timeToTS(moment(new Date(s_year, s_month, s_date, 0, 0, 1))),
-            max: timeToTS(moment(new Date(s_year, s_month, s_date + 1, 0, 0, 0))),
-            from: timeToTS(moment(new Date(s_year, s_month, s_date, 6, 0, 0))),
-            to: timeToTS(moment(new Date(s_year, s_month, s_date, 18, 0, 0))),
-            step: 900000,
-            prettify: tsToTime
-        }).addClass("irs-hidden-input");
-
         function onclick_detail(team, loc_id) {
             var detail_modal = new bootstrap.Modal(document.getElementById('team_detail_modal'))
             detail_modal.show();
@@ -217,7 +205,7 @@
             s_year = s_moment.year();
             s_month = s_moment.month();
             s_date = s_moment.date();
-            $("#input_time_range_slider").ionRangeSlider({
+            $("#input_time_rangeslider").ionRangeSlider({
                 skin: "round",
                 type: "double",
                 grid: true,
@@ -259,7 +247,7 @@
             const location = $('#select_location option:selected').attr("value");
             const maxMemberCount = $('#input_max_member_count').val();
             const date = moment($('#input_datepicker').val());
-            var [start, end] = $('#input_time_rangeslider').val().split(';')
+            var [start, end] = $('#input_time_rangeslider').val().split(';');
             const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
             start = parseInt(start) - offset_date;
             end = parseInt(end) - offset_date;
