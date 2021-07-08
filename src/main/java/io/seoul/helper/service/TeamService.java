@@ -13,6 +13,7 @@ import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.project.ProjectRepository;
 import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,21 +28,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TeamService {
-
     private final UserRepository userRepo;
     private final TeamRepository teamRepo;
     private final MemberRepository memberRepo;
     private final ProjectRepository projectRepo;
-
-    public TeamService(UserRepository userRepo, TeamRepository teamRepo,
-                       MemberRepository memberRepo,
-                       ProjectRepository projectRepo) {
-        this.userRepo = userRepo;
-        this.teamRepo = teamRepo;
-        this.memberRepo = memberRepo;
-        this.projectRepo = projectRepo;
-    }
+    private final MailSenderService mailSenderService;
 
     @Transactional
     public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
@@ -77,6 +70,11 @@ public class TeamService {
                 .role(MemberRole.MENTOR)
                 .creator(false)
                 .build());
+        List<Member> members = team.getMembers();
+        for (Member member : members) {
+            if (member.getCreator())
+                mailSenderService.sendMatchMail(member.getUser(), team);
+        }
         return new TeamResponseDto(team);
     }
 
@@ -222,6 +220,7 @@ public class TeamService {
         return Arrays.stream(TeamLocation.values()).map((o) -> {
             return TeamLocationDto.builder()
                     .id(o.getId())
+                    .code(o.name())
                     .name(o.getName())
                     .build();
         }).collect(Collectors.toList());
