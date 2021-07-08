@@ -81,6 +81,23 @@ public class TeamService {
     }
 
     @Transactional
+    public List<TeamResponseDto> updateTeamsLessThanCurrentTime() throws Exception {
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Team> teams = teamRepo.findTeamsByStatusNotAndEndTimeLessThan(TeamStatus.END, currentTime);
+
+        if (teams.isEmpty()) {
+            throw new EntityNotFoundException("nothing to change teams");
+        }
+        for (Team team : teams) {
+            team.updateTeamEnd();
+        }
+        teams = teamRepo.saveAll(teams);
+
+        return teams.stream().map(team -> new TeamResponseDto(team))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public void joinTeam(SessionUser sessionUser, Long id) throws Exception {
         User user = findUser(sessionUser);
         Team team = findTeam(id);

@@ -39,4 +39,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "t.id NOT IN :teamId")
     Page<Team> findTeamsByTeamIdNotIn(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
                                       TeamLocation location, List<Long> teamId, Pageable pageable);
+
+    List<Team> findTeamsByStatusNotAndEndTimeLessThan(TeamStatus location, LocalDateTime currentTime);
 }

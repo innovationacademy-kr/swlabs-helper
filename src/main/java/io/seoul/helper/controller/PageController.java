@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+
 @Controller
 public class PageController {
     @Autowired
@@ -26,11 +28,13 @@ public class PageController {
     public String home(Model model, @LoginUser SessionUser user) {
         if (user == null) {
             TeamListRequestDto dto = new TeamListRequestDto();
+            dto.setStartTime(LocalDateTime.now());
             Page<TeamResponseDto> teams = teamService.findTeams(dto);
             model.addAttribute("teams", teams);
         }
         if (user != null) {
             TeamListRequestDto allTeamDto = new TeamListRequestDto();
+            allTeamDto.setStartTime(LocalDateTime.now());
             Page<TeamResponseDto> allTeams = teamService.findTeams(allTeamDto);
             model.addAttribute("allTeams", allTeams);
 
@@ -52,6 +56,7 @@ public class PageController {
                            @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setOffset(offset);
+        dto.setStartTime(LocalDateTime.now());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
@@ -105,6 +110,7 @@ public class PageController {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setStatus(status);
         dto.setOffset(offset);
+        dto.setStartTime(LocalDateTime.now());
         dto.setExcludeNickname(user.getNickname());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
