@@ -222,6 +222,7 @@ public class TeamService {
         return Arrays.stream(TeamLocation.values()).map((o) -> {
             return TeamLocationDto.builder()
                     .id(o.getId())
+                    .code(o.name())
                     .name(o.getName())
                     .build();
         }).collect(Collectors.toList());

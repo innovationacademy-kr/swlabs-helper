@@ -17,83 +17,79 @@
 
 <div layout:fragment="custom-content">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <button type="button" class="btn btn-primary" onclick="onclick_create_team()">
         새로운 스케줄
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">시간 설정</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h2> 시간 설정 </h2>
-                    <form class="m-3 needs-validation" method="post" id="create_team_form">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="select_project" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="select_project" required>
-                                        <option selected disabled value="">프로젝트 선택하기</option>
-                                        <option th:each="proj : ${projects}"
-                                                th:value="${proj.id}"
-                                                th:utext="${proj.name}"></option>
-                                    </select>
-                                </div>
-                            </div>
+    <div th:replace="fragment/team_modal :: modal"></div>
+    <!--
+     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered modal-lg">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">시간 설정</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                 </div>
+                 <div class="modal-body">
+                     <h2> 시간 설정 </h2>
+                     <form class="m-3 needs-validation" method="post" id="create_team_form">
+                         <div class="row">
+                             <div class="col-6">
+                                 <div class="mb-3">
+                                     <label for="select_project" class="form-label">프로젝트 명칭</label>
+                                     <select class="form-select" id="select_project" required>
+                                         <option selected disabled value="">프로젝트 선택하기</option>
+                                         <option th:each="proj : ${projects}"
+                                                 th:value="${proj.id}"
+                                                 th:utext="${proj.name}"></option>
+                                     </select>
+                                 </div>
+                             </div>
 
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="location" class="form-label">장소</label>
-                                    <select class="form-select" id="location" required>
-                                        <option selected disabled value="">장소 선택하기</option>
-                                        <option th:each="loc : ${locations}"
-                                                th:value="${loc.id}"
-                                                th:utext="${loc.name}"></option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="input_max_member_count" class="form-label">참여 인원</label>
-                                    <input class="form-control" id="input_max_member_count" th:type="number" th:min="2"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="input_datepicker" class="form-label">날짜</label>
-                                    <input id="input_datepicker" class="form-control" required/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="demo__body py-3">
-                                <label for="input_time_rangeslider" class="form-label">희망 시간</label>
-                                <input id="input_time_rangeslider" type="text">
-                            </div>
-                        </div>
-                        <!--
-                        <div class="row">
-                            <div class="me-auto"></div>
-                            <button class="btn btn-primary" type="submit">완료</button>
-                        </div>
-                        -->
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" onclick="submit_team()">생성</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+                             <div class="col-6">
+                                 <div class="mb-3">
+                                     <label for="location" class="form-label">장소</label>
+                                     <select class="form-select" id="location" required>
+                                         <option selected disabled value="">장소 선택하기</option>
+                                         <option th:each="loc : ${locations}"
+                                                 th:value="${loc.id}"
+                                                 th:utext="${loc.name}"></option>
+                                     </select>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col-6">
+                                 <div class="mb-3">
+                                     <label for="input_max_member_count" class="form-label">참여 인원</label>
+                                     <input class="form-control" id="input_max_member_count" th:type="number" th:min="2"
+                                            required>
+                                 </div>
+                             </div>
+                             <div class="col-6">
+                                 <div class="mb-3">
+                                     <label for="input_datepicker" class="form-label">날짜</label>
+                                     <input id="input_datepicker" class="form-control" required/>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="demo__body py-3">
+                                 <label for="input_time_rangeslider" class="form-label">희망 시간</label>
+                                 <input id="input_time_rangeslider" type="text">
+                             </div>
+                         </div>
+                     </form>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                     <button type="button" class="btn btn-primary" onclick="submit_team()">생성</button>
+                 </div>
+             </div>
+         </div>
+     </div>
+ -->
     <!-- list -->
     <div class="list-container">
         <h2>멘티 목록</h2>
@@ -169,16 +165,8 @@
     </div>
 </div>
 <div layout:fragment="custom-footer">
-    <!--slider plugin -->
-    <!--link : https://github.com/IonDen/ion.rangeSlider-->
-    <!--jQuery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!--Plugin JavaScript file-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-    <!--datepicker plugin-->
-    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-    <!--Moment plugin-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <div th:replace="fragment/team_modal :: script"></div>
+    <!--
     <script>
         const s_year = 2021;
         const s_month = 6;
@@ -222,30 +210,6 @@
         /* datepicker button ui 문제로 인한 icon Role 강제 삽입*/
         $('#input_datepicker').next().attr("role", "icon");
 
-        function onclick_delete(team) {
-            $.ajax({
-                    type: "DELETE",
-                    url: "./api/v1/team/" + team.teamId,
-                    data: null,
-                    dataType: "JSON",
-                    contentType: 'application/json',
-                    success: (data) => {
-                        console.log(data);
-                        if (data.statusCode != 200) {
-                            alert("삭제했습니다.\n" + data.message);
-                        } else {
-                            alert("삭제되었습니다.")
-                            window.location.href = '/set_time';
-                        }
-                    },
-                    error: (request, status, error) => {
-                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
-                            + request.responseText + "\nerror:" + error);
-                    }
-                }
-            )
-        }
-
         function submit_team() {
             const form = document.getElementById('create_team_form');
             if (form.checkValidity() == false) {
@@ -280,6 +244,46 @@
                             alert("등록을 실패했습니다.\n" + data.message);
                         } else {
                             alert("등록되었습니다.")
+                            window.location.href = '/set_time';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
+    -->
+    <script>
+        function onclick_create_team() {
+            team_modal_update({
+                mode: "CREATE_TEAMWISH",
+                ajax_req_info: {
+                    url: "./api/v1/team",
+                    type: "POST",
+                    success: function () {
+                        window.location.href = '/set_time';
+                    }
+                }
+            });
+            team_modal_show();
+        }
+
+        function onclick_delete(team) {
+            $.ajax({
+                    type: "DELETE",
+                    url: "./api/v1/team/" + team.teamId,
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        console.log(data);
+                        if (data.statusCode != 200) {
+                            alert("삭제했습니다.\n" + data.message);
+                        } else {
+                            alert("삭제되었습니다.")
                             window.location.href = '/set_time';
                         }
                     },
