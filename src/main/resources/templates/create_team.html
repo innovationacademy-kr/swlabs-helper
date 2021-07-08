@@ -5,87 +5,21 @@
       layout:decorator="layout/default_layout.html" th:with="currentPage='create_team'">
 <head>
     <title>Create team</title>
-    <!-- Plugin CSS file with desired ski n-->
+    <!-- rangeSlider Plugin CSS file with desired skin-->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
 </head>
 
 <div layout:fragment="custom-content">
-    <!-- Modal -->
-    <div class="modal fade" id="team_detail_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">시간 설정</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h2> 시간 설정 </h2>
-                    <form class="m-3 needs-validation" method="post" id="create_team_form">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="select_project" class="form-label">프로젝트 명칭</label>
-                                    <select class="form-select" id="select_project" required disabled>
-                                        <option selected disabled="disabled" value="">프로젝트 선택하기</option>
-                                        <option th:each="proj : ${projects}"
-                                                th:value="${proj.id}"
-                                                th:utext="${proj.name}"></option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="select_location" class="form-label">장소</label>
-                                    <select class="form-select" id="select_location" required disabled>
-                                        <option selected value="">장소 선택하기</option>
-                                        <option th:each="loc : ${locations}"
-                                                th:value="${loc.id}"
-                                                th:utext="${loc.name}"></option>
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="input_max_member_count" class="form-label">참여 인원</label>
-                                    <input class="form-control" id="input_max_member_count" th:type="number"
-                                           th:min="2"
-                                           required readonly>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="input_datepicker" class="form-label">날짜</label>
-                                    <input id="input_datepicker" class="form-control" required readonly/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="demo__body py-3">
-                                <input id="input_time_range_slider" type="text">
-                            </div>
-                        </div>
-                    </form>
-                    <div class="members_in_team">
-                        <h5>현재 멘티 목록</h5>
-                        <ul class="member_list list-group">
-                        </ul>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" onclick="submit_team()">생성</button>
-                </div>
-            </div>
-        </div>
+    <div class="page_title">
+        <h2>팀 만들기</h2>
+        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다. 세부사항을 확인하고 멘토로써 참여할 수 있습니다.<br/>
+            멘토로 참여하게 되면 팀이 성사됩니다.</p>
     </div>
-
+    <hr/>
+    <!-- Modal -->
+    <div th:replace="fragment/team_modal :: modal"></div>
+    <!-- Content-->
     <h2>멘티 목록</h2>
     <div class="list-container">
         <table class="table">
@@ -124,7 +58,7 @@
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
                     <button type="button" class="btn btn-primary"
-                            th:onclick="onclick_detail([[${team}]], [[${team.location.getId()}]])">
+                            th:onclick="onclick_detail_team([[${team}]])">
                         세부사항 확인
                     </button>
                 </td>
@@ -164,134 +98,21 @@
 </div>
 
 <div layout:fragment="custom-footer">
-    <!--slider plugin -->
-    <!--link : https://github.com/IonDen/ion.rangeSlider-->
-    <!--jQuery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!--Plugin JavaScript file-->
-    <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
-    <!--datepicker plugin-->
-    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-    <!--Moment plugin-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <div th:replace="fragment/team_modal :: script"></div>
     <script>
-        var lang = "ko-KR";
-        var year = 2018;
-        var locations = "[[${locations}]]"
-
-        var s_year = 2021;
-        var s_month = 6;
-        var s_date = 10;
-
-        function timeToTS(m) {
-            return m.valueOf();
-        }
-
-        function tsToTime(ts) {
-            var m = moment(ts);
-
-            m.toISOString();
-            if (m.hour() == 0 && m.date() > s_date)
-                return "24:00";
-            else
-                return m.format("HH:mm");
-        }
-
-        $("#input_time_rangeslider").ionRangeSlider({
-            skin: "round",
-            type: "double",
-            grid: true,
-            min: timeToTS(moment(new Date(s_year, s_month, s_date, 0, 0, 1))),
-            max: timeToTS(moment(new Date(s_year, s_month, s_date + 1, 0, 0, 0))),
-            from: timeToTS(moment(new Date(s_year, s_month, s_date, 6, 0, 0))),
-            to: timeToTS(moment(new Date(s_year, s_month, s_date, 18, 0, 0))),
-            step: 900000,
-            prettify: tsToTime
-        }).addClass("irs-hidden-input");
-
-        function onclick_detail(team, loc_id) {
-            var detail_modal = new bootstrap.Modal(document.getElementById('team_detail_modal'))
-            detail_modal.show();
-            const s_moment = moment(team.startTime);
-            s_year = s_moment.year();
-            s_month = s_moment.month();
-            s_date = s_moment.date();
-            $("#input_time_range_slider").ionRangeSlider({
-                skin: "round",
-                type: "double",
-                grid: true,
-                min: timeToTS(moment(new Date(team.startTime))),
-                max: timeToTS(moment(new Date(team.endTime))),
-                from: timeToTS(moment(new Date(team.startTime))),
-                to: timeToTS(moment(new Date(team.endTime))),
-                step: 900000,
-                prettify: tsToTime
-            }).addClass("irs-hidden-input");
-
-            const selected_opt_project = $("#select_project option[value='" + team.project.id + "']");
-            selected_opt_project.attr("selected", "selected");
-
-            const selected_opt_location = $("#select_location option[value='" + loc_id + "']");
-            selected_opt_location.attr("selected", "selected");
-
-            const $memberList = $('.member_list');
-            $memberList.empty();
-            team.members.forEach((member) => $memberList.append(
-                '<li class="list-group-item">' + member.nickname + '</li>'))
-
-            if (loc_id == 0) { // Enum TeamLocation NONE id
-                $('#select_location').removeAttr('disabled');
-            }
-
-            $('#input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
-            $('#input_max_member_count').val(team.maxMemberCount);
-            $('#create_team_form').attr('team_id', team.teamId);
-        }
-
-        function submit_team() {
-            const form = document.getElementById('create_team_form');
-            if (form.checkValidity() == false) {
-                form.classList.add("was-validated");
-                return;
-            }
-            const projectId = $('#select_project option:selected').attr("value");
-            const location = $('#select_location option:selected').attr("value");
-            const maxMemberCount = $('#input_max_member_count').val();
-            const date = moment($('#input_datepicker').val());
-            var [start, end] = $('#input_time_rangeslider').val().split(';')
-            const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
-            start = parseInt(start) - offset_date;
-            end = parseInt(end) - offset_date;
-            const start_date = date.valueOf() + start;
-            const end_date = date.valueOf() + end;
-
-            $.ajax({
+        function onclick_detail_team(team) {
+            team_modal_update({
+                team: team,
+                mode: "CREATE_TEAM",
+                ajax_req_info: {
+                    url: "./api/v1/team/" + team.teamId,
                     type: "PUT",
-                    url: "./api/v1/team/" + $('#create_team_form').attr('team_id'),
-                    data: JSON.stringify({
-                        startTime: moment(start_date).format("YYYY-MM-DDTHH:mm"),
-                        endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
-                        location: location,
-                        maxMemberCount: parseInt(maxMemberCount),
-                        projectId: projectId
-                    }),
-                    dataType: "JSON",
-                    contentType: 'application/json',
-                    success: (data) => {
-                        if (data.statusCode != 200) {
-                            alert("팀 생성에 실패했습니다.\n" + data.message);
-                        } else {
-                            alert("팀이 등록되었습니다.")
-                            window.location.href = '/';
-                        }
-                    },
-                    error: (request, status, error) => {
-                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
-                            + request.responseText + "\nerror:" + error);
+                    success: function () {
+                        window.location.href = '/create_team';
                     }
                 }
-            )
+            });
+            team_modal_show();
         }
     </script>
 </div>

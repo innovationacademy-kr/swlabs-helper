@@ -10,11 +10,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class TeamLocationDto implements Serializable {
     private Long id;
+    private String code;
     private String name;
 
     @Builder
-    public TeamLocationDto(Long id, String name) {
+    public TeamLocationDto(Long id, String code, String name) {
         this.id = id;
+        this.code = code;
         this.name = name;
     }
 }
