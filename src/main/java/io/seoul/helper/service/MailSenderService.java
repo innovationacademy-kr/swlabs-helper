@@ -14,13 +14,11 @@ import org.springframework.stereotype.Service;
 @EnableAsync
 public class MailSenderService {
     private JavaMailSender mailSender;
-    private static final String FROM_ADDRESS = "42.4.hwon@gmail.com";
 
     @Async
     public void sendMail(User user, String title, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setFrom(FROM_ADDRESS);
         message.setSubject(title);
         message.setText(content);
 
