@@ -16,7 +16,9 @@
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+                <li>
+                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#sign-out" href="#">Sign out</a>
+                </li>
             </ul>
         </div>
         <div th:if="${user == null}" class="me-auto">
@@ -43,5 +45,26 @@
             </li>
         </ul>
     </header>
+
+    <div class="modal fade" id="sign-out" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>intra 아이디는 수동으로 로그아웃해주세요</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            onclick="location.href = '/logout'">
+                        로그아웃하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </html>
