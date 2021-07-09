@@ -14,6 +14,10 @@
             조회된 목록에서 참여하거나 멘토링 팀 탈퇴를 할 수 있습니다.</p>
     </div>
     <hr/>
+
+    <!-- Modal alert -->
+    <div th:replace="fragment/alert_modal :: modal"></div>
+
     <h2>팀 목록 확인하고 참여하기</h2>
 
     <div class="inquery">
@@ -61,7 +65,8 @@
                           th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger" th:onclick="onclick_out([[${team}]])">탈퇴</button>
+                    <button type="button" class="btn btn-danger" th:onclick="onclick_modal_alert([[${team}]])">탈퇴
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -96,30 +101,42 @@
 
 </div>
 <div layout:fragment="custom-footer">
-    <!--jQuery-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <div th:replace="fragment/alert_modal :: script"></div>
+
     <script>
-        function onclick_out(team) {
-            $.ajax({
-                    type: "DELETE",
-                    url: "./api/v1/team/" + team.teamId + "/out",
-                    data: null,
-                    dataType: "JSON",
-                    contentType: 'application/json',
-                    success: (data) => {
-                        if (data.statusCode != 200) {
-                            alert("탈퇴에 실패했습니다.\n" + data.message);
-                        } else {
-                            alert("탍퇴되었습니다.")
-                            window.location.href = '/list_myteam';
-                        }
-                    },
-                    error: (request, status, error) => {
-                        alert("탈퇴에 실패했습니다.\n" + request.status + "\nmessage: "
-                            + request.responseText + "\nerror:" + error);
+        function onclick_modal_alert(team) {
+            const modal_title_text = '팀 탈퇴'
+            const modal_body_text = '정말로 팀을 나가시겠습니까?'
+
+            const cancel_btn_text = '취소'
+            const submit_btn_text = '탈퇴하기'
+
+            const success_message = "탍퇴되었습니다"
+            const fail_message = "탈퇴에 실패했습니다"
+
+            alert_modal_update({
+                team: team,
+                modal_content_text: {
+                    title: modal_title_text,
+                    body: modal_body_text,
+                    footer: {
+                        cancel_btn: cancel_btn_text,
+                        submit_btn: submit_btn_text
                     }
-                }
-            )
+                },
+                ajax_req_info_alert: {
+                    url: "./api/v1/team/" + team.teamId + "/out",
+                    type: "DELETE",
+                    status_message: {
+                        success: success_message,
+                        fail: fail_message
+                    },
+                    success: function () {
+                        window.location.href = '/list_myteam';
+                    },
+                },
+            })
+            alert_modal_show();
         }
     </script>
 </div>
