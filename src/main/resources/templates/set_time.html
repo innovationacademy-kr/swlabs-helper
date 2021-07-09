@@ -27,6 +27,7 @@
     </button>
     <!-- Modal -->
     <div th:replace="fragment/team_modal :: modal"></div>
+    <div th:replace="fragment/alert_modal :: modal"></div>
     <!-- list -->
     <div class="list-container">
         <h2>멘티 목록</h2>
@@ -103,6 +104,7 @@
 </div>
 <div layout:fragment="custom-footer">
     <div th:replace="fragment/team_modal :: script"></div>
+    <div th:replace="fragment/alert_modal :: script"></div>
     <script>
         function onclick_create_team() {
             team_modal_update({
@@ -119,26 +121,38 @@
         }
 
         function onclick_delete(team) {
-            $.ajax({
-                    type: "DELETE",
+            const modal_title_text = '팀 삭제'
+            const modal_body_text = '정말로 팀을 삭제하시겠습니까?'
+
+            const cancel_btn_text = '취소'
+            const submit_btn_text = '삭제하기'
+
+            const success_message = "삭제되었습니다"
+            const fail_message = "삭제에 실패했습니다"
+
+            alert_modal_update({
+                team: team,
+                modal_content_text: {
+                    title: modal_title_text,
+                    body: modal_body_text,
+                    footer: {
+                        cancel_btn: cancel_btn_text,
+                        submit_btn: submit_btn_text
+                    }
+                },
+                ajax_req_info_alert: {
                     url: "./api/v1/team/" + team.teamId,
-                    data: null,
-                    dataType: "JSON",
-                    contentType: 'application/json',
-                    success: (data) => {
-                        if (data.statusCode != 200) {
-                            alert("삭제했습니다.\n" + data.message);
-                        } else {
-                            alert("삭제되었습니다.")
-                            window.location.href = '/set_time';
-                        }
+                    type: "DELETE",
+                    status_message: {
+                        success: success_message,
+                        fail: fail_message
                     },
-                    error: (request, status, error) => {
-                        alert("등록을 실패했습니다.\n" + request.status + "\nmessage: "
-                            + request.responseText + "\nerror:" + error);
+                    success: function () {
+                        window.location.href = '/set_time';
                     }
                 }
-            )
+            })
+            alert_modal_show();
         }
     </script>
 </div>

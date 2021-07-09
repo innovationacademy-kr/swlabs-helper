@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum TeamStatus {
     WAITING("STATUS_WAITING", "선택 대기중"),
     READY("STATUS_READY", "인원 모집중"),
-    RUNNING("STATUS_RUNNING", "스터디 진행중"),
+    FULL("STATUS_FULL", "인원 모집 완료"),
     END("STATUS_END", "종료");
 
     private final String key;

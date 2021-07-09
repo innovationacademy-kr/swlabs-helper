@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Modal alert-->
+<div th:fragment="modal" class="modal fade" id="alert_modal" tabindex="-1"
+     aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" id="cancel-btn" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+                <button type="button" id="submit-btn" class="btn btn-danger" data-bs-dismiss="modal"
+                        th:onclick="submit_alert_event()">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<div th:fragment="script">
+    <!--jQuery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        var ajax_req_info_alert;
+
+        function alert_modal_update(data) {
+            if (data.ajax_req_info_alert !== undefined) ajax_req_info_alert = data.ajax_req_info_alert
+            if (data.modal_content_text !== undefined) set_alert_modal_info(data.modal_content_text)
+        }
+
+        function set_alert_modal_info(modal_content_text) {
+            var alert_modal = document.getElementById('alert_modal');
+
+            alert_modal.addEventListener('show.bs.modal', function (event) {
+                var modalTitle = alert_modal.querySelector('.modal-title')
+                var modalBody = alert_modal.querySelector('.modal-body')
+                var modalCancelBtn = document.getElementById('cancel-btn')
+                var modalSubmitBtn = document.getElementById('submit-btn')
+
+                modalTitle.textContent = modal_content_text.title
+                modalBody.textContent = modal_content_text.body
+                modalCancelBtn.textContent = modal_content_text.footer.cancel_btn;
+                modalSubmitBtn.textContent = modal_content_text.footer.submit_btn;
+            })
+        }
+
+        function alert_modal_show() {
+            var detail_modal = new bootstrap.Modal(document.getElementById('alert_modal'))
+            detail_modal.show();
+        }
+
+        /* ajax action func*/
+        function submit_alert_event() {
+            $.ajax({
+                    type: ajax_req_info_alert.type,
+                    url: ajax_req_info_alert.url,
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert(ajax_req_info_alert.status_message.fail + "\n" + data.message);
+                        } else {
+                            alert(ajax_req_info_alert.status_message.success)
+                            ajax_req_info_alert.success();
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert(ajax_req_info_alert.status_message.fail + "\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
+</div>
+</html>
