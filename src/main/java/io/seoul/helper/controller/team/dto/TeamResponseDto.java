@@ -37,8 +37,8 @@ public class TeamResponseDto {
         this.currentMemberCount = (long) team.getMembers().size();
         this.status = team.getStatus();
         this.location = team.getLocation();
-        this.startTime = team.getStartTime();
-        this.endTime = team.getEndTime();
+        this.startTime = team.getPeriod().getStartTime();
+        this.endTime = team.getPeriod().getEndTime();
         this.members = team.getMembers().stream()
                 .map(member -> new TeamMemberDto(member))
                 .collect(Collectors.toList());

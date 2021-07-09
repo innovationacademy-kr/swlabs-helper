@@ -35,6 +35,7 @@ public class PageController {
         if (user != null) {
             TeamListRequestDto allTeamDto = new TeamListRequestDto();
             allTeamDto.setStartTime(LocalDateTime.now());
+            allTeamDto.setExcludeNickname(user.getNickname());
             Page<TeamResponseDto> allTeams = teamService.findTeams(allTeamDto);
             model.addAttribute("allTeams", allTeams);
 
@@ -57,6 +58,7 @@ public class PageController {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setOffset(offset);
         dto.setStartTime(LocalDateTime.now());
+        dto.setExcludeNickname(user.getNickname());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
