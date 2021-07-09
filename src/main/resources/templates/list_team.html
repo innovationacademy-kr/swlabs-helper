@@ -61,8 +61,22 @@
                     <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
                           th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
-                <td>
-                    <button type="button" class="btn btn-primary" th:onclick="onclick_join([[${team}]])">참여하기</button>
+                <td style='text-align:center; vertical-align:middle'>
+                    <div class="d-grid mx-auto">
+                        <button type="button" class="btn btn-primary"
+                                th:if="${#strings.contains(team.status, 'READY')}"
+                                th:onclick="onclick_join([[${team}]])">참여하기
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                th:if="${#strings.contains(team.status, 'FULL')}" disabled>인원 모집 완료
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                th:if="${#strings.contains(team.status, 'WAITING')}" disabled>멘토를 기다리는 중
+                        </button>
+                        <button type="button" class="btn btn-secondary"
+                                th:if="${#strings.contains(team.status, 'END')}" disabled>죵료된 멘토링
+                        </button>
+                    </div>
                 </td>
             </tr>
             </tbody>
