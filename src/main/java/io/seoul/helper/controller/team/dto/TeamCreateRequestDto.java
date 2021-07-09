@@ -1,6 +1,7 @@
 package io.seoul.helper.controller.team.dto;
 
 import io.seoul.helper.domain.project.Project;
+import io.seoul.helper.domain.team.Period;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
@@ -33,8 +34,12 @@ public class TeamCreateRequestDto {
     }
 
     public Team toEntity(Project project) {
-        Team entity = Team.builder().startTime(startTime)
+        Period period = Period.builder()
+                .startTime(startTime)
                 .endTime(endTime)
+                .build();
+        Team entity = Team.builder()
+                .period(period)
                 .location(location)
                 .maxMemberCount(maxMemberCount)
                 .status(TeamStatus.WAITING)

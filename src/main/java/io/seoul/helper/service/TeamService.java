@@ -5,6 +5,7 @@ import io.seoul.helper.controller.team.dto.*;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.project.Project;
+import io.seoul.helper.domain.team.Period;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
@@ -40,7 +41,12 @@ public class TeamService {
     public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Project project = findProject(requestDto.getProjectId());
-        checkTimeValid(requestDto.getStartTime(), requestDto.getEndTime());
+        Period period = Period.builder()
+                .startTime(requestDto.getStartTime())
+                .endTime(requestDto.getEndTime())
+                .build();
+        if (!period.isValid())
+            throw new IllegalArgumentException("Invalid Time");
         Team team = requestDto.toEntity(project);
         team = teamRepo.save(team);
         Member member = Member.builder()
@@ -60,9 +66,13 @@ public class TeamService {
         Project project = findProject(requestDto.getProjectId());
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Not valid member");
-        checkTimeValid(team.getStartTime(), team.getEndTime(), requestDto.getStartTime(), requestDto.getEndTime());
-        team.updateTeam(requestDto.getStartTime(), requestDto.getEndTime(),
-                requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
+        Period period = Period.builder()
+                .startTime(requestDto.getStartTime())
+                .endTime(requestDto.getEndTime())
+                .build();
+        if (!period.isValid() || !period.isInRanged(team.getPeriod()))
+            throw new IllegalArgumentException("Invalid Time");
+        team.updateTeam(period, requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
         team = teamRepo.save(team);
         memberRepo.save(Member.builder()
                 .team(team)
@@ -201,19 +211,6 @@ public class TeamService {
     private Project findProject(String projectName) throws EntityNotFoundException {
         return projectRepo.findProjectByName(projectName).
                 orElseThrow(() -> new EntityNotFoundException("invalid project"));
-    }
-
-    private void checkTimeValid(LocalDateTime startTime, LocalDateTime endTime) throws Exception {
-        if (startTime != null && endTime != null &&
-                (startTime.isAfter(endTime) || startTime.isEqual(endTime)))
-            throw new IllegalArgumentException("Invalid Time");
-    }
-
-    private void checkTimeValid(LocalDateTime preStartTime, LocalDateTime preEndTime, LocalDateTime newStartTime, LocalDateTime newEndTime) throws Exception {
-        if (newStartTime.isAfter(newEndTime) || newStartTime.isEqual(newEndTime))
-            throw new IllegalArgumentException("Invalid Time");
-        if (preStartTime.isAfter(newStartTime) || preEndTime.isBefore(newEndTime))
-            throw new IllegalArgumentException("Out of valid time bound");
     }
 
     public List<TeamLocationDto> findAllLocation() {

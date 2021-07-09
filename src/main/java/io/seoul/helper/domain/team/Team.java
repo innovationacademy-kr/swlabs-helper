@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +22,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
-    @Column
-    private LocalDateTime startTime;
-
-    @Column
-    private LocalDateTime endTime;
+    @Embedded
+    private Period period;
 
     @Column(nullable = false)
     private Long maxMemberCount;
@@ -48,19 +44,16 @@ public class Team {
         return new Long(members.size());
     }
 
-    
-    public void updateTeam(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount,
-                           TeamLocation location, Project project) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+
+    public void updateTeam(Period period, Long maxMemberCount, TeamLocation location, Project project) {
+        this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;
         this.project = project;
     }
 
-    public void updateTeamReady(LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public void updateTeamReady(Period period, Long maxMemberCount) {
+        this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.status = TeamStatus.READY;
     }
@@ -70,10 +63,9 @@ public class Team {
     }
 
     @Builder
-    public Team(Long id, LocalDateTime startTime, LocalDateTime endTime, Long maxMemberCount,
+    public Team(Long id, Period period, Long maxMemberCount,
                 TeamLocation location, TeamStatus status, Project project) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;
         this.status = status;
