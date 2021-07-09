@@ -38,7 +38,18 @@ public class TeamService {
     private final MailSenderService mailSenderService;
 
     @Transactional
-    public TeamResponseDto createNewTeamWish(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
+    public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
+        if (requestDto.getMemberRole() == MemberRole.MENTOR) {
+            return createNewTeamMentor(currentUser, requestDto);
+        }
+        if (requestDto.getMemberRole() == MemberRole.MENTEE) {
+            return createNewTeamMentee(currentUser, requestDto);
+        }
+        throw new IllegalArgumentException("MemberRole is null.");
+    }
+
+    @Transactional
+    public TeamResponseDto createNewTeamMentee(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = findUser(currentUser);
         Project project = findProject(requestDto.getProjectId());
         Period period = Period.builder()
@@ -47,12 +58,34 @@ public class TeamService {
                 .build();
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
-        Team team = requestDto.toEntity(project);
+        Team team = requestDto.toEntity(project, TeamStatus.WAITING);
         team = teamRepo.save(team);
         Member member = Member.builder()
                 .team(team)
                 .user(user)
                 .role(MemberRole.MENTEE)
+                .creator(true)
+                .build();
+        memberRepo.save(member);
+        return new TeamResponseDto(team);
+    }
+
+    @Transactional
+    public TeamResponseDto createNewTeamMentor(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
+        User user = findUser(currentUser);
+        Project project = findProject(requestDto.getProjectId());
+        Period period = Period.builder()
+                .startTime(requestDto.getStartTime())
+                .endTime(requestDto.getEndTime())
+                .build();
+        if (!period.isValid())
+            throw new IllegalArgumentException("Invalid Time");
+        Team team = requestDto.toEntity(project, TeamStatus.READY);
+        team = teamRepo.save(team);
+        Member member = Member.builder()
+                .team(team)
+                .user(user)
+                .role(MemberRole.MENTOR)
                 .creator(true)
                 .build();
         memberRepo.save(member);

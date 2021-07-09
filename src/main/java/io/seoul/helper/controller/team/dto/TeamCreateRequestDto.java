@@ -1,5 +1,6 @@
 package io.seoul.helper.controller.team.dto;
 
+import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.project.Project;
 import io.seoul.helper.domain.team.Period;
 import io.seoul.helper.domain.team.Team;
@@ -22,6 +23,7 @@ public class TeamCreateRequestDto {
     private TeamLocation location;
     private Long maxMemberCount;
     private Long projectId;
+    private MemberRole memberRole;
 
     @Builder
     public TeamCreateRequestDto(LocalDateTime startTime, LocalDateTime endTime, TeamLocation location,
@@ -31,9 +33,10 @@ public class TeamCreateRequestDto {
         this.location = location;
         this.maxMemberCount = maxMemberCount;
         this.projectId = projectId;
+        this.memberRole = memberRole;
     }
 
-    public Team toEntity(Project project) {
+    public Team toEntity(Project project, TeamStatus teamStatus) {
         Period period = Period.builder()
                 .startTime(startTime)
                 .endTime(endTime)
@@ -42,7 +45,7 @@ public class TeamCreateRequestDto {
                 .period(period)
                 .location(location)
                 .maxMemberCount(maxMemberCount)
-                .status(TeamStatus.WAITING)
+                .status(teamStatus)
                 .maxMemberCount(maxMemberCount)
                 .project(project)
                 .build();
