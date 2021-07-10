@@ -6,16 +6,25 @@
 <head>
     <title>Create team</title>
     <!-- rangeSlider Plugin CSS file with desired skin-->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    <th:block layout:fragment="custom-head">
+        <!-- Plugin CSS file with desired ski n-->
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+        <!-- datepicker -->
+        <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+    </th:block>
 </head>
 
 <div layout:fragment="custom-content">
     <div class="page_title">
         <h2>팀 만들기</h2>
-        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다. 세부사항을 확인하고 멘토로써 참여할 수 있습니다.<br/>
-            멘토로 참여하게 되면 팀이 성사됩니다.</p>
+        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다.</p>
+        <p>세부사항을 확인하고 멘토로써 참여할 수 있습니다. 멘티 목록에서 멘토로 참여하게 되면 팀이 성사됩니다.<br/>
+            또는 <b>멘토링 하기</b> 버튼을 통해서 원하는 멘토링을 개설하고 바로 멘토로써 멘티를 받을 수 있습니다.</p>
     </div>
+    <button type="button" class="btn btn-primary" onclick="onclick_create_team()">
+        멘토링 하기 (멘토)
+    </button>
     <hr/>
     <!-- Modal -->
     <div th:replace="fragment/team_modal :: modal"></div>
@@ -100,6 +109,20 @@
 <div layout:fragment="custom-footer">
     <div th:replace="fragment/team_modal :: script"></div>
     <script>
+        function onclick_create_team() {
+            team_modal_update({
+                mode: "CREATE_TEAMWISH_MENTOR", // for mentor
+                ajax_req_info: {
+                    url: "./api/v1/team",
+                    type: "POST",
+                    success: function () {
+                        window.location.href = '/set_time';
+                    }
+                }
+            });
+            team_modal_show();
+        }
+
         function onclick_detail_team(team) {
             team_modal_update({
                 team: team,

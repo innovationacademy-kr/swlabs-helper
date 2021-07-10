@@ -23,7 +23,7 @@ public class TeamApiController {
     public ResultResponseDto create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
         TeamResponseDto data;
         try {
-            data = teamService.createNewTeamWish(user, requestDto);
+            data = teamService.createNewTeam(user, requestDto);
         } catch (Exception e) {
             log.error("failed to create new teamWish : " + e.getMessage() + "\n\n" + e.getCause());
             return ResultResponseDto.builder()
