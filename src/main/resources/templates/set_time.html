@@ -18,13 +18,14 @@
 <div layout:fragment="custom-content">
     <div class="page_title">
         <h2>시간 설정</h2>
-        <p>원하는 멘토링을 설정할 수 있습니다. 과목과 시간, 그리고 날짜를 지정하면 멘토링이 개설됩니다.<br/>
-            이후 개설된 멘토링은 멘토가 멘토링을 지정하면 팀이 성사됩니다.</p>
+        <p>원하는 멘토링을 설정할 수 있습니다. <b>멘토링 받기</b> 버튼을 눌러 과목과 시간, 그리고 날짜를 지정하면 멘토링이 개설됩니다.<br/>
+            이후 개설된 멘토링은 멘토가 멘토링을 지정하면 팀이 성사되고 멘티를 추가모집할 수 있습니다.</p>
     </div>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" onclick="onclick_create_team()">
-        새로운 스케줄
+        멘토링 받기 (멘티)
     </button>
+    <hr/>
     <!-- Modal -->
     <div th:replace="fragment/team_modal :: modal"></div>
     <div th:replace="fragment/alert_modal :: modal"></div>
@@ -108,7 +109,7 @@
     <script>
         function onclick_create_team() {
             team_modal_update({
-                mode: "CREATE_TEAMWISH",
+                mode: "CREATE_TEAMWISH_MENTEE", // for mentee
                 ajax_req_info: {
                     url: "./api/v1/team",
                     type: "POST",
