@@ -55,7 +55,7 @@
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="input_datepicker" class="form-label">날짜</label>
-                                <input id="input_datepicker" class="form-control" required/>
+                                <input id="input_datepicker" class="form-control" required autocomplete="off"/>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" onclick="submit_team()">생성</button>
+                <button type="button" class="btn btn-primary" id="team_modal_btn_submit" onclick="submit_team()">생성
+                </button>
             </div>
         </div>
     </div>
@@ -147,6 +148,21 @@
 
         const time_rangeslider = $("#input_time_rangeslider").data("ionRangeSlider");
 
+
+        function set_team_modal_datepicker() {
+            $('#input_datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'yyyy-mm-dd',
+                minDate: function () {
+                    const date = new Date();
+                    return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                },
+                footer: true
+            });
+            // datepicker의 bootstrap4 의존성으로 인한 ui 수정
+            $('#input_datepicker').next().attr('role', 'icon');
+        }
+
         function set_team_modal_info(team) {
             if (locations == undefined)
                 locations = getLocations();
@@ -200,7 +216,12 @@
                 $('#select_location').attr("disabled", "true");
                 $('#input_datepicker').attr('readonly', 'true');
                 $('#input_max_member_count').attr('readonly', 'true');
+                $('#team_modal_btn_submit').attr('disabled', 'true');
+                time_rangeslider.update({
+                    disable: true
+                });
             } else if (mode == "CREATE_TEAMWISH") {
+                set_team_modal_datepicker();
                 return;
             }
         }

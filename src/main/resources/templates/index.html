@@ -5,9 +5,17 @@
       layout:decorator="layout/default_layout.html" th:with="currentPage='index'">
 <head>
     <title>Home</title>
+    <th:block layout:fragment="custom-head">
+        <!-- Plugin CSS file with desired ski n-->
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+        <!-- datepicker -->
+        <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+    </th:block>
 </head>
 
 <div layout:fragment="custom-content">
+    <div th:replace="fragment/team_modal :: modal"></div>
     <div th:if="${user == null}">
         <!-- Guest Mode -->
         <div class="p-3 mt-3 border rounded bg-dark bg-gradient">
@@ -80,7 +88,10 @@
                             <p class="card-text">
                                 <span th:text="${team.location.getName()}"></span>
                             </p>
-                            <button type="button" class="btn btn-primary">상세 보기</button>
+                            <button type="button" class="btn btn-primary" th:onclick="onclick_detail_team([[${team}]])">
+                                상세
+                                보기
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -134,5 +145,17 @@
         </div>
 
     </div>
+</div>
+<div layout:fragment="custom-footer">
+    <div th:replace="fragment/team_modal :: script"></div>
+    <script>
+        function onclick_detail_team(team) {
+            team_modal_update({
+                team: team,
+                mode: "READONLY_TEAM"
+            });
+            team_modal_show();
+        }
+    </script>
 </div>
 </html>
