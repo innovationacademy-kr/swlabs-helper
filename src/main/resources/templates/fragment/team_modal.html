@@ -204,6 +204,8 @@
             $('#create_team_form').attr('team_id', team.teamId);
         }
 
+        var memberRole;
+
         function set_team_modal_mode(mode) {
             if (mode == "CREATE_TEAM") {
                 $('#select_project').attr("disabled", "true");
@@ -218,8 +220,13 @@
                 time_rangeslider.update({
                     disable: true
                 });
-            } else if (mode == "CREATE_TEAMWISH") {
+            } else if (mode == "CREATE_TEAMWISH_MENTEE") {
                 set_team_modal_datepicker();
+                memberRole = "MENTEE";
+                return;
+            } else if (mode == "CREATE_TEAMWISH_MENTOR") {
+                set_team_modal_datepicker();
+                memberRole = "MENTOR"
                 return;
             }
         }
@@ -263,7 +270,8 @@
                         endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
                         location: location,
                         maxMemberCount: parseInt(maxMemberCount),
-                        projectId: projectId
+                        projectId: projectId,
+                        memberRole: memberRole
                     }),
                     dataType: "JSON",
                     contentType: 'application/json',
