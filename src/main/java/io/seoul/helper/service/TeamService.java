@@ -15,6 +15,7 @@ import io.seoul.helper.repository.project.ProjectRepository;
 import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class TeamService {
     private final UserRepository userRepo;
@@ -128,7 +130,7 @@ public class TeamService {
         List<Team> teams = teamRepo.findTeamsByStatusNotAndEndTimeLessThan(TeamStatus.END, currentTime);
 
         if (teams.isEmpty()) {
-            throw new EntityNotFoundException("nothing to change teams");
+            throw new EntityNotFoundException("Nothing to change teams");
         }
         for (Team team : teams) {
             team.updateTeamEnd();
@@ -184,25 +186,30 @@ public class TeamService {
     @Transactional
     public Page<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         Page<Team> teams;
-        Pageable pageable = PageRequest.of(
-                requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
+        try {
+            Pageable pageable = PageRequest.of(
+                    requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
 
-        if (requestDto.getNickname() != null) {
-            List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
+            if (requestDto.getNickname() != null) {
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
 
-            teams = teamRepo.findTeamsByTeamIdIn(
-                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                    requestDto.getLocation(), teamIds, pageable);
-        } else if (requestDto.getExcludeNickname() != null) {
-            List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
+                teams = teamRepo.findTeamsByTeamIdIn(
+                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                        requestDto.getLocation(), teamIds, pageable);
+            } else if (requestDto.getExcludeNickname() != null) {
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
 
-            teams = teamRepo.findTeamsByTeamIdNotIn(
-                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                    requestDto.getLocation(), teamIds, pageable);
-        } else {
-            teams = teamRepo.findTeamsByQueryParameters(
-                    requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                    requestDto.getLocation(), pageable);
+                teams = teamRepo.findTeamsByTeamIdNotIn(
+                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                        requestDto.getLocation(), teamIds, pageable);
+            } else {
+                teams = teamRepo.findTeamsByQueryParameters(
+                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                        requestDto.getLocation(), pageable);
+            }
+        } catch (Exception e) {
+            log.error("failed to find teams : " + e.getMessage() + "\n\n" + e.getCause());
+            return null;
         }
         return teams.map(team -> new TeamResponseDto(team));
     }
