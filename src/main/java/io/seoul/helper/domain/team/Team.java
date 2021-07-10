@@ -52,9 +52,7 @@ public class Team {
         this.project = project;
     }
 
-    public void updateTeamReady(Period period, Long maxMemberCount) {
-        this.period = period;
-        this.maxMemberCount = maxMemberCount;
+    public void updateTeamReady() {
         this.status = TeamStatus.READY;
     }
 
