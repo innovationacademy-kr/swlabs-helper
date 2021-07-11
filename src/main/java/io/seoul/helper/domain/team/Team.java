@@ -50,9 +50,27 @@ public class Team {
         this.maxMemberCount = maxMemberCount;
         this.location = location;
         this.project = project;
+        this.updateTeamReady();
     }
 
-    public void updateTeamReady() {
+    public void outTeam() {
+        Long currentCount = this.getCurrentMemberCount();
+        if (this.getCurrentMemberCount().equals(this.maxMemberCount)) {
+            this.updateTeamReady();
+        }
+    }
+
+    public void joinTeam() {
+        if (this.getCurrentMemberCount().equals(this.maxMemberCount - 1)) {
+            this.updateTeamFull();
+        }
+    }
+
+    private void updateTeamFull() {
+        this.status = TeamStatus.FULL;
+    }
+
+    private void updateTeamReady() {
         this.status = TeamStatus.READY;
     }
 
