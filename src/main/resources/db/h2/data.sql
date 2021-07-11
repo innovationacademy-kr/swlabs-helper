@@ -96,3 +96,25 @@ insert into member (id, team_id, user_id, role, creator)
 values (17, 9, 2, 'MENTEE', 0);
 insert into member (id, team_id, user_id, role, creator)
 values (18, 9, 3, 'MENTOR', 0);
+
+
+---
+insert into team (id, start_time, end_time, location, max_member_count, status, project_id)
+values (10, '2021-07-11 09:00:00', '2021-07-11 12:00:00', 'ONLINE', 3, 'WAITING', 1);
+insert into team (id, start_time, end_time, location, max_member_count, status, project_id)
+values (11, '2021-07-12 09:00:00', '2021-07-12 12:00:00', 'ONLINE', 3, 'WAITING', 1);
+insert into team (id, start_time, end_time, location, max_member_count, status, project_id)
+values (12, '2021-07-13 09:00:00', '2021-07-13 12:00:00', 'ONLINE', 3, 'READY', 1);
+insert into team (id, start_time, end_time, location, max_member_count, status, project_id)
+values (13, '2021-07-14 09:00:00', '2021-07-14 12:00:00', 'ONLINE', 3, 'READY', 1);
+
+insert into member (id, team_id, user_id, role, creator)
+values (19, 10, 9, 'MENTEE', 1); -- 내가 있고 내가 생성
+insert into member (id, team_id, user_id, role, creator)
+values (20, 11, 2, 'MENTEE', 1); -- 내가 없고
+insert into member (id, team_id, user_id, role, creator)
+values (21, 12, 9, 'MENTOR', 1); -- 내가 멘토 내가 생성
+insert into member (id, team_id, user_id, role, creator)
+values (22, 13, 2, 'MENTOR', 1);
+-- 내가 없고
+---
