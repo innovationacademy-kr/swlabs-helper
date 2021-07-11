@@ -33,31 +33,31 @@ values (4, 'get_next_line');
 /*Team*/
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (1, '2021-07-03 13:00:00', '2021-07-03 15:00:00', 'GAEPO', 3, 'READY', 2);
+values (1, '2021-08-03 13:00:00', '2021-08-03 15:00:00', 'GAEPO', 3, 'READY', 2);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (2, '2021-07-04 13:00:00', '2021-07-04 18:00:00', 'ONLINE', 4, 'WAITING', 3);
+values (2, '2021-08-04 13:00:00', '2021-08-04 18:00:00', 'ONLINE', 4, 'WAITING', 3);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (3, '2021-07-04 11:00:00', '2021-07-04 19:00:00', 'SEOCHO', 4, 'READY', 4);
+values (3, '2021-08-04 11:00:00', '2021-08-04 19:00:00', 'SEOCHO', 4, 'READY', 4);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (4, '2021-07-04 13:00:00', '2021-07-04 15:00:00', 'GAEPO', 4, 'WAITING', 2);
+values (4, '2021-08-04 13:00:00', '2021-08-04 15:00:00', 'GAEPO', 4, 'WAITING', 2);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (5, '2021-07-01 13:00:00', '2021-07-01 15:00:00', 'ONLINE', 3, 'FULL', 2);
+values (5, '2021-08-01 13:00:00', '2021-08-01 15:00:00', 'ONLINE', 3, 'FULL', 2);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (6, '2021-07-06 15:00:00', '2021-07-06 16:00:00', 'GAEPO', 3, 'WAITING', 3);
+values (6, '2021-08-06 15:00:00', '2021-08-06 16:00:00', 'GAEPO', 3, 'WAITING', 3);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (7, '2021-07-10 13:00:00', '2021-07-10 15:00:00', 'ONLINE', 10, 'READY', 4);
+values (7, '2021-08-10 13:00:00', '2021-08-10 15:00:00', 'ONLINE', 10, 'READY', 4);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (8, '2021-07-10 12:00:00', '2021-07-10 15:00:00', 'ONLINE', 3, 'WAITING', 4);
+values (8, '2021-08-10 12:00:00', '2021-08-10 15:00:00', 'ONLINE', 3, 'WAITING', 4);
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
-values (9, '2021-06-30 09:00:00', '2021-06-30 12:00:00', 'ONLINE', 3, 'END', 1);
+values (9, '2021-08-30 09:00:00', '2021-08-30 12:00:00', 'ONLINE', 3, 'END', 1);
 
 /*member*/
 insert into member (id, team_id, user_id, role, creator)
