@@ -192,8 +192,14 @@
 
             const $memberList = $('.member_list');
             $memberList.empty();
-            team.members.forEach((member) => $memberList.append(
-                '<li class="list-group-item">' + member.nickname + '</li>'))
+            team.members.forEach((member) => {
+                if (member.memberRole == "멘토") {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '' +
+                        ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span> </li>');
+                } else {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '</li>');
+                }
+            })
 
             if (loc_id != 0) { // Enum TeamLocation NONE id
                 $('#select_location').attr('disabled', 'true');
