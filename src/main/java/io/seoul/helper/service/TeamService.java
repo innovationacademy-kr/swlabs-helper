@@ -105,7 +105,7 @@ public class TeamService {
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-        if (!period.isValid() || !period.isInRanged(team.getPeriod()))
+        if (!period.isValid() || !team.getPeriod().isInRanged(period))
             throw new IllegalArgumentException("Invalid Time");
         team.updateTeam(period, requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
         team = teamRepo.save(team);
@@ -170,6 +170,8 @@ public class TeamService {
         Team team = findTeam(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
+        if (team.getStatus() != TeamStatus.READY)
+            throw new Exception("This team is already running");
         team.outTeam();
         teamRepo.save(team);
         memberRepo.delete(member);
@@ -203,9 +205,16 @@ public class TeamService {
             } else if (requestDto.getExcludeNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
 
-                teams = teamRepo.findTeamsByTeamIdNotIn(
-                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                        requestDto.getLocation(), teamIds, pageable);
+                if (teamIds.isEmpty()) {
+                    teams = teamRepo.findTeamsByQueryParameters(
+                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getLocation(), pageable);
+                } else {
+                    teams = teamRepo.findTeamsByTeamIdNotIn(
+                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getLocation(), teamIds, pageable);
+                }
+
             } else {
                 teams = teamRepo.findTeamsByQueryParameters(
                         requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),

@@ -17,10 +17,10 @@
 
 <div layout:fragment="custom-content">
     <div class="page_title">
-        <h2>팀 만들기</h2>
-        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다.</p>
-        <p>세부사항을 확인하고 멘토로써 참여할 수 있습니다. 멘티 목록에서 멘토로 참여하게 되면 팀이 성사됩니다.<br/>
-            또는 <b>멘토링 하기</b> 버튼을 통해서 원하는 멘토링을 개설하고 바로 멘토로써 멘티를 받을 수 있습니다.</p>
+        <h2>멘토 신청</h2>
+        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다.<br/>
+            <b>세부사항을 확인</b>하고 멘토로써 참여할 수 있습니다. 멘티 목록에서 멘토로 참여하게 되면 팀이 성사됩니다.</p>
+        <p>또는 <b>멘토링 하기</b> 버튼을 통해서 원하는 멘토링을 개설하고 바로 멘토로써 멘티를 받을 수 있습니다.</p>
     </div>
     <button type="button" class="btn btn-primary" onclick="onclick_create_team()">
         멘토링 하기 (멘토)
@@ -29,7 +29,7 @@
     <!-- Modal -->
     <div th:replace="fragment/team_modal :: modal"></div>
     <!-- Content-->
-    <h2>멘티 목록</h2>
+    <h2>멘토를 기다리는 멘티 목록</h2>
     <div class="list-container">
         <table class="table">
             <thead>

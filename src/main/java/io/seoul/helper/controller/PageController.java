@@ -96,6 +96,7 @@ public class PageController {
         dto.setNickname(user.getNickname());
         dto.setCreateor(true);
         dto.setOffset(offset);
+        dto.setStatus(TeamStatus.WAITING);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
         model.addAttribute("teams", teams);
         model.addAttribute("projects", projectService.findAllProjects());
