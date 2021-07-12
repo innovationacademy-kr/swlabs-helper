@@ -55,7 +55,8 @@
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="input_datepicker" class="form-label">날짜</label>
-                                <input id="input_datepicker" class="form-control" required autocomplete="off"/>
+                                <input id="input_datepicker" class="form-control" required autocomplete="off"
+                                       disabled="disabled"/>
                             </div>
                         </div>
                     </div>
@@ -159,6 +160,15 @@
             });
             // datepicker의 bootstrap4 의존성으로 인한 ui 수정
             $('#input_datepicker').next().attr('role', 'icon');
+            $('#input_datepicker').removeAttr('readonly');
+            $('#input_datepicker').removeAttr('disabled');
+        }
+
+        function remove_datepicker() {
+            $('#input_datepicker').datepicker('destroy');
+            $('#input_datepicker').next().remove();
+            $('#input_datepicker').addClass('form-control');
+            $('#input_datepicker').attr('disabled', 'disabled');
         }
 
         function set_team_modal_info(team) {
@@ -210,6 +220,30 @@
             $('#create_team_form').attr('team_id', team.teamId);
         }
 
+        function reset_team_modal_info() {
+            if (locations == undefined)
+                locations = getLocations();
+
+            time_rangeslider.update({
+                min: timeToTS(moment(new Date(s_year, s_month, s_date, 0, 0, 1))),
+                max: timeToTS(moment(new Date(s_year, s_month, s_date + 1, 0, 0, 0))),
+                from: timeToTS(moment(new Date(s_year, s_month, s_date, 6, 0, 0))),
+                to: timeToTS(moment(new Date(s_year, s_month, s_date, 18, 0, 0)))
+            })
+
+            const selected_opt_project = $("#select_project option[value='1']");
+            selected_opt_project.attr("selected", "selected");
+
+            const selected_opt_location = $("#select_location option[value='1']");
+            selected_opt_location.attr("selected", "selected");
+
+            const $memberList = $('.member_list');
+            $memberList.empty();
+
+            $('#input_max_member_count').val(2);
+            $('#create_team_form').attr('team_id', -1);
+        }
+
         var memberRole;
 
         function set_team_modal_mode(mode) {
@@ -217,20 +251,28 @@
                 $('#select_project').attr("disabled", "true");
                 $('#input_datepicker').attr('readonly', 'true');
                 $('#input_max_member_count').attr('readonly', 'true');
+                remove_datepicker();
             } else if (mode == "READONLY_TEAM") {
                 $('#select_project').attr("disabled", "true");
                 $('#select_location').attr("disabled", "true");
                 $('#input_datepicker').attr('readonly', 'true');
                 $('#input_max_member_count').attr('readonly', 'true');
                 $('#team_modal_btn_submit').attr('disabled', 'true');
+                remove_datepicker();
                 time_rangeslider.update({
                     disable: true
                 });
             } else if (mode == "CREATE_TEAMWISH_MENTEE") {
+                $('#select_project').removeAttr("disabled");
+                $('#select_location').removeAttr("disabled");
+                $('#input_max_member_count').removeAttr('readonly');
                 set_team_modal_datepicker();
                 memberRole = "MENTEE";
                 return;
             } else if (mode == "CREATE_TEAMWISH_MENTOR") {
+                $('#select_project').removeAttr("disabled");
+                $('#select_location').removeAttr("disabled");
+                $('#input_max_member_count').removeAttr('readonly');
                 set_team_modal_datepicker();
                 memberRole = "MENTOR"
                 return;
@@ -241,6 +283,7 @@
             if (data == undefined) return;
             if (data.mode != undefined) set_team_modal_mode(data.mode)
             if (data.team != undefined) set_team_modal_info(data.team)
+            else reset_team_modal_info();
             if (data.ajax_req_info != undefined) ajax_req_info = data.ajax_req_info
         }
 
