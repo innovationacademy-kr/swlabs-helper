@@ -20,15 +20,84 @@ values (9, 'minkang@student.42seoul.kr', 'Mincheol Kang', 'minkang', 'https://cd
         'ADMIN');
 
 /*project*/
-insert
-into project (id, name)
-values (1, 'custom');
+-- 순서 부여 기준은 시계방향 입니다.
+
+-- custom
 insert into project (id, name)
-values (2, 'ft_libft');
+values (1, 'custom');
+
+-- 0 circle
+insert into project (id, name)
+values (2, 'Libft');
+
+-- 1 circle
 insert into project (id, name)
 values (3, 'ft_printf');
 insert into project (id, name)
 values (4, 'get_next_line');
+insert into project (id, name)
+values (5, 'Born2beroot');
+
+-- 2 circle
+insert into project (id, name)
+values (6, 'minitalk');
+insert into project (id, name)
+values (7, 'pipex');
+insert into project (id, name)
+values (8, 'so_long');
+insert into project (id, name)
+values (9, 'FdF');
+insert into project (id, name)
+values (10, 'fract-ol');
+insert into project (id, name)
+values (11, 'push_swap');
+
+-- 3 circle
+insert into project (id, name)
+values (12, 'minishell');
+insert into project (id, name)
+values (13, 'Philosophers');
+
+-- 4 circle
+insert into project (id, name)
+values (14, 'CPP Module 00');
+insert into project (id, name)
+values (15, 'CPP Module 01');
+insert into project (id, name)
+values (16, 'CPP Module 02');
+insert into project (id, name)
+values (17, 'CPP Module 03');
+insert into project (id, name)
+values (18, 'CPP Module 04');
+insert into project (id, name)
+values (19, 'CPP Module 05');
+insert into project (id, name)
+values (20, 'CPP Module 06');
+insert into project (id, name)
+values (21, 'CPP Module 07');
+insert into project (id, name)
+values (22, 'CPP Module 08');
+insert into project (id, name)
+values (23, 'NetPractice');
+insert into project (id, name)
+values (24, 'cub3d');
+insert into project (id, name)
+values (25, 'miniRT');
+
+-- 5 circle
+insert into project (id, name)
+values (26, 'Inception');
+insert into project (id, name)
+values (27, 'ft_containers');
+insert into project (id, name)
+values (28, 'webserv');
+insert into project (id, name)
+values (29, 'ft_irc');
+
+-- 6 circle
+insert into project (id, name)
+values (30, 'ft_transcendence');
+
 
 /*Team*/
 insert into team (id, start_time, end_time, location, max_member_count, status,
