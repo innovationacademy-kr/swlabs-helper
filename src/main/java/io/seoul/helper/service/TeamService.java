@@ -105,7 +105,7 @@ public class TeamService {
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-        if (!period.isValid() || !period.isInRanged(team.getPeriod()))
+        if (!period.isValid() || !team.getPeriod().isInRanged(period))
             throw new IllegalArgumentException("Invalid Time");
         team.updateTeam(period, requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
         team = teamRepo.save(team);
