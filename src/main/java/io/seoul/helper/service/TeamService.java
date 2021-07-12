@@ -203,9 +203,16 @@ public class TeamService {
             } else if (requestDto.getExcludeNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
 
-                teams = teamRepo.findTeamsByTeamIdNotIn(
-                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
-                        requestDto.getLocation(), teamIds, pageable);
+                if (teamIds.isEmpty()) {
+                    teams = teamRepo.findTeamsByQueryParameters(
+                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getLocation(), pageable);
+                } else {
+                    teams = teamRepo.findTeamsByTeamIdNotIn(
+                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getLocation(), teamIds, pageable);
+                }
+
             } else {
                 teams = teamRepo.findTeamsByQueryParameters(
                         requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
