@@ -127,6 +127,9 @@ values (8, '2021-08-10 12:00:00', '2021-08-10 15:00:00', 'ONLINE', 3, 'WAITING',
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id)
 values (9, '2021-08-30 09:00:00', '2021-08-30 12:00:00', 'ONLINE', 3, 'END', 1);
+insert into team (id, start_time, end_time, location, max_member_count, status,
+                  project_id)
+values (10, '2021-08-22 09:00:00', '2021-08-22 12:00:00', 'ONLINE', 2, 'WAITING', 1);
 
 /*member*/
 insert into member (id, team_id, user_id, role, creator)
@@ -165,3 +168,5 @@ insert into member (id, team_id, user_id, role, creator)
 values (17, 9, 2, 'MENTEE', 0);
 insert into member (id, team_id, user_id, role, creator)
 values (18, 9, 3, 'MENTOR', 0);
+insert into member (id, team_id, user_id, role, creator)
+values (19, 10, 4, 'MENTEE', 1);
