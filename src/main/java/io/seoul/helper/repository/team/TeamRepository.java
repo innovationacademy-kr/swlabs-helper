@@ -18,7 +18,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime)")
+            "(:endTime is null or t.period.endTime > :endTime)")
     Page<Team> findTeamsByQueryParameters(LocalDateTime startTime, LocalDateTime endTime,
                                           TeamStatus status, TeamLocation location, Pageable pageable);
 
@@ -26,7 +26,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime) and " +
+            "(:endTime is null or t.period.endTime > :endTime) and " +
             "t.id IN :teamId")
     Page<Team> findTeamsByTeamIdIn(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
                                    TeamLocation location, List<Long> teamId, Pageable pageable);
@@ -35,7 +35,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime) and " +
+            "(:endTime is null or t.period.endTime > :endTime) and " +
             "t.id NOT IN :teamId")
     Page<Team> findTeamsByTeamIdNotIn(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
                                       TeamLocation location, List<Long> teamId, Pageable pageable);
