@@ -170,6 +170,8 @@ public class TeamService {
         Team team = findTeam(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
+        if (team.getStatus() != TeamStatus.READY)
+            throw new Exception("This team is already running");
         team.outTeam();
         teamRepo.save(team);
         memberRepo.delete(member);

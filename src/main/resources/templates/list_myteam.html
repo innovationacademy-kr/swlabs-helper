@@ -65,8 +65,16 @@
                           th:text="${team.getNicknameByMentor()}">멘토</span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger" th:onclick="onclick_modal_alert([[${team}]])">탈퇴
-                    </button>
+                    <div th:if="${user != null}">
+                        <button type="button" class="btn btn-danger"
+                                th:if="${team.getNicknameByMentor() != user.getNickname()}"
+                                th:onclick="onclick_modal_alert([[${team}]])">팀 탈퇴
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                th:if="${team.getNicknameByMentor() == user.getNickname()}"
+                                th:onclick="onclick_modal_alert([[${team}]])" disabled>팀 탈퇴
+                        </button>
+                    </div>
                 </td>
             </tr>
             </tbody>
