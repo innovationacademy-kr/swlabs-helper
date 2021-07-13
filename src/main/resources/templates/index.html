@@ -71,7 +71,7 @@
     <div th:if="${user != null}">
         <!-- Login Mode -->
         <h3>나의 팀</h3>
-        <div class="p-3 mt-3 border rounded bg-secondary bg-gradient">
+        <div class="mt-3 border rounded bg-secondary bg-gradient">
             <!--                <div class="d-flex flex-wrap">-->
             <div class="row">
                 <div th:if="${myTeams.getTotalElements()} == 0" class="text-center m-3">
@@ -79,11 +79,17 @@
                     <button type="button" class="btn btn-primary" onclick="location.href='/set_time'">멘티 신청</button>
                     <button type="button" class="btn btn-primary" onclick="location.href='/list_team'">멘토 신청</button>
                 </div>
-                <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 card m-3">
+                <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 border rounded bg-light">
                     <div class="card-body text-center">
-                        <h5 th:text="${team.project.getName()}" class="card-title">Project Title</h5>
-                        <h6 th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"
-                            class="card-subtitle mb-2 text-muted">2021/07/04</h6>
+                        <h5 class="card-title">
+                            <span th:text="${team.project.getName()}">Project Title</span>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <span class="rounded-pill bg-secondary text-light p-1"
+                                  th:text="'#'+${team.project.getId()}"
+                                  style="font-size: 0.65em"></span>
+                            <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span>
+                        </h6>
                         <div class="mt-2">
                             <p class="card-text">
                                 <span th:text="${team.location.getName()}"></span>
