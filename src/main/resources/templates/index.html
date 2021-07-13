@@ -77,8 +77,11 @@
             <div class="row m-0">
                 <div th:if="${myTeams.getTotalElements()} == 0" class="text-center m-3">
                     <h2 class="text-light">지금 팀을 만들고 멘토링에 참여해보세요!</h2>
+                    <button type="button" class="btn btn-primary" onclick="location.href='https://bit.ly/3hy02ya'">가이드
+                    </button>
                     <button type="button" class="btn btn-primary" onclick="location.href='/set_time'">멘티 신청</button>
                     <button type="button" class="btn btn-primary" onclick="location.href='/list_team'">멘토 신청</button>
+
                 </div>
                 <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 border rounded bg-light">
                     <div class="card-body text-center">
