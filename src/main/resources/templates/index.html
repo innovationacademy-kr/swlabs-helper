@@ -51,8 +51,9 @@
                     <td>
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
-                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
-                    </td>
+                        <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
+                        <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
+                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span></td>
                     <td th:text="${team.maxMemberCount}">3</td>
                     <td th:text="${team.currentMemberCount}">2</td>
                     <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
@@ -130,7 +131,9 @@
                     <td>
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
-                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                        <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
+                        <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
+                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                     </td>
                     <td th:text="${team.maxMemberCount}">3</td>
                     <td th:text="${team.currentMemberCount}">2</td>
