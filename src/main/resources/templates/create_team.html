@@ -60,7 +60,9 @@
                     <div th:if="${team.startTime} AND ${team.endTime}">
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
-                        <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                        <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
+                        <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
+                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                     </div>
                     <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
