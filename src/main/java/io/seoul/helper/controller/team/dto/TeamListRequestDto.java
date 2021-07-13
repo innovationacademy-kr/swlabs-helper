@@ -18,6 +18,7 @@ public class TeamListRequestDto {
     private boolean isCreateor;
     private TeamStatus status;
     private TeamLocation location;
+    private String sort;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startTimePrevious;
@@ -28,5 +29,6 @@ public class TeamListRequestDto {
     public TeamListRequestDto() {
         this.offset = 0;
         this.limit = 10;
+        this.sort = "id,desc";
     }
 }

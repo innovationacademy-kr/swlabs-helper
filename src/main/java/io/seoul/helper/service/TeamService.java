@@ -190,12 +190,30 @@ public class TeamService {
         teamRepo.delete(team);
     }
 
+    private Pageable toPageable(int offset, int limit, String sort) throws Exception {
+        Pageable pageable;
+        try {
+            if (sort.contains(",")) {
+                String[] sortOption = sort.split(",");
+                pageable = PageRequest.of(
+                        offset, limit,
+                        sortOption[1].equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
+                        sortOption[0]);
+            } else {
+                pageable = PageRequest.of(
+                        offset, limit, Sort.Direction.DESC, sort);
+            }
+        } catch (Exception e) {
+            throw new Exception("failed to Pageable");
+        }
+        return pageable;
+    }
+
     @Transactional
     public Page<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         Page<Team> teams;
         try {
-            Pageable pageable = PageRequest.of(
-                    requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
+            Pageable pageable = toPageable(requestDto.getOffset(), requestDto.getLimit(), requestDto.getSort());
 
             if (requestDto.getNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
