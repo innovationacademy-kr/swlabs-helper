@@ -163,8 +163,14 @@
         function onclick_detail_team(team) {
             team_viewer_modal_update({
                 team: team,
-                type: 'DELETE',
-                mode: "READONLY_OUT"
+                mode: "READONLY_OUT",
+                ajax_req_info: {
+                    url: './api/v1/team/' + team.teamId + '/out',
+                    type: 'DELETE',
+                    success: function () {
+                        window.location.href = '/';
+                    }
+                }
             });
             team_viewer_modal_show();
         }

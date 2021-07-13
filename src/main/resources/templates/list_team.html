@@ -123,7 +123,14 @@
         function onclick_join(team) {
             team_viewer_modal_update({
                 team: team,
-                mode: "READONLY_JOIN"
+                mode: "READONLY_JOIN",
+                ajax_req_info: {
+                    url: './api/v1/team/' + team.teamId + '/join',
+                    type: 'POST',
+                    success: function () {
+                        window.location.href = '/list_team';
+                    }
+                }
             });
             team_viewer_modal_show();
         }
