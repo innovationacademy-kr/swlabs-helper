@@ -41,6 +41,7 @@ public class PageController {
 
             TeamListRequestDto myTeamDto = new TeamListRequestDto();
             myTeamDto.setNickname(user.getNickname());
+            myTeamDto.setSort("period.startTime,asc");
             Page<TeamResponseDto> myTeams = teamService.findTeams(myTeamDto);
             model.addAttribute("myTeams", myTeams);
 
