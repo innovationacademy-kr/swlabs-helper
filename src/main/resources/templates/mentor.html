@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default_layout.html" th:with="currentPage='create_team'">
+      layout:decorator="layout/default_layout.html" th:with="currentPage='mentor'">
 <head>
     <title>Create team</title>
     <!-- rangeSlider Plugin CSS file with desired skin-->
@@ -27,7 +27,8 @@
     </button>
     <hr/>
     <!-- Modal -->
-    <div th:replace="fragment/team_modal :: modal"></div>
+    <div th:replace="fragment/team_create_modal :: modal"></div>
+    <div th:replace="fragment/team_matching_modal :: modal"></div>
     <!-- Content-->
     <h2>멘토를 기다리는 멘티 목록</h2>
     <div class="list-container">
@@ -69,7 +70,7 @@
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
                     <button type="button" class="btn btn-primary"
-                            th:onclick="onclick_detail_team([[${team}]])">
+                            th:onclick="onclick_matching_team([[${team}]])">
                         세부사항 확인
                     </button>
                 </td>
@@ -84,23 +85,23 @@
              aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=0)}" th:text="'<<'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=0)}" th:text="'<<'"></a>
                 </li>
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${start - 2})}" th:text="'<'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${start - 2})}" th:text="'<'"></a>
                 </li>
                 <li class="page-item"
                     th:each="offset: ${#numbers.sequence(start, end)}"
                     th:classappend="${offset == teams.number + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/create_team?(offset=${offset - 1})}"
+                    <a class="page-link" th:href="@{/mentor?(offset=${offset - 1})}"
                        th:text="${offset}"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${start + maxPage - 1})}"
+                    <a class="page-link" th:href="@{/mentor?(offset=${start + maxPage - 1})}"
                        th:text="'>'"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${teams.totalPages - 1})}"
+                    <a class="page-link" th:href="@{/mentor?(offset=${teams.totalPages - 1})}"
                        th:text="'>>'"></a>
                 </li>
             </ul>
@@ -109,35 +110,27 @@
 </div>
 
 <div layout:fragment="custom-footer">
-    <div th:replace="fragment/team_modal :: script"></div>
+    <div th:replace="fragment/team_create_modal :: script"></div>
+    <div th:replace="fragment/team_matching_modal :: script"></div>
     <script>
         function onclick_create_team() {
-            team_modal_update({
+            team_create_modal_update({
                 mode: "CREATE_TEAMWISH_MENTOR", // for mentor
                 ajax_req_info: {
                     url: "./api/v1/team",
                     type: "POST",
                     success: function () {
-                        window.location.href = '/set_time';
-                    }
+                        window.location.href = '/mentor';
+                    },
+                    member_role: 'MENTOR'
                 }
             });
-            team_modal_show();
+            team_create_modal_show();
         }
 
-        function onclick_detail_team(team) {
-            team_modal_update({
-                team: team,
-                mode: "CREATE_TEAM",
-                ajax_req_info: {
-                    url: "./api/v1/team/" + team.teamId,
-                    type: "PUT",
-                    success: function () {
-                        window.location.href = '/create_team';
-                    }
-                }
-            });
-            team_modal_show();
+        function onclick_matching_team(team) {
+            team_matching_modal_update(team);
+            team_matching_modal_show();
         }
     </script>
 </div>

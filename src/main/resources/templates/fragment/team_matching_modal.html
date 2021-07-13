@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Modal -->
+<div th:fragment="modal" class="modal fade" id="team_matching_modal" tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="team_matching_modal_title">멘토 팀 생성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h2> 내용 </h2>
+                <form class="m-3 needs-validation" method="post" id="matching_team_form">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tm_select_project" class="form-label">프로젝트 명칭</label>
+                                <select class="form-select" id="tm_select_project" required disabled>
+                                    <option selected disabled="disabled" value="">프로젝트 선택하기</option>
+                                    <option th:each="proj : ${projects}"
+                                            th:value="${proj.id}"
+                                            th:utext="${proj.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tm_select_location" class="form-label">장소</label>
+                                <select class="form-select" id="tm_select_location" required disabled>
+                                    <option selected value="">장소 선택하기</option>
+                                    <option th:each="loc : ${locations}"
+                                            th:value="${loc.id}"
+                                            th:utext="${loc.name}"></option>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tm_input_max_member_count" class="form-label">참여 인원</label>
+                                <input class="form-control" id="tm_input_max_member_count" th:type="number" th:min="2"
+                                       required disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tm_input_datepicker" class="form-label">날짜</label>
+                                <input id="tm_input_datepicker" class="form-control" autocomplete="off"
+                                       required disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="demo__body py-3">
+                            <input id="tm_input_time_rangeslider" type="text">
+                        </div>
+                    </div>
+                </form>
+                <div class="members_in_team">
+                    <h5>현재 멘티 목록</h5>
+                    <ul class="member_list list-group">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="team_matching_modal_btn_submit"
+                        onclick="submit_matching_team()">
+                    생성
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:fragment="script">
+    <script>
+        var tm_team = undefined;
+        var tm_startDate = new Date(2020, 0, 1, 0, 0, 1).valueOf();
+
+        $("#tm_input_time_rangeslider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            grid: true,
+            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
+            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
+            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
+            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            step: 900000,
+            prettify: function (ts) {
+                var m = moment(ts);
+
+                m.toISOString();
+                if (m.hour() == 0 && tm_startDate < ts)
+                    return "24:00";
+                else
+                    return m.format("HH:mm");
+            }
+        }).addClass("irs-hidden-input");
+
+        const tm_time_rangeslider = $("#tm_input_time_rangeslider").data("ionRangeSlider");
+
+        function set_team_matching_modal_info(team) {
+            if (locations == undefined)
+                locations = getLocations();
+
+            tm_team = team;
+            reset_team_matching_modal_info();
+            tm_startDate = team.startTime;
+
+            const s_moment = moment(team.startTime);
+            s_year = s_moment.year();
+            s_month = s_moment.month();
+            s_date = s_moment.date();
+            tm_time_rangeslider.update({
+                min: timeToTS(moment(new Date(team.startTime))),
+                max: timeToTS(moment(new Date(team.endTime))),
+                from: timeToTS(moment(new Date(team.startTime))),
+                to: timeToTS(moment(new Date(team.endTime)))
+            })
+
+            var loc_id = 0;
+            locations.some(element => {
+                if (element.code == team.location) {
+                    loc_id = element.id
+                    return true;
+                }
+            });
+
+            const selected_opt_project = $("#tm_select_project option[value='" + team.project.id + "']");
+            selected_opt_project.attr("selected", "selected");
+
+            const selected_opt_location = $("#tm_select_location option[value='" + loc_id + "']");
+            selected_opt_location.attr("selected", "selected");
+
+            const $memberList = $('.member_list');
+            $memberList.empty();
+            team.members.forEach((member) => {
+                if (member.memberRole == "멘토") {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '' +
+                        ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span> </li>');
+                } else {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '</li>');
+                }
+            })
+
+            if (loc_id != 0) { // Enum TeamLocation NONE id
+                $('#select_location').attr('disabled', 'true');
+            }
+
+            $('#tm_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
+            $('#tm_input_max_member_count').val(team.maxMemberCount);
+        }
+
+        function reset_team_matching_modal_info() {
+            if (locations == undefined)
+                locations = getLocations();
+
+            $('#tm_select_location option').each(function () {
+                $(this).removeAttr("selected");
+            });
+            $('#tm_select_project option').each(function () {
+                $(this).removeAttr("selected");
+            });
+
+            const $memberList = $('.member_list');
+            $memberList.empty();
+
+            $('#tm_input_max_member_count').val(2);
+        }
+
+        function team_matching_modal_update(team) {
+            if (team == undefined) return;
+            if (team != undefined) set_team_matching_modal_info(team);
+        }
+
+        function team_matching_modal_show() {
+            var detail_modal = new bootstrap.Modal(document.getElementById('team_matching_modal'))
+            detail_modal.show();
+        }
+
+
+        /* ajax action func*/
+        function submit_matching_team() {
+            const form = document.getElementById('matching_team_form');
+            if (form.checkValidity() == false) {
+                form.classList.add("was-validated");
+                return;
+            }
+            const projectId = $('#tm_select_project option:selected').attr("value");
+            const location = $('#tm_select_location option:selected').attr("value");
+            const maxMemberCount = $('#tm_input_max_member_count').val();
+            const date = moment($('#tm_input_datepicker').val());
+            var [start, end] = $('#tm_input_time_rangeslider').val().split(';')
+            const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
+            start = parseInt(start) - offset_date;
+            end = parseInt(end) - offset_date;
+            const start_date = date.valueOf() + start;
+            const end_date = date.valueOf() + end;
+
+            if (location == 0) {
+                alert("구체적인 장소를 선택해주세요");
+                return;
+            }
+
+            $.ajax({
+                    type: 'PUT',
+                    url: './api/v1/team/' + tm_team.teamId,
+                    data: JSON.stringify({
+                        startTime: moment(start_date).format("YYYY-MM-DDTHH:mm"),
+                        endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
+                        location: location,
+                        maxMemberCount: parseInt(maxMemberCount),
+                        projectId: projectId,
+                        memberRole: 'MENTOR'
+                    }),
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert("생성에 실패했습니다.\n" + data.message);
+                        } else {
+                            alert("등록되었습니다.");
+                            window.location.href = '/mentor';
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("서버상의 문제로 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
+</div>
+</html>

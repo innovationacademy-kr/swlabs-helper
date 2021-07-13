@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Modal -->
+<div th:fragment="modal" class="modal fade" id="team_create_modal" tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="team_create_modal_title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h2> 내용 </h2>
+                <form class="m-3 needs-validation" method="post" id="create_team_form">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tc_select_project" class="form-label">프로젝트 명칭</label>
+                                <select class="form-select" id="tc_select_project" required>
+                                    <option selected disabled="disabled" value="">프로젝트 선택하기</option>
+                                    <option th:each="proj : ${projects}"
+                                            th:value="${proj.id}"
+                                            th:utext="${proj.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tc_select_location" class="form-label">장소</label>
+                                <select class="form-select" id="tc_select_location" required>
+                                    <option selected value="">장소 선택하기</option>
+                                    <option th:each="loc : ${locations}"
+                                            th:value="${loc.id}"
+                                            th:utext="${loc.name}"></option>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tc_input_max_member_count" class="form-label">참여 인원</label>
+                                <input class="form-control" id="tc_input_max_member_count" th:type="number"
+                                       th:min="2" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tc_input_datepicker" class="form-label">날짜</label>
+                                <input id="tc_input_datepicker" class="form-control" required autocomplete="off"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="demo__body py-3">
+                            <input id="tc_input_time_rangeslider" type="text">
+                        </div>
+                    </div>
+                </form>
+                <div class="members_in_team">
+                    <h5>현재 멘티 목록</h5>
+                    <ul class="member_list list-group">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="team_create_modal_btn_submit"
+                        onclick="submit_create_team()">
+                    생성
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:fragment="script">
+    <script>
+        var tc_ajax_req_info = undefined;
+        var tc_team = undefined;
+        var tc_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+
+        $("#tc_input_time_rangeslider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            grid: true,
+            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
+            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
+            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
+            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            step: 900000,
+            prettify: function (ts) {
+                var m = moment(ts);
+
+                m.toISOString();
+                if (m.hour() == 0 && tc_startDate < ts)
+                    return "24:00";
+                else
+                    return m.format("HH:mm");
+            }
+        }).addClass("irs-hidden-input");
+
+        const tc_time_rangeslider = $("#tc_input_time_rangeslider").data("ionRangeSlider");
+
+        function set_team_create_modal_datepicker() {
+            $('#tc_input_datepicker').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'yyyy-mm-dd',
+                minDate: function () {
+                    const date = new Date();
+                    return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+                },
+                footer: true
+            });
+            // datepicker의 bootstrap4 의존성으로 인한 ui 수정
+            $('#tc_input_datepicker').next().attr('role', 'icon');
+        }
+
+        set_team_create_modal_datepicker();
+
+        function reset_team_create_modal_info() {
+            if (locations == undefined)
+                locations = getLocations();
+
+            $('#tc_select_location option').each(function () {
+                $(this).removeAttr("selected");
+            });
+            $('#tc_select_project option').each(function () {
+                $(this).removeAttr("selected");
+            });
+
+            const $memberList = $('.member_list');
+            $memberList.empty();
+
+            tc_time_rangeslider.update({
+                min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 1))),
+                max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
+                from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
+                to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0)))
+            })
+
+            const selected_opt_project = $("#tc_select_project option[value='']");
+            selected_opt_project.attr("selected", "selected");
+
+            /*
+            const selected_opt_location = $("#tc_select_location option[value='']");
+            selected_opt_location.attr("selected", "selected");
+             */
+            // 코로나 4단계로 인한 loc 고정
+            $('#tc_select_location option').each(function () {
+                if ($(this).val() == '3')
+                    $(this).attr("selected", "selected");
+            });
+            $('#tc_select_location').attr('disabled', 'disabled');
+
+
+            $('#tc_input_max_member_count').val(2);
+        }
+
+        function set_team_create_modal_mode(mode) {
+            if (mode == "CREATE_TEAMWISH_MENTEE") {
+                $('#team_create_modal_title').text('멘티 스케줄 생성');
+            } else if (mode == "CREATE_TEAMWISH_MENTOR") {
+                $('#team_create_modal_title').text('멘토 팀 생성');
+            }
+        }
+
+        function team_create_modal_update(data) {
+            reset_team_create_modal_info();
+            if (data == undefined) return;
+            if (data.mode != undefined) set_team_create_modal_mode(data.mode);
+            if (data.ajax_req_info != undefined) tc_ajax_req_info = data.ajax_req_info;
+        }
+
+        function team_create_modal_show() {
+            var detail_modal = new bootstrap.Modal(document.getElementById('team_create_modal'))
+            detail_modal.show();
+        }
+
+
+        /* ajax action func*/
+        function submit_create_team() {
+            const form = document.getElementById('create_team_form');
+            if (form.checkValidity() == false) {
+                form.classList.add("was-validated");
+                return;
+            }
+            const projectId = $('#tc_select_project option:selected').attr("value");
+            const location = $('#tc_select_location option:selected').attr("value");
+            const maxMemberCount = $('#tc_input_max_member_count').val();
+            const date = moment($('#tc_input_datepicker').val());
+            var [start, end] = $('#tc_input_time_rangeslider').val().split(';')
+            const offset_date = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+            start = parseInt(start) - offset_date;
+            end = parseInt(end) - offset_date;
+            const start_date = date.valueOf() + start;
+            const end_date = date.valueOf() + end;
+
+            $.ajax({
+                    type: tc_ajax_req_info.type,
+                    url: tc_ajax_req_info.url,
+                    data: JSON.stringify({
+                        startTime: moment(start_date).format("YYYY-MM-DDTHH:mm"),
+                        endTime: moment(end_date).format("YYYY-MM-DDTHH:mm"),
+                        location: location,
+                        maxMemberCount: parseInt(maxMemberCount),
+                        projectId: projectId,
+                        memberRole: tc_ajax_req_info.member_role
+                    }),
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert("생성에 실패했습니다.\n" + data.message);
+                        } else {
+                            alert("등록되었습니다.")
+                            tc_ajax_req_info.success();
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("서버상의 문제로 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
+</div>
+</html>
