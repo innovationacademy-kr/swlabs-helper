@@ -208,6 +208,11 @@
             const start_date = date.valueOf() + start;
             const end_date = date.valueOf() + end;
 
+            if (location == 0) {
+                alert("구체적인 장소를 선택해주세요");
+                return;
+            }
+
             $.ajax({
                     type: 'PUT',
                     url: './api/v1/team/' + tm_team.teamId,
