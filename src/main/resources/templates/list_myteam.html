@@ -55,7 +55,9 @@
                 <td>
                     <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                     ~
-                    <span th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
+                    <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
+                          th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                 </td>
                 <td th:text="${team.maxMemberCount}">3</td>
                 <td th:text="${team.currentMemberCount}">2</td>
@@ -68,11 +70,11 @@
                 <td>
                     <div th:if="${user != null}">
                         <button type="button" class="btn btn-danger"
-                                th:if="${team.getNicknameByMentor() != user.getNickname()}"
+                                th:if="${#strings.contains(team.status, 'READY')}"
                                 th:onclick="onclick_modal_alert([[${team}]])">팀 탈퇴
                         </button>
                         <button type="button" class="btn btn-danger"
-                                th:if="${team.getNicknameByMentor() == user.getNickname()}"
+                                th:unless="${#strings.contains(team.status, 'READY')}"
                                 th:onclick="onclick_modal_alert([[${team}]])" disabled>팀 탈퇴
                         </button>
                     </div>

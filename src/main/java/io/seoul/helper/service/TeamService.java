@@ -108,6 +108,7 @@ public class TeamService {
         if (!period.isValid() || !team.getPeriod().isInRanged(period))
             throw new IllegalArgumentException("Invalid Time");
         team.updateTeam(period, requestDto.getMaxMemberCount(), requestDto.getLocation(), project);
+        team.joinTeam();
         team = teamRepo.save(team);
         memberRepo.save(Member.builder()
                 .team(team)
@@ -189,35 +190,53 @@ public class TeamService {
         teamRepo.delete(team);
     }
 
+    private Pageable toPageable(int offset, int limit, String sort) throws Exception {
+        Pageable pageable;
+        try {
+            if (sort.contains(",")) {
+                String[] sortOption = sort.split(",");
+                pageable = PageRequest.of(
+                        offset, limit,
+                        sortOption[1].equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
+                        sortOption[0]);
+            } else {
+                pageable = PageRequest.of(
+                        offset, limit, Sort.Direction.DESC, sort);
+            }
+        } catch (Exception e) {
+            throw new Exception("failed to Pageable");
+        }
+        return pageable;
+    }
+
     @Transactional
     public Page<TeamResponseDto> findTeams(TeamListRequestDto requestDto) {
         Page<Team> teams;
         try {
-            Pageable pageable = PageRequest.of(
-                    requestDto.getOffset(), requestDto.getLimit(), Sort.Direction.DESC, "id");
+            Pageable pageable = toPageable(requestDto.getOffset(), requestDto.getLimit(), requestDto.getSort());
 
             if (requestDto.getNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
 
                 teams = teamRepo.findTeamsByTeamIdIn(
-                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                         requestDto.getLocation(), teamIds, pageable);
             } else if (requestDto.getExcludeNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
 
                 if (teamIds.isEmpty()) {
                     teams = teamRepo.findTeamsByQueryParameters(
-                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                             requestDto.getLocation(), pageable);
                 } else {
                     teams = teamRepo.findTeamsByTeamIdNotIn(
-                            requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                             requestDto.getLocation(), teamIds, pageable);
                 }
 
             } else {
                 teams = teamRepo.findTeamsByQueryParameters(
-                        requestDto.getStartTime(), requestDto.getEndTime(), requestDto.getStatus(),
+                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                         requestDto.getLocation(), pageable);
             }
         } catch (Exception e) {
