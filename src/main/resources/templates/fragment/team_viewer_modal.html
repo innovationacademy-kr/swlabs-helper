@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Modal -->
+<div th:fragment="modal" class="modal fade" id="team_viewer_modal" tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="team_viewer_modal_title">팀 상세보기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h2> 내용 </h2>
+                <form class="m-3 needs-validation" method="post" id="team_viewer_modal_form">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tv_select_project" class="form-label">프로젝트 명칭</label>
+                                <select class="form-select" id="tv_select_project" required disabled>
+                                    <option selected disabled value="">프로젝트 선택하기</option>
+                                    <option th:each="proj : ${projects}"
+                                            th:value="${proj.id}"
+                                            th:utext="${proj.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tv_select_location" class="form-label">장소</label>
+                                <select class="form-select" id="tv_select_location" required disabled>
+                                    <option selected value="">장소 선택하기</option>
+                                    <option th:each="loc : ${locations}"
+                                            th:value="${loc.id}"
+                                            th:utext="${loc.name}"></option>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tv_input_max_member_count" class="form-label">참여 인원</label>
+                                <input class="form-control" id="tv_input_max_member_count" th:type="number" th:min="2"
+                                       required disabled>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="tv_input_datepicker" class="form-label">날짜</label>
+                                <input id="tv_input_datepicker" class="form-control" autocomplete="off"
+                                       required disabled/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="demo__body py-3">
+                            <input id="tv_input_time_rangeslider" type="text">
+                        </div>
+                    </div>
+                </form>
+                <div class="members_in_team">
+                    <h5>현재 멘티 목록</h5>
+                    <ul class="member_list list-group">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="tv_team_viewer_modal_btn_submit"
+                        onclick="submit_viewer_team()">참여
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:fragment="script">
+    <script>
+        var tv_ajax_req_info = undefined;
+        var tv_team = undefined;
+        var tv_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+
+        $("#tv_input_time_rangeslider").ionRangeSlider({
+            skin: "round",
+            type: "double",
+            grid: true,
+            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
+            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
+            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
+            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            step: 900000,
+            prettify: function (ts) {
+                var m = moment(ts);
+
+                m.toISOString();
+                if (m.hour() == 0 && tv_startDate < ts)
+                    return "24:00";
+                else
+                    return m.format("HH:mm");
+            },
+            to_fixed: true,
+            from_fixed: true
+        }).addClass("irs-hidden-input");
+
+        const tv_time_rangeslider = $("#tv_input_time_rangeslider").data("ionRangeSlider");
+
+        function set_team_viewer_modal_info(team) {
+            reset_team_viewer_modal_info();
+
+            tv_startDate = team.startTime;
+            tv_team = team;
+
+            if (locations == undefined)
+                locations = getLocations();
+
+            let minDate = moment(team.startTime).set({
+                hour: 0,
+                minute: 0,
+                second: 0
+            });
+            tv_startDate = minDate.valueOf();
+
+            tv_time_rangeslider.update({
+                min: timeToTS(minDate),
+                max: timeToTS(minDate.add(1, 'days')),
+                from: timeToTS(moment(new Date(team.startTime))),
+                to: timeToTS(moment(new Date(team.endTime))),
+                prettify: function (ts) {
+                    var m = moment(ts);
+
+                    m.toISOString();
+                    if (m.hour() == 0 && tv_startDate < ts)
+                        return "24:00";
+                    else
+                        return m.format("HH:mm");
+                }
+            });
+
+            var loc_id = 0;
+            locations.some(element => {
+                if (element.code == team.location) {
+                    loc_id = element.id
+                    return true;
+                }
+            });
+
+            const selected_opt_project = $("#tv_select_project option[value='" + team.project.id + "']");
+            selected_opt_project.attr("selected", "selected");
+
+            const selected_opt_location = $("#tv_select_location option[value='" + loc_id + "']");
+            selected_opt_location.attr("selected", "selected");
+
+            const $memberList = $('.member_list');
+            team.members.forEach((member) => {
+                if (member.memberRole == "멘토") {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '' +
+                        ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span> </li>');
+                } else {
+                    $memberList.append('<li class="list-group-item">' + member.nickname + '</li>');
+                }
+            })
+
+            $('#tv_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
+            $('#tv_input_max_member_count').val(team.maxMemberCount);
+            $('#tv_create_team_form').attr('team_id', team.teamId);
+        }
+
+        function reset_team_viewer_modal_info() {
+            if (locations == undefined)
+                locations = getLocations();
+
+            if (locations == undefined)
+                locations = getLocations();
+
+            $('#tm_select_location option').each(function () {
+                $(this).removeAttr("selected");
+            });
+            $('#tm_select_project option').each(function () {
+                $(this).removeAttr("selected");
+            });
+
+            const $memberList = $('.member_list');
+            $memberList.empty();
+
+            const selected_opt_project = $("#tv_select_project option[value='']");
+            selected_opt_project.attr("selected", "selected");
+
+            const selected_opt_location = $("#tv_select_location option[value='']");
+            selected_opt_location.attr("selected", "selected");
+
+            $('#tv_input_max_member_count').val(2);
+        }
+
+        function set_team_viewer_modal_mode(mode) {
+            if (mode == "READONLY_JOIN") {
+                $('#tv_team_viewer_modal_btn_submit').text('참가');
+            } else if (mode == 'READONLY_OUT') {
+                $('#tv_team_viewer_modal_btn_submit').text('탈퇴');
+            }
+        }
+
+        function team_viewer_modal_update(data) {
+            if (data == undefined) return;
+            if (data.mode != undefined) set_team_viewer_modal_mode(data.mode);
+            if (data.team != undefined) set_team_viewer_modal_info(data.team);
+            if (data.ajax_req_info != undefined) tv_ajax_req_info = data.ajax_req_info;
+        }
+
+        function team_viewer_modal_show() {
+            var detail_modal = new bootstrap.Modal(document.getElementById('team_viewer_modal'))
+            detail_modal.show();
+        }
+
+        /* ajax action func*/
+        function submit_viewer_team() {
+            $.ajax({
+                    type: tv_ajax_req_info.type,
+                    url: tv_ajax_req_info.url,
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    success: (data) => {
+                        if (data.statusCode != 200) {
+                            alert("처리 도중 문제가 발생했습니다.\n" + data.message);
+                        } else {
+                            alert("정상 처리되었습니다.")
+                            tv_ajax_req_info.success();
+                        }
+                    },
+                    error: (request, status, error) => {
+                        alert("서버상의 문제로 실패했습니다.\n" + request.status + "\nmessage: "
+                            + request.responseText + "\nerror:" + error);
+                    }
+                }
+            )
+        }
+    </script>
+</div>
+</html>

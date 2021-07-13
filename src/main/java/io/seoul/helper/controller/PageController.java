@@ -88,7 +88,7 @@ public class PageController {
         return "list_myteam";
     }
 
-    @GetMapping(value = "/set_time")
+    @GetMapping(value = "/mentee")
     public String time(Model model, @LoginUser SessionUser user,
                        @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
         if (user != null) {
@@ -105,10 +105,10 @@ public class PageController {
         model.addAttribute("teams", teams);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
-        return "set_time";
+        return "mentee";
     }
 
-    @GetMapping(value = "/create_team")
+    @GetMapping(value = "/mentor")
     public String createTeam(Model model, @LoginUser SessionUser user,
                              @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
 
@@ -126,6 +126,6 @@ public class PageController {
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
 
-        return "create_team";
+        return "mentor";
     }
 }

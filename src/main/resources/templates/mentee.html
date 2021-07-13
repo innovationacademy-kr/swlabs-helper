@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default_layout.html" th:with="currentPage='set_time'">
+      layout:decorator="layout/default_layout.html" th:with="currentPage='mentee'">
 <head>
     <title>시간 설정</title>
     <!-- Plugin CSS file with desired skin -->
@@ -27,7 +27,7 @@
     </button>
     <hr/>
     <!-- Modal -->
-    <div th:replace="fragment/team_modal :: modal"></div>
+    <div th:replace="fragment/team_create_modal :: modal"></div>
     <div th:replace="fragment/alert_modal :: modal"></div>
     <!-- list -->
     <div class="list-container">
@@ -85,42 +85,43 @@
              aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=0)}" th:text="'<<'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=0)}" th:text="'<<'"></a>
                 </li>
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${start - 2})}" th:text="'<'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${start - 2})}" th:text="'<'"></a>
                 </li>
                 <li class="page-item"
                     th:each="offset: ${#numbers.sequence(start, end)}"
                     th:classappend="${offset == teams.number + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/create_team?(offset=${offset - 1})}" th:text="${offset}"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${offset - 1})}" th:text="${offset}"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/create_team?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
 <div layout:fragment="custom-footer">
-    <div th:replace="fragment/team_modal :: script"></div>
+    <div th:replace="fragment/team_create_modal :: script"></div>
     <div th:replace="fragment/alert_modal :: script"></div>
     <script>
         function onclick_create_team() {
-            team_modal_update({
+            team_create_modal_update({
                 mode: "CREATE_TEAMWISH_MENTEE", // for mentee
                 ajax_req_info: {
                     url: "./api/v1/team",
                     type: "POST",
                     success: function () {
-                        window.location.href = '/set_time';
-                    }
+                        window.location.href = '/mentee';
+                    },
+                    member_role: "MENTEE"
                 }
             });
-            team_modal_show();
+            team_create_modal_show();
         }
 
         function onclick_delete(team) {
@@ -151,7 +152,7 @@
                         fail: fail_message
                     },
                     success: function () {
-                        window.location.href = '/set_time';
+                        window.location.href = '/mentee';
                     }
                 }
             })
