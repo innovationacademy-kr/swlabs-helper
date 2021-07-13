@@ -20,10 +20,10 @@ public class TeamListRequestDto {
     private TeamLocation location;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime startTime;
+    private LocalDateTime startTimePrevious;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime endTime;
+    private LocalDateTime endTimePrevious;
 
     public TeamListRequestDto() {
         this.offset = 0;

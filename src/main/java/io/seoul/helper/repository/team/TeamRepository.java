@@ -17,27 +17,27 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Query("SELECT t FROM Team t " +
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
-            "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime)")
-    Page<Team> findTeamsByQueryParameters(LocalDateTime startTime, LocalDateTime endTime,
+            "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
+            "(:endTimePrevious is null or t.period.endTime > :endTimePrevious)")
+    Page<Team> findTeamsByQueryParameters(LocalDateTime startTimePrevious, LocalDateTime endTimePrevious,
                                           TeamStatus status, TeamLocation location, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
-            "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime) and " +
+            "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
+            "(:endTimePrevious is null or t.period.endTime > :endTimePrevious) and " +
             "t.id IN :teamId")
-    Page<Team> findTeamsByTeamIdIn(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
+    Page<Team> findTeamsByTeamIdIn(LocalDateTime startTimePrevious, LocalDateTime endTimePrevious, TeamStatus status,
                                    TeamLocation location, List<Long> teamId, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
             "WHERE (:status is null or t.status = :status) and " +
             "(:location is null or t.location = :location) and " +
-            "(:startTime is null or t.period.startTime > :startTime) and " +
-            "(:endTime is null or t.period.endTime < :endTime) and " +
+            "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
+            "(:endTimePrevious is null or t.period.endTime > :endTimePrevious) and " +
             "t.id NOT IN :teamId")
-    Page<Team> findTeamsByTeamIdNotIn(LocalDateTime startTime, LocalDateTime endTime, TeamStatus status,
+    Page<Team> findTeamsByTeamIdNotIn(LocalDateTime startTimePrevious, LocalDateTime endTimePrevious, TeamStatus status,
                                       TeamLocation location, List<Long> teamId, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
