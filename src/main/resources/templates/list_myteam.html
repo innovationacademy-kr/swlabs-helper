@@ -71,12 +71,12 @@
                 <td>
                     <div th:if="${user != null}">
                         <button type="button" class="btn btn-danger"
-                                th:if="${#strings.contains(team.status, 'READY')}"
+                                th:if="${#strings.contains(team.status, 'READY')} and ${team.nicknameByMentor != user.getNickname()}"
                                 th:onclick="onclick_modal_alert([[${team}]])">팀 탈퇴
                         </button>
                         <button type="button" class="btn btn-danger"
-                                th:unless="${#strings.contains(team.status, 'READY')}"
-                                th:onclick="onclick_modal_alert([[${team}]])" disabled>팀 탈퇴
+                                th:unless="${#strings.contains(team.status, 'READY')} and ${team.nicknameByMentor != user.getNickname()}"
+                                disabled>팀 탈퇴
                         </button>
                     </div>
                 </td>
