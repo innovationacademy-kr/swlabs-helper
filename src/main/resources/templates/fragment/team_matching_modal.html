@@ -197,6 +197,11 @@
                 form.classList.add("was-validated");
                 return;
             }
+
+            var before_alert_message = confirm("멘토로써 팀을 생성하면 멘토는 탈퇴할 수 없습니다.\n그래도 계속 하시겠습니까?")
+            if (before_alert_message != true)
+                return;
+
             const projectId = $('#tm_select_project option:selected').attr("value");
             const location = $('#tm_select_location option:selected').attr("value");
             const maxMemberCount = $('#tm_input_max_member_count').val();

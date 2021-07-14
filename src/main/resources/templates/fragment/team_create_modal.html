@@ -165,11 +165,14 @@
             $('#tc_input_max_member_count').val(2);
         }
 
+        var isMentorCreate = 0;
+
         function set_team_create_modal_mode(mode) {
             if (mode == "CREATE_TEAMWISH_MENTEE") {
                 $('#team_create_modal_title').text('멘티 스케줄 생성');
             } else if (mode == "CREATE_TEAMWISH_MENTOR") {
                 $('#team_create_modal_title').text('멘토 팀 생성');
+                isMentorCreate = 1;
             }
         }
 
@@ -193,6 +196,13 @@
                 form.classList.add("was-validated");
                 return;
             }
+
+            if (isMentorCreate == 1) {
+                var before_alert_message = confirm("멘토로써 팀을 생성하면 멘토는 탈퇴할 수 없습니다.\n그래도 계속 하시겠습니까?")
+                if (before_alert_message != true)
+                    return;
+            }
+
             const projectId = $('#tc_select_project option:selected').attr("value");
             const location = $('#tc_select_location option:selected').attr("value");
             const maxMemberCount = $('#tc_input_max_member_count').val();
@@ -222,6 +232,7 @@
                             alert("생성에 실패했습니다.\n" + data.message);
                         } else {
                             alert("등록되었습니다.")
+                            isMentorCreate = 0;
                             tc_ajax_req_info.success();
                         }
                     },
