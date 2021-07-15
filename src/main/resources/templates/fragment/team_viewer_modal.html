@@ -188,7 +188,7 @@
 
             if (team.status == 'WAITING') {
                 let rst = team.members.some((member) => {
-                    return (currentUser.nickname == member.nickname && member.isCreator);
+                    return (currentUser.nickname == member.nickname && member.creator);
                 });
                 if (rst) {
                     $('#tv_team_viewer_modal_btn_submit').text('팀 삭제');
@@ -200,7 +200,7 @@
                     console.log(member);
                     console.log(currentUser);
                     return (currentUser.nickname == member.nickname &&
-                        (member.memberRole == "멘토" || member.isCreator));
+                        (member.memberRole == "멘토" || member.creator));
                 });
                 if (rst) {
                     $('#tv_team_viewer_modal_btn_submit').attr('disabled', 'disabled');
