@@ -128,6 +128,7 @@
                 ajax_req_info: {
                     url: './api/v1/team/' + team.teamId + '/join',
                     type: 'POST',
+                    success_message: '해당 팀에 가입되었습니다.',
                     success: function () {
                         window.location.href = '/list_team';
                     }

@@ -7,9 +7,11 @@ import lombok.Getter;
 public class TeamMemberDto {
     private String nickname;
     private String memberRole;
+    private Boolean isCreator;
 
     public TeamMemberDto(Member member) {
         this.nickname = member.getUser().getNickname();
         this.memberRole = member.getRole().getName();
+        this.isCreator = member.getCreator();
     }
 }

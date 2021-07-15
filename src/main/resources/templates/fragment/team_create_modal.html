@@ -75,7 +75,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                 <button type="button" class="btn btn-primary" id="team_create_modal_btn_submit"
                         onclick="submit_create_team()">
-                    생성
+                    팀 생성
                 </button>
             </div>
         </div>
@@ -169,7 +169,7 @@
 
         function set_team_create_modal_mode(mode) {
             if (mode == "CREATE_TEAMWISH_MENTEE") {
-                $('#team_create_modal_title').text('멘티 스케줄 생성');
+                $('#team_create_modal_title').text('멘티 팀 생성');
             } else if (mode == "CREATE_TEAMWISH_MENTOR") {
                 $('#team_create_modal_title').text('멘토 팀 생성');
                 isMentorCreate = 1;
@@ -231,13 +231,13 @@
                         if (data.statusCode != 200) {
                             alert("생성에 실패했습니다.\n" + data.message);
                         } else {
-                            alert("등록되었습니다.")
+                            alert(tc_ajax_req_info.success_message);
                             isMentorCreate = 0;
                             tc_ajax_req_info.success();
                         }
                     },
                     error: (request, status, error) => {
-                        alert("서버상의 문제로 실패했습니다.\n" + request.status + "\nmessage: "
+                        alert("서버상의 문제로 실패했습니다.\n해당 문제가 지속적으로 발생되면 github issue에 제보해주세요.\n" + request.status + "\nmessage: "
                             + request.responseText + "\nerror:" + error);
                     }
                 }
