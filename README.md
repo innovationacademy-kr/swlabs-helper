@@ -23,7 +23,7 @@ export SECRET42={발급받은 SECRET}
 - 42api를 발급받고 `[application.properties](http://application.properties)` 에서 사용할 `UID42`와 `SECRET42`
   환경변수 등록이 필요합니다. 
 
-### run spring-boot 서버
+### run spring-boot server
 ```bash
 ./mvnw spring-boot:run
 ```
