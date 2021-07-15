@@ -84,17 +84,19 @@
                 </div>
                 <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 border rounded bg-light">
                     <div class="card-body text-center">
-                        <h5 class="card-title">
+                        <h5 class="card-title text-truncate" style="height: 30px;">
+                            <span class="rounded-pill bg-secondary text-light p-1"
+                                  th:text="'#'+${team.getTeamId()}"
+                                  style="font-size: 0.65em"></span>
                             <span th:text="${team.project.getName()}">Project Title</span>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
-                            <span class="rounded-pill bg-secondary text-light p-1"
-                                  th:text="'#'+${team.project.getId()}"
-                                  style="font-size: 0.65em"></span>
+                            <i class="bi bi-calendar-week" style="font-size: 0.85rem;"></i>
                             <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span>
                         </h6>
                         <div class="mt-2">
                             <p class="card-text">
+                                <i class="bi bi-geo-alt-fill" style="font-size: 0.85rem;"></i>
                                 <span th:text="${team.location.getName()}"></span>
                             </p>
                             <button type="button" class="btn btn-primary" th:onclick="onclick_detail_team([[${team}]])">
