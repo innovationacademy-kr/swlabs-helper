@@ -197,8 +197,6 @@
                 }
             } else {
                 let rst = team.members.some((member) => {
-                    console.log(member);
-                    console.log(currentUser);
                     return (currentUser.nickname == member.nickname &&
                         (member.memberRole == "멘토" || member.creator));
                 });
