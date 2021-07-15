@@ -36,7 +36,7 @@
                     <th scope="col">장소</th>
                     <th scope="col">희망 일자</th>
                     <th scope="col">희망 시간</th>
-                    <th scope="col">총 모집 인원</th>
+                    <th scope="col">전체 인원</th>
                     <th scope="col">현재 인원</th>
                     <th scope="col">남은 인원</th>
                     <th scope="col">담당 멘토</th>
@@ -77,24 +77,32 @@
             <div class="row m-0">
                 <div th:if="${myTeams.getTotalElements()} == 0" class="text-center m-3">
                     <h2 class="text-light">지금 팀을 만들고 멘토링에 참여해보세요!</h2>
-                    <button type="button" class="btn btn-primary" onclick="location.href='https://bit.ly/3hy02ya'">가이드
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/mentee'">멘티 신청</button>
-                    <button type="button" class="btn btn-primary" onclick="location.href='/mentor'">멘토 신청</button>
+                    <a class="btn btn-primary btn-floating m-1"
+                       href="https://bit.ly/3hy02ya" target="_blank" role="button">
+                        가이드
+                    </a>
+                    <a class="btn btn-primary btn-floating m-1" href="/mentee" role="button">
+                        멘티 신청
+                    </a>
+                    <a class="btn btn-primary btn-floating m-1" href="/mentor" role="button">
+                        멘토 신청
+                    </a>
                 </div>
                 <div th:each="team : ${myTeams}" class="col-lg-3 col-md-4 col-sm-6 border rounded bg-light">
                     <div class="card-body text-center">
-                        <h5 class="card-title">
+                        <h5 class="card-title text-truncate" style="height: 30px;">
+                            <span class="rounded-pill bg-secondary text-light p-1"
+                                  th:text="'#'+${team.getTeamId()}"
+                                  style="font-size: 0.65em"></span>
                             <span th:text="${team.project.getName()}">Project Title</span>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
-                            <span class="rounded-pill bg-secondary text-light p-1"
-                                  th:text="'#'+${team.project.getId()}"
-                                  style="font-size: 0.65em"></span>
+                            <i class="bi bi-calendar-week" style="font-size: 0.85rem;"></i>
                             <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span>
                         </h6>
                         <div class="mt-2">
                             <p class="card-text">
+                                <i class="bi bi-geo-alt-fill" style="font-size: 0.85rem;"></i>
                                 <span th:text="${team.location.getName()}"></span>
                             </p>
                             <button type="button" class="btn btn-primary" th:onclick="onclick_detail_team([[${team}]])">
@@ -118,7 +126,7 @@
                     <th scope="col">장소</th>
                     <th scope="col">희망 일자</th>
                     <th scope="col">희망 시간</th>
-                    <th scope="col">총 모집 인원</th>
+                    <th scope="col">전체 인원</th>
                     <th scope="col">현재 인원</th>
                     <th scope="col">남은 인원</th>
                     <th scope="col">담당 멘토</th>
