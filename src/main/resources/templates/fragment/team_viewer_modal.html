@@ -101,7 +101,7 @@
                 var m = moment(ts);
 
                 m.toISOString();
-                if (m.hour() == 0 && tv_startDate < ts)
+                if (m.hour() == 0 && m.minute() == 0 && tv_startDate < ts)
                     return "24:00";
                 else
                     return m.format("HH:mm");
@@ -137,7 +137,7 @@
                     var m = moment(ts);
 
                     m.toISOString();
-                    if (m.hour() == 0 && tv_startDate < ts)
+                    if (m.hour() == 0 && m.minute() == 0 && tv_startDate < ts)
                         return "24:00";
                     else
                         return m.format("HH:mm");
