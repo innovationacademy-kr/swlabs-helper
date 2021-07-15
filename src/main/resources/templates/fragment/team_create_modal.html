@@ -28,6 +28,7 @@
                                             th:value="${proj.id}"
                                             th:utext="${proj.name}"></option>
                                 </select>
+                                <div class="invalid-feedback">프로젝트를 선택해주세요.</div>
                             </div>
                         </div>
 
@@ -41,6 +42,7 @@
                                             th:utext="${loc.name}"></option>
                                     </option>
                                 </select>
+                                <div class="invalid-feedback">장소를 선택해주세요.</div>
                             </div>
                         </div>
                     </div>
@@ -49,13 +51,17 @@
                             <div class="mb-3">
                                 <label for="tc_input_max_member_count" class="form-label">참여 인원</label>
                                 <input class="form-control" id="tc_input_max_member_count" th:type="number"
-                                       th:min="2" required>
+                                       th:min="2" th:max="100" pattern="^[0-9]*$" required/>
+                                <div class="invalid-feedback">인원수는 "2 ~ 100" 사이의 숫자값만 입력해주세요.</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="mb-3">
                                 <label for="tc_input_datepicker" class="form-label">날짜</label>
-                                <input id="tc_input_datepicker" class="form-control" required autocomplete="off"/>
+                                <input id="tc_input_datepicker" class="form-control" autocomplete="off"
+                                       pattern="^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$"
+                                       required/>
+                                <div class="invalid-feedback">날짜는 "yyyy-mm-dd" 형식으로 입력해주세요.</div>
                             </div>
                         </div>
                     </div>
@@ -85,8 +91,18 @@
 <div th:fragment="script">
     <script>
         var tc_ajax_req_info = undefined;
-        var tc_team = undefined;
         var tc_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+
+        //input number only number
+        $('.numeric-only').keyup(function (e) {
+            regNumber = /^[0-9]*$/;
+            var str = $(this).val();
+            if (!regNumber.test(str)) {
+                var res = str.substring(0, str.length - 1);
+                $(this).val(res);
+            }
+        });
+
 
         $("#tc_input_time_rangeslider").ionRangeSlider({
             skin: "round",
@@ -101,7 +117,7 @@
                 var m = moment(ts);
 
                 m.toISOString();
-                if (m.hour() == 0 && tc_startDate < ts)
+                if (m.hour() == 0 && m.minute() == 0 && tc_startDate < ts)
                     return "24:00";
                 else
                     return m.format("HH:mm");
@@ -141,7 +157,7 @@
             $memberList.empty();
 
             tc_time_rangeslider.update({
-                min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 1))),
+                min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
                 max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
                 from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
                 to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0)))
