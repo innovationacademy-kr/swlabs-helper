@@ -74,7 +74,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn btn-primary" id="tv_team_viewer_modal_btn_submit"
+                <button type="button" class="btn" id="tv_team_viewer_modal_btn_submit"
                         onclick="submit_viewer_team()">참여
                 </button>
             </div>
@@ -87,6 +87,7 @@
         var tv_ajax_req_info = undefined;
         var tv_team = undefined;
         var tv_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+        var currentUser = undefined;
 
         $("#tv_input_time_rangeslider").ionRangeSlider({
             skin: "round",
@@ -171,6 +172,38 @@
             $('#tv_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
             $('#tv_input_max_member_count').val(team.maxMemberCount);
             $('#tv_create_team_form').attr('team_id', team.teamId);
+
+            $.ajax({
+                    type: 'GET',
+                    url: './api/v1/user/current',
+                    data: null,
+                    dataType: "JSON",
+                    contentType: 'application/json',
+                    async: false,
+                    success: (data) => {
+                        currentUser = data.data;
+                    }
+                }
+            );
+
+            if (team.status == 'WAITING') {
+                let rst = team.members.some((member) => {
+                    return (currentUser.nickname == member.nickname && member.creator);
+                });
+                if (rst) {
+                    $('#tv_team_viewer_modal_btn_submit').text('팀 삭제');
+                    tv_ajax_req_info.url = './api/v1/team/' + team.teamId;
+                    tv_ajax_req_info.success_message = '해당 팀을 삭제했습니다.'
+                }
+            } else {
+                let rst = team.members.some((member) => {
+                    return (currentUser.nickname == member.nickname &&
+                        (member.memberRole == "멘토" || member.creator));
+                });
+                if (rst) {
+                    $('#tv_team_viewer_modal_btn_submit').attr('disabled', 'disabled');
+                }
+            }
         }
 
         function reset_team_viewer_modal_info() {
@@ -197,21 +230,30 @@
             selected_opt_location.attr("selected", "selected");
 
             $('#tv_input_max_member_count').val(2);
+            $('#tv_team_viewer_modal_btn_submit').text('');
+            $('#tv_team_viewer_modal_btn_submit').removeAttr('disabled');
+            $('#tv_team_viewer_modal_btn_submit').removeClass('btn-danger');
+            $('#tv_team_viewer_modal_btn_submit').removeClass('btn-primary');
+
         }
 
         function set_team_viewer_modal_mode(mode) {
             if (mode == "READONLY_JOIN") {
-                $('#tv_team_viewer_modal_btn_submit').text('참가');
+                if ($('#tv_team_viewer_modal_btn_submit').text() == '')
+                    $('#tv_team_viewer_modal_btn_submit').text('팀 가입');
+                $('#tv_team_viewer_modal_btn_submit').addClass('btn-primary');
             } else if (mode == 'READONLY_OUT') {
-                $('#tv_team_viewer_modal_btn_submit').text('탈퇴');
+                if ($('#tv_team_viewer_modal_btn_submit').text() == '')
+                    $('#tv_team_viewer_modal_btn_submit').text('팀 탈퇴');
+                $('#tv_team_viewer_modal_btn_submit').addClass('btn-danger');
             }
         }
 
         function team_viewer_modal_update(data) {
-            if (data == undefined) return;
-            if (data.mode != undefined) set_team_viewer_modal_mode(data.mode);
-            if (data.team != undefined) set_team_viewer_modal_info(data.team);
             if (data.ajax_req_info != undefined) tv_ajax_req_info = data.ajax_req_info;
+            if (data == undefined) return;
+            if (data.team != undefined) set_team_viewer_modal_info(data.team);
+            if (data.mode != undefined) set_team_viewer_modal_mode(data.mode);
         }
 
         function team_viewer_modal_show() {
@@ -231,12 +273,12 @@
                         if (data.statusCode != 200) {
                             alert("처리 도중 문제가 발생했습니다.\n" + data.message);
                         } else {
-                            alert("정상 처리되었습니다.")
+                            alert(tv_ajax_req_info.success_message);
                             tv_ajax_req_info.success();
                         }
                     },
                     error: (request, status, error) => {
-                        alert("서버상의 문제로 실패했습니다.\n" + request.status + "\nmessage: "
+                        alert("서버상의 문제로 실패했습니다.\n해당 문제가 지속적으로 발생되면 github issue에 제보해주세요.\n" + request.status + "\nmessage: "
                             + request.responseText + "\nerror:" + error);
                     }
                 }
