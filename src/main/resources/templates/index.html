@@ -175,6 +175,7 @@
                 ajax_req_info: {
                     url: './api/v1/team/' + team.teamId + '/out',
                     type: 'DELETE',
+                    success_message: '해당 팀에서 탈퇴했습니다.',
                     success: function () {
                         window.location.href = '/';
                     }
