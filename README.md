@@ -4,15 +4,31 @@
 
 # Running locally server
 
-- 로컬에서 실행하기 위한 별도의 DB설정이 필요 없습니다. (H2 Database 사용)
-- 실행전에 42api를 발급받고 `[application.properties](http://application.properties)` 내에 `UID42`와 `SECRET42`
-  설정이 필요합니다. 또는 환경변수로 등록하면 됩니다.
-- 개발 도구에서 Maven프로젝트로 불러오기를 하거나, 아래 Maven wrapper명령어를 통해 실행할 수 있습니다.
+### Java 설치
 
+JDK 1.8 버전을 사용합니다.
+ - [자바 jdk 8 설치 방법 - okdevtv](https://okdevtv.com/mib/java)
+ - java 를 미리 실행 환경에 설치해주세
+
+### DB 설치
+- 로컬에서 실행하기 위한 별도의 DB설정이 필요 없습니다. (H2 Database 사용)
+- 서버 실행 후 `http://localhost:8080/h2-console` 로 데이터베이스를 관리 할 수 있습니다.
+
+### API 키 발급
+```bash
+export SECRET42={발급받은 UID}
+export SECRET42={발급받은 SECRET}
+```
+- 42 api 발급 방법은 [api 발급 가이드](https://www.notion.so/epicarts2/42-API-f817378828524392be3fc4432c780bc3) 를 참고하세요
+- 42api를 발급받고 `[application.properties](http://application.properties)` 에서 사용할 `UID42`와 `SECRET42`
+  환경변수 등록이 필요합니다. 
+
+### run spring-boot server
 ```bash
 ./mvnw spring-boot:run
 ```
 
+- 개발 도구에서 Maven프로젝트로 불러오기를 하거나, 위의 Maven wrapper명령어를 통해 실행할 수 있습니다.
 - 실행 후 `http://localhost:8080`으로 접속할 수 있습니다.
 
 # Server deployment

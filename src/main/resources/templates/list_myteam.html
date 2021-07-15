@@ -40,7 +40,7 @@
                 <th scope="col">장소</th>
                 <th scope="col">희망 일자</th>
                 <th scope="col">희망 시간</th>
-                <th scope="col">총 모집 인원</th>
+                <th scope="col">전체 인원</th>
                 <th scope="col">현재 인원</th>
                 <th scope="col">남은 인원</th>
                 <th scope="col">담당 멘토</th>
@@ -71,11 +71,11 @@
                 <td>
                     <div th:if="${user != null}">
                         <button type="button" class="btn btn-danger"
-                                th:if="${#strings.contains(team.status, 'READY')} and ${team.nicknameByMentor != user.getNickname()}"
+                                th:if="${team.nicknameByMentor != user.getNickname()} and ${team.getNicknameByCreator() != user.getNickname()}"
                                 th:onclick="onclick_modal_alert([[${team}]])">팀 탈퇴
                         </button>
                         <button type="button" class="btn btn-danger"
-                                th:unless="${#strings.contains(team.status, 'READY')} and ${team.nicknameByMentor != user.getNickname()}"
+                                th:unless="${team.nicknameByMentor != user.getNickname()} and ${team.getNicknameByCreator() != user.getNickname()}"
                                 disabled>팀 탈퇴
                         </button>
                     </div>
@@ -123,7 +123,7 @@
             const cancel_btn_text = '취소'
             const submit_btn_text = '탈퇴하기'
 
-            const success_message = "탍퇴되었습니다"
+            const success_message = "탈퇴되었습니다"
             const fail_message = "탈퇴에 실패했습니다"
 
             alert_modal_update({
