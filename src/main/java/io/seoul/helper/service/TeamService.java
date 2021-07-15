@@ -171,11 +171,26 @@ public class TeamService {
         Team team = findTeam(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
-        if (team.getStatus() != TeamStatus.READY)
-            throw new Exception("This team is already running");
+        if (team.getStatus() == TeamStatus.END)
+            throw new Exception("This team is end status");
+        if (team.getStatus() == TeamStatus.WAITING)
+            throw new Exception("This team is waiting status");
+        if (isCreator(member))
+            throw new Exception("Creator can not leave the team");
+        if (isMentor(member)) {
+            throw new Exception("Mentor can not leave the team");
+        }
         team.outTeam();
         teamRepo.save(team);
         memberRepo.delete(member);
+    }
+
+    private boolean isCreator(Member member) {
+        return member.getCreator();
+    }
+
+    private boolean isMentor(Member member) {
+        return member.getRole() == MemberRole.MENTOR;
     }
 
     @Transactional
