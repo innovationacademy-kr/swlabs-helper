@@ -76,4 +76,14 @@ public class TeamResponseDto {
         }
         return optional.get();
     }
+
+    public String getNicknameByCreator() {
+        Optional<String> optional = Optional.of("empty");
+
+        for (TeamMemberDto member : this.members) {
+            if (member.getCreator())
+                return member.getNickname();
+        }
+        return optional.get();
+    }
 }
