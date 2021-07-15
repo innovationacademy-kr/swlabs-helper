@@ -76,7 +76,7 @@
                         </button>
                         <button type="button" class="btn btn-danger"
                                 th:unless="${team.nicknameByMentor != user.getNickname()} and ${team.getNicknameByCreator() != user.getNickname()}"
-                                th:onclick="onclick_modal_alert([[${team}]])" disabled>팀 탈퇴
+                                disabled>팀 탈퇴
                         </button>
                     </div>
                 </td>
