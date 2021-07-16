@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**",
-                        "/login**", "/home**", "/callback/", "/error")//로그인이 없어도 접근 가능한 구역
+                        "/login**", "/home**", "/callback/", "/error", "/favicon.ico")//로그인이 없어도 접근 가능한 구역
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/**")
                 .permitAll()
