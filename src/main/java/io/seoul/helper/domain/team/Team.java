@@ -40,6 +40,9 @@ public class Team {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @Column
+    private String description;
+
     public Long getCurrentMemberCount() {
         return new Long(members.size());
     }
@@ -80,11 +83,12 @@ public class Team {
 
     @Builder
     public Team(Long id, Period period, Long maxMemberCount,
-                TeamLocation location, TeamStatus status, Project project) {
+                TeamLocation location, TeamStatus status, Project project, String description) {
         this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;
         this.status = status;
         this.project = project;
+        this.description = description;
     }
 }

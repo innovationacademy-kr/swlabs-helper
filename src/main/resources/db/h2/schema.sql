@@ -22,6 +22,7 @@ create table team
     start_time       timestamp,
     status           varchar(255),
     project_id       bigint,
+    description      clob,
     primary key (id)
 );
 create table user

@@ -67,7 +67,15 @@
                     </div>
                     <div class="row">
                         <div class="demo__body py-3">
+                            <label class="mb-3">시간</label>
                             <input id="tc_input_time_rangeslider" type="text">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                            <hr/>
+                            <label for="tc_textarea_description" class="form-label">설명</label>
+                            <textarea id="tc_textarea_description" class="form-control"></textarea>
                         </div>
                     </div>
                 </form>
@@ -229,6 +237,7 @@
             end = parseInt(end) - offset_date;
             const start_date = date.valueOf() + start;
             const end_date = date.valueOf() + end;
+            const description = $('#tc_textarea_description').val();
 
             $.ajax({
                     type: tc_ajax_req_info.type,
@@ -239,7 +248,8 @@
                         location: location,
                         maxMemberCount: parseInt(maxMemberCount),
                         projectId: projectId,
-                        memberRole: tc_ajax_req_info.member_role
+                        memberRole: tc_ajax_req_info.member_role,
+                        description: description
                     }),
                     dataType: "JSON",
                     contentType: 'application/json',

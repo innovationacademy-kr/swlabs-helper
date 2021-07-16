@@ -62,8 +62,14 @@
                     </div>
                     <div class="row">
                         <div class="demo__body py-3">
+                            <label class="mb-3">시간</label>
                             <input id="tm_input_time_rangeslider" type="text">
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <hr/>
+                        <label for="tm_pre_description" class="form-label">설명</label>
+                        <pre id="tm_pre_description"></pre>
                     </div>
                 </form>
                 <div class="members_in_team">
@@ -160,6 +166,7 @@
 
             $('#tm_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
             $('#tm_input_max_member_count').val(team.maxMemberCount);
+            $('#tm_pre_description').text(team.description);
         }
 
         function reset_team_matching_modal_info() {
