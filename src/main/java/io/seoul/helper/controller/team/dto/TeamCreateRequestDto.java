@@ -23,16 +23,18 @@ public class TeamCreateRequestDto {
     private TeamLocation location;
     private Long maxMemberCount;
     private Long projectId;
+    private String description;
     private MemberRole memberRole;
 
     @Builder
     public TeamCreateRequestDto(LocalDateTime startTime, LocalDateTime endTime, TeamLocation location,
-                                Long maxMemberCount, Long projectId) {
+                                Long maxMemberCount, Long projectId, String description, MemberRole memberRole) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.location = location;
         this.maxMemberCount = maxMemberCount;
         this.projectId = projectId;
+        this.description = description;
         this.memberRole = memberRole;
     }
 
@@ -48,6 +50,7 @@ public class TeamCreateRequestDto {
                 .status(teamStatus)
                 .maxMemberCount(maxMemberCount)
                 .project(project)
+                .description(description)
                 .build();
         return entity;
     }

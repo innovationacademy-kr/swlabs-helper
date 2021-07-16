@@ -11,7 +11,13 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="team_matching_modal_title">멘토 등록</h5>
+                <h5 class="modal-title" id="team_matching_modal_title">
+                    <span class="align-middle">멘토 등록</span>
+                    <a class="btn btn-primary btn-floating"
+                       href="https://bit.ly/3injgpA" target="_blank" role="button">
+                        <i class="bi bi-question-circle"></i>
+                    </a>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
@@ -62,8 +68,14 @@
                     </div>
                     <div class="row">
                         <div class="demo__body py-3">
+                            <label class="mb-3">시간</label>
                             <input id="tm_input_time_rangeslider" type="text">
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <hr/>
+                        <label for="tm_pre_description" class="form-label">설명</label>
+                        <pre id="tm_pre_description"></pre>
                     </div>
                 </form>
                 <div class="members_in_team">
@@ -147,10 +159,14 @@
             $memberList.empty();
             team.members.forEach((member) => {
                 if (member.memberRole == "멘토") {
-                    $memberList.append('<li class="list-group-item">' + member.nickname + '' +
-                        ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span> </li>');
+                    $memberList.append('<li class="list-group-item">' +
+                        '<a class="text-dark" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
+                        ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span>' +
+                        '</li>');
                 } else {
-                    $memberList.append('<li class="list-group-item">' + member.nickname + '</li>');
+                    $memberList.append('<li class="list-group-item">' +
+                        '<a class="text-dark" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
+                        '</li>');
                 }
             })
 
@@ -160,6 +176,7 @@
 
             $('#tm_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
             $('#tm_input_max_member_count').val(team.maxMemberCount);
+            $('#tm_pre_description').text(team.description);
         }
 
         function reset_team_matching_modal_info() {
