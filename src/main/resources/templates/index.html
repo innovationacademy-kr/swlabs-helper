@@ -98,7 +98,10 @@
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
                             <i class="bi bi-calendar-week" style="font-size: 0.85rem;"></i>
-                            <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span>
+                            <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span><br/>
+                            <span style="font-size: 0.85rem">
+                                <time class="timeago" th:attr="datetime=${team.startTime}"></time>
+                            </span>
                         </h6>
                         <div class="mt-2">
                             <p class="card-text">
@@ -183,6 +186,11 @@
             });
             team_viewer_modal_show();
         }
+
+        jQuery(document).ready(function () {
+            jQuery.timeago.settings.allowFuture = true;
+            jQuery("time.timeago").timeago();
+        });
     </script>
 </div>
 </html>
