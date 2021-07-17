@@ -60,6 +60,8 @@ public class TeamService {
                 .build();
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
+        if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
+            throw new IllegalArgumentException("Invalid people count");
         Team team = requestDto.toEntity(project, TeamStatus.WAITING);
         team = teamRepo.save(team);
         Member member = Member.builder()
@@ -82,6 +84,8 @@ public class TeamService {
                 .build();
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
+        if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
+            throw new IllegalArgumentException("Invalid people count");
         Team team = requestDto.toEntity(project, TeamStatus.READY);
         team = teamRepo.save(team);
         Member member = Member.builder()

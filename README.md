@@ -96,6 +96,8 @@ java -jar helper-0.0.1-SNAPSHOT.jar --spring.config.location=classpath:/applicat
 - 직접 코드 Pull request를 위해 [checkstyle](https://checkstyle.sourceforge.io/)을 통해 코드 컨벤션을 쉽게 맞출 수 있습니다.
   우리 프로젝트의 checkstyle 코드컨벤션 파일은 아래 경로에 위치합니다.
     - `/checkstyle/checkstyle.xml`
+- 더 자세한 내용은 [컨트리뷰터 가이드 문서](https://www.notion.so/epicarts2/Contribution-guide-0d31b324e31c49fdb14eea75b058665a)
+를 참고해주세요.
 
 ## License
 
