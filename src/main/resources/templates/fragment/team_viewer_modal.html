@@ -92,17 +92,17 @@
     <script>
         var tv_ajax_req_info = undefined;
         var tv_team = undefined;
-        var tv_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+        var tv_startDate = moment('2020-01-01T00:00:00').valueOf();
         var currentUser = undefined;
 
         $("#tv_input_time_rangeslider").ionRangeSlider({
             skin: "round",
             type: "double",
             grid: true,
-            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
-            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
-            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
-            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            min: timeToTS(moment('2020-01-01T00:00:00')),
+            max: timeToTS(moment('2020-01-02T00:00:00')),
+            from: timeToTS(moment('2020-01-01T06:00:00')),
+            to: timeToTS(moment('2020-01-01T18:00:00')),
             step: 900000,
             prettify: function (ts) {
                 var m = moment(ts);
@@ -138,8 +138,8 @@
             tv_time_rangeslider.update({
                 min: timeToTS(minDate),
                 max: timeToTS(minDate.add(1, 'days')),
-                from: timeToTS(moment(new Date(team.startTime))),
-                to: timeToTS(moment(new Date(team.endTime))),
+                from: timeToTS(moment(team.startTime)),
+                to: timeToTS(moment(team.endTime)),
                 prettify: function (ts) {
                     var m = moment(ts);
 
@@ -196,6 +196,12 @@
                     }
                 }
             );
+
+            if (currentUser == null) {
+                alert("시간이 만료되어 로그아웃 되었습니다.\n" +
+                    "다시 로그인해주세요");
+                window.location.href = '/';
+            }
 
             if (team.status == 'WAITING') {
                 let rst = team.members.some((member) => {
