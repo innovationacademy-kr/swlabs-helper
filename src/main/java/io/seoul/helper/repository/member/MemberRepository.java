@@ -15,9 +15,16 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByTeamAndUser(Team team, User user);
 
+    Optional<Member> findMemberByTeamAndUserAndRole(Team team, User user, MemberRole memberRole);
+    
     @Query("SELECT m FROM Member m " +
-            "WHERE (:user is null or m.user = :user) and " +
-            "(:isCreator is null or m.creator = :isCreator) and " +
+            "WHERE (m.user = :user) and " +
+            "(:memberRole is null or m.role = :memberRole)")
+    List<Member> findMembersByUserAndRole(User user, MemberRole memberRole);
+
+    @Query("SELECT m FROM Member m " +
+            "WHERE (m.user = :user) and " +
+            "(m.creator = :isCreator) and " +
             "(:memberRole is null or m.role = :memberRole)")
     List<Member> findMembersByUserAndCreatorAndRole(User user, boolean isCreator, MemberRole memberRole);
 }

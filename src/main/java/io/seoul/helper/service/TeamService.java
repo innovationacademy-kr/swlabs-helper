@@ -185,6 +185,20 @@ public class TeamService {
         memberRepo.delete(member);
     }
 
+
+    public void endTeam(SessionUser sessionUser, Long id) throws Exception {
+        User user = findUser(sessionUser);
+        Team team = findTeam(id);
+        memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
+                .orElseThrow(() -> new Exception("Not this team mentor"));
+        if (team.getStatus() == TeamStatus.END)
+            throw new Exception("Already end status");
+        else {
+            team.updateTeamEnd();
+            teamRepo.save(team);
+        }
+    }
+
     private boolean isCreator(Member member) {
         return member.getCreator();
     }
@@ -265,7 +279,11 @@ public class TeamService {
         User user = userRepo.findUserByNickname(nickName).get();
         List<Member> members;
 
-        members = memberRepo.findMembersByUserAndCreatorAndRole(user, isCreator, memberRole);
+        if (isCreator)
+            members = memberRepo.findMembersByUserAndCreatorAndRole(user, true, memberRole);
+        else
+            members = memberRepo.findMembersByUserAndRole(user, memberRole);
+
 
         return members.stream()
                 .map(m -> m.getTeam().getId())
