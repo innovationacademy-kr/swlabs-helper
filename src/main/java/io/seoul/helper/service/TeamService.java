@@ -197,6 +197,11 @@ public class TeamService {
             team.updateTeamEnd();
             teamRepo.save(team);
         }
+
+        List<Member> members = team.getMembers();
+        for (Member member : members) {
+            mailSenderService.sendEndMail(member.getUser(), team);
+        }
     }
 
     private boolean isCreator(Member member) {
