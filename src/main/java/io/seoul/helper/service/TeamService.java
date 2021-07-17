@@ -231,13 +231,13 @@ public class TeamService {
             Pageable pageable = toPageable(requestDto.getOffset(), requestDto.getLimit(), requestDto.getSort());
 
             if (requestDto.getNickname() != null) {
-                List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 teams = teamRepo.findTeamsByTeamIdIn(
                         requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                         requestDto.getLocation(), teamIds, pageable);
             } else if (requestDto.getExcludeNickname() != null) {
-                List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 if (teamIds.isEmpty()) {
                     teams = teamRepo.findTeamsByQueryParameters(
@@ -261,13 +261,11 @@ public class TeamService {
         return teams.map(team -> new TeamResponseDto(team));
     }
 
-    private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator) {
+    private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator, MemberRole memberRole) {
         User user = userRepo.findUserByNickname(nickName).get();
         List<Member> members;
-        if (isCreator)
-            members = memberRepo.findMembersByUserAndCreator(user, true);
-        else
-            members = memberRepo.findMembersByUser(user);
+
+        members = memberRepo.findMembersByUserAndCreatorAndRole(user, isCreator, memberRole);
 
         return members.stream()
                 .map(m -> m.getTeam().getId())
