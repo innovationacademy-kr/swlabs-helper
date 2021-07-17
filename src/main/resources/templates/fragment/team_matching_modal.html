@@ -98,16 +98,16 @@
 <div th:fragment="script">
     <script>
         var tm_team = undefined;
-        var tm_startDate = new Date(2020, 0, 1, 0, 0, 1).valueOf();
+        var tm_startDate = moment('2020-01-01T00:00:00').valueOf();
 
         $("#tm_input_time_rangeslider").ionRangeSlider({
             skin: "round",
             type: "double",
             grid: true,
-            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
-            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
-            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
-            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            min: timeToTS(moment('2020-01-01T00:00:00')),
+            max: timeToTS(moment('2020-01-02T00:00:00')),
+            from: timeToTS(moment('2020-01-01T06:00:00')),
+            to: timeToTS(moment('2020-01-01T18:00:00')),
             step: 900000,
             prettify: function (ts) {
                 var m = moment(ts);
@@ -135,10 +135,10 @@
             s_month = s_moment.month();
             s_date = s_moment.date();
             tm_time_rangeslider.update({
-                min: timeToTS(moment(new Date(team.startTime))),
-                max: timeToTS(moment(new Date(team.endTime))),
-                from: timeToTS(moment(new Date(team.startTime))),
-                to: timeToTS(moment(new Date(team.endTime)))
+                min: timeToTS(moment(team.startTime)),
+                max: timeToTS(moment(team.endTime)),
+                from: timeToTS(moment(team.startTime)),
+                to: timeToTS(moment(team.endTime))
             })
 
             var loc_id = 0;
@@ -224,7 +224,10 @@
             const maxMemberCount = $('#tm_input_max_member_count').val();
             const date = moment($('#tm_input_datepicker').val());
             var [start, end] = $('#tm_input_time_rangeslider').val().split(';')
-            const offset_date = new Date(s_year, s_month, s_date, 0, 0, 0).valueOf();
+            const offset_date = moment().set({
+                'year': s_year, 'month': s_month, 'date': s_date,
+                'hour': 0, 'minute': 0, 'second': 0, 'millisecond': 0
+            }).valueOf();
             start = parseInt(start) - offset_date;
             end = parseInt(end) - offset_date;
             const start_date = date.valueOf() + start;

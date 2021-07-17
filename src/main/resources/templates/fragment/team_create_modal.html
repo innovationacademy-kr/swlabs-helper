@@ -106,7 +106,7 @@
 <div th:fragment="script">
     <script>
         var tc_ajax_req_info = undefined;
-        var tc_startDate = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+        var tc_startDate = moment('2020-01-01T00:00:00').valueOf();
 
         //input number only number
         $('.numeric-only').keyup(function (e) {
@@ -123,10 +123,10 @@
             skin: "round",
             type: "double",
             grid: true,
-            min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
-            max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
-            from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
-            to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0))),
+            min: timeToTS(moment('2020-01-01T00:00:00')),
+            max: timeToTS(moment('2020-01-02T00:00:00')),
+            from: timeToTS(moment('2020-01-01T06:00:00')),
+            to: timeToTS(moment('2020-01-01T18:00:00')),
             step: 900000,
             prettify: function (ts) {
                 var m = moment(ts);
@@ -172,10 +172,10 @@
             $memberList.empty();
 
             tc_time_rangeslider.update({
-                min: timeToTS(moment(new Date(2020, 0, 1, 0, 0, 0))),
-                max: timeToTS(moment(new Date(2020, 0, 2, 0, 0, 0))),
-                from: timeToTS(moment(new Date(2020, 0, 1, 6, 0, 0))),
-                to: timeToTS(moment(new Date(2020, 0, 1, 18, 0, 0)))
+                min: timeToTS(moment('2020-01-01T00:00:00')),
+                max: timeToTS(moment('2020-01-02T00:00:00')),
+                from: timeToTS(moment('2020-01-01T06:00:00')),
+                to: timeToTS(moment('2020-01-01T18:00:00'))
             })
 
             const selected_opt_project = $("#tc_select_project option[value='']");
@@ -241,7 +241,7 @@
             const maxMemberCount = $('#tc_input_max_member_count').val();
             const date = moment($('#tc_input_datepicker').val());
             var [start, end] = $('#tc_input_time_rangeslider').val().split(';')
-            const offset_date = new Date(2020, 0, 1, 0, 0, 0).valueOf();
+            const offset_date = moment('2020-01-01T00:00:00').valueOf();
             start = parseInt(start) - offset_date;
             end = parseInt(end) - offset_date;
             const start_date = date.valueOf() + start;
