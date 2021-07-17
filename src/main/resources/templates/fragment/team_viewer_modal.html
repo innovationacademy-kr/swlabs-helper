@@ -206,13 +206,28 @@
                     tv_ajax_req_info.url = './api/v1/team/' + team.teamId;
                     tv_ajax_req_info.success_message = '해당 팀을 삭제했습니다.'
                 }
-            } else {
+            }
+            if (team.status != 'END') {
                 let rst = team.members.some((member) => {
                     return (currentUser.nickname == member.nickname &&
-                        (member.memberRole == "멘토" || member.creator));
+                        (member.memberRole == "멘토"));
                 });
                 if (rst) {
-                    $('#tv_team_viewer_modal_btn_submit').text('팀 삭제');
+                    $('#tv_team_viewer_modal_btn_submit').text('멘토링 종료');
+                    $('#tv_team_viewer_modal_btn_submit').addClass('btn-danger');
+                    tv_ajax_req_info.url = './api/v1/team/' + team.teamId + '/end';
+                    tv_ajax_req_info.success_message = '해당 팀을 종료하였습니다.';
+                    tv_ajax_req_info.type = 'POST';
+                }
+            }
+            if (team.status == 'END') {
+                let rst = team.members.some((member) => {
+                    return (currentUser.nickname == member.nickname &&
+                        (member.memberRole == "멘토"));
+                });
+                if (rst) {
+                    $('#tv_team_viewer_modal_btn_submit').text('종료된 멘토링');
+                    $('#tv_team_viewer_modal_btn_submit').addClass('btn-danger');
                     $('#tv_team_viewer_modal_btn_submit').attr('disabled', 'disabled');
                 }
             }
