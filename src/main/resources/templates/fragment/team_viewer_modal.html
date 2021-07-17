@@ -23,7 +23,6 @@
                             <div class="mb-3">
                                 <label for="tv_select_project" class="form-label">프로젝트 명칭</label>
                                 <select class="form-select" id="tv_select_project" required disabled>
-                                    <option selected disabled value="">프로젝트 선택하기</option>
                                     <option th:each="proj : ${projects}"
                                             th:value="${proj.id}"
                                             th:utext="${proj.name}"></option>
@@ -35,7 +34,6 @@
                             <div class="mb-3">
                                 <label for="tv_select_location" class="form-label">장소</label>
                                 <select class="form-select" id="tv_select_location" required disabled>
-                                    <option selected value="">장소 선택하기</option>
                                     <option th:each="loc : ${locations}"
                                             th:value="${loc.id}"
                                             th:utext="${loc.name}"></option>
@@ -231,10 +229,10 @@
             if (locations == undefined)
                 locations = getLocations();
 
-            $('#tm_select_location option').each(function () {
+            $('#tv_select_location option').each(function () {
                 $(this).removeAttr("selected");
             });
-            $('#tm_select_project option').each(function () {
+            $('#tv_select_project option').each(function () {
                 $(this).removeAttr("selected");
             });
 
