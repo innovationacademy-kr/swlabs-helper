@@ -140,6 +140,27 @@ public class TeamApiController {
                 .build();
     }
 
+    @PostMapping(value = "/api/v1/team/{id}/end")
+    public ResultResponseDto endTeam(@LoginUser SessionUser user, @PathVariable Long id) {
+        try {
+            teamService.endTeam(user, id);
+            log.info("end team");
+        } catch (Exception e) {
+            log.error("failed to end team : " + e.getMessage() + "\n\n" + e.getCause());
+            log.error(e.getMessage() + "\n\n" + e.getCause());
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(null)
+                    .build();
+        }
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OK")
+                .data(null)
+                .build();
+    }
+
     @DeleteMapping(value = "/api/v1/team/{id}/out")
     public ResultResponseDto outTeam(@LoginUser SessionUser user, @PathVariable Long id) {
         try {

@@ -27,6 +27,7 @@
     </button>
     <hr/>
     <!-- Modal -->
+    <div th:replace="fragment/team_viewer_modal :: modal"></div>
     <div th:replace="fragment/team_create_modal :: modal"></div>
     <div th:replace="fragment/team_matching_modal :: modal"></div>
     <!-- Content-->
@@ -35,14 +36,14 @@
     <div class="inquery">
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-outline-primary" onclick="location.href='/mymentor'">내가 멘토인 팀
+                <button type="button" class="btn btn-primary" onclick="location.href='/mymentor'">내가 멘토인 팀
                 </button>
-                <button type="button" class="btn btn-primary" onclick="location.href='/mentor'">멘토를 기다리는 멘티 목록
+                <button type="button" class="btn btn-outline-primary" onclick="location.href='/mentor'">멘토를 기다리는 멘티 목록
                 </button>
-
             </div>
         </div>
     </div>
+
     <div class="list-container">
         <table class="table">
             <thead>
@@ -53,7 +54,10 @@
                 <th scope="col">희망 인원</th>
                 <th scope="col">희망 일자</th>
                 <th scope="col">희망 시간</th>
-                <th scope="col">개설자</th>
+                <th scope="col">전체 인원</th>
+                <th scope="col">현재 인원</th>
+                <th scope="col">남은 인원</th>
+                <th scope="col">팀 상태</th>
                 <th scope="col">작업</th>
             </tr>
             </thead>
@@ -79,11 +83,21 @@
                     </div>
                     <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
                 </td>
-                <td th:text="${team.getNicknameByMentee()}"></td>
+                <td th:text="${team.maxMemberCount}">3</td>
+                <td th:text="${team.currentMemberCount}">2</td>
+                <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
+                <td>
+                    <div th:if="${#strings.contains(team.status, 'END')}">
+                        종료
+                    </div>
+                    <div th:unless="${#strings.contains(team.status, 'END')}">
+                        진행중
+                    </div>
+                </td>
                 <td>
                     <button type="button" class="btn btn-primary"
-                            th:onclick="onclick_matching_team([[${team}]])">
-                        세부사항 확인
+                            th:onclick="onclick_detail_team([[${team}]])">
+                        상세 보기
                     </button>
                 </td>
             </tr>
@@ -122,6 +136,7 @@
 </div>
 
 <div layout:fragment="custom-footer">
+    <div th:replace="fragment/team_viewer_modal :: script"></div>
     <div th:replace="fragment/team_create_modal :: script"></div>
     <div th:replace="fragment/team_matching_modal :: script"></div>
     <script>
@@ -144,6 +159,19 @@
         function onclick_matching_team(team) {
             team_matching_modal_update(team);
             team_matching_modal_show();
+        }
+    </script>
+    <script>
+        function onclick_detail_team(team) {
+            team_viewer_modal_update({
+                team: team,
+                ajax_req_info: {
+                    success: function () {
+                        window.location.href = '/mymentor';
+                    }
+                }
+            });
+            team_viewer_modal_show();
         }
     </script>
 </div>

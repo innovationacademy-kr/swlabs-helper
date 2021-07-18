@@ -69,6 +69,14 @@ public class Team {
         }
     }
 
+    public void endTeam() {
+        if (this.getCurrentMemberCount().equals(this.maxMemberCount - 1)) {
+            this.updateTeamFull();
+        } else {
+            this.updateTeamReady();
+        }
+    }
+
     private void updateTeamFull() {
         this.status = TeamStatus.FULL;
     }

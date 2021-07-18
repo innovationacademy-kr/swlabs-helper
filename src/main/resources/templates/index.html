@@ -97,6 +97,8 @@
                             <span th:text="${team.project.getName()}">Project Title</span>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
+                            <span th:if="${#strings.contains(team.status, 'END')}"
+                                  class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">종료됨</span>
                             <i class="bi bi-calendar-week" style="font-size: 0.85rem;"></i>
                             <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span><br/>
                             <span style="font-size: 0.85rem">

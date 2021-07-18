@@ -30,4 +30,10 @@ public class MailSenderService {
         sendMail(user, "Your Team Matched!", "Team\n" +
                 "\'#" + team.getId() + " : " + team.getProject().getName() + "\' is Matched!");
     }
+
+    @Async
+    public void sendEndMail(User user, Team team) {
+        sendMail(user, "Your Team Ended!", "Team\n" +
+                "\'#" + team.getId() + " : " + team.getProject().getName() + "\' is Ended!");
+    }
 }

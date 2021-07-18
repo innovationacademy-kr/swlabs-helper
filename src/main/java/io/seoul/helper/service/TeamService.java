@@ -189,6 +189,25 @@ public class TeamService {
         memberRepo.delete(member);
     }
 
+
+    public void endTeam(SessionUser sessionUser, Long id) throws Exception {
+        User user = findUser(sessionUser);
+        Team team = findTeam(id);
+        memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
+                .orElseThrow(() -> new Exception("Not this team mentor"));
+        if (team.getStatus() == TeamStatus.END)
+            throw new Exception("Already end status");
+        else {
+            team.updateTeamEnd();
+            teamRepo.save(team);
+        }
+
+        List<Member> members = team.getMembers();
+        for (Member member : members) {
+            mailSenderService.sendEndMail(member.getUser(), team);
+        }
+    }
+
     private boolean isCreator(Member member) {
         return member.getCreator();
     }
@@ -235,13 +254,13 @@ public class TeamService {
             Pageable pageable = toPageable(requestDto.getOffset(), requestDto.getLimit(), requestDto.getSort());
 
             if (requestDto.getNickname() != null) {
-                List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor());
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 teams = teamRepo.findTeamsByTeamIdIn(
                         requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
                         requestDto.getLocation(), teamIds, pageable);
             } else if (requestDto.getExcludeNickname() != null) {
-                List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor());
+                List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 if (teamIds.isEmpty()) {
                     teams = teamRepo.findTeamsByQueryParameters(
@@ -265,13 +284,15 @@ public class TeamService {
         return teams.map(team -> new TeamResponseDto(team));
     }
 
-    private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator) {
+    private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator, MemberRole memberRole) {
         User user = userRepo.findUserByNickname(nickName).get();
         List<Member> members;
+
         if (isCreator)
-            members = memberRepo.findMembersByUserAndCreator(user, true);
+            members = memberRepo.findMembersByUserAndCreatorAndRole(user, true, memberRole);
         else
-            members = memberRepo.findMembersByUser(user);
+            members = memberRepo.findMembersByUserAndRole(user, memberRole);
+
 
         return members.stream()
                 .map(m -> m.getTeam().getId())
