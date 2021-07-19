@@ -4,6 +4,7 @@ import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.dto.ResultResponseDto;
 import io.seoul.helper.controller.team.dto.*;
+import io.seoul.helper.service.MailSenderService;
 import io.seoul.helper.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -18,6 +20,9 @@ import java.util.List;
 public class TeamApiController {
     @Autowired
     TeamService teamService;
+
+    @Autowired
+    MailSenderService mailSenderService;
 
     @PostMapping(value = "/api/v1/team")
     public ResultResponseDto create(@LoginUser SessionUser user, @RequestBody TeamCreateRequestDto requestDto) {
@@ -58,6 +63,27 @@ public class TeamApiController {
         }
     }
 
+    @GetMapping(value = "/api/v1/team/{id}")
+    public ResultResponseDto getTeam(@PathVariable Long id) {
+        TeamResponseDto data;
+        try {
+            data = new TeamResponseDto(teamService.findTeam(id));
+        } catch (Exception e) {
+            log.error("failed to get team : " + e.getMessage() + "\n\n" + e.getCause());
+            log.error(e.getMessage() + "\n\n" + e.getCause());
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(e.getMessage())
+                    .build();
+        }
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(HttpStatus.OK.name())
+                .data(data)
+                .build();
+    }
+
     @GetMapping(value = "/api/v1/team/locations")
     public ResultResponseDto teamLocationList() {
         try {
@@ -77,12 +103,14 @@ public class TeamApiController {
     }
 
     @PutMapping(value = "/api/v1/team/{id}")
-    public ResultResponseDto update(@LoginUser SessionUser user,
+    public ResultResponseDto update(HttpServletRequest request,
+                                    @LoginUser SessionUser user,
                                     @PathVariable Long id,
                                     @RequestBody TeamUpdateRequestDto requestDto) {
         TeamResponseDto data;
         try {
             data = teamService.updateTeamByMentor(user, id, requestDto);
+            mailSenderService.sendMatchMail(data.getTeamId(), request.getLocalName());
         } catch (Exception e) {
             log.error("failed to update teamWish : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -100,8 +128,7 @@ public class TeamApiController {
     }
 
     @DeleteMapping(value = "/api/v1/team/{id}")
-    public ResultResponseDto delete(@LoginUser SessionUser user,
-                                    @PathVariable Long id) {
+    public ResultResponseDto delete(@LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.deleteTeam(user, id);
         } catch (Exception e) {
@@ -121,9 +148,11 @@ public class TeamApiController {
     }
 
     @PostMapping(value = "/api/v1/team/{id}/join")
-    public ResultResponseDto joinTeam(@LoginUser SessionUser user, @PathVariable Long id) {
+    public ResultResponseDto joinTeam(HttpServletRequest request,
+                                      @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.joinTeam(user, id);
+            mailSenderService.sendJoinMail(user, id, request.getLocalName());
         } catch (Exception e) {
             log.error("failed to join team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -141,10 +170,11 @@ public class TeamApiController {
     }
 
     @PostMapping(value = "/api/v1/team/{id}/end")
-    public ResultResponseDto endTeam(@LoginUser SessionUser user, @PathVariable Long id) {
+    public ResultResponseDto endTeam(HttpServletRequest request,
+                                     @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.endTeam(user, id);
-            log.info("end team");
+            mailSenderService.sendEndMail(id, request.getLocalName());
         } catch (Exception e) {
             log.error("failed to end team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -162,9 +192,11 @@ public class TeamApiController {
     }
 
     @DeleteMapping(value = "/api/v1/team/{id}/out")
-    public ResultResponseDto outTeam(@LoginUser SessionUser user, @PathVariable Long id) {
+    public ResultResponseDto outTeam(HttpServletRequest request,
+                                     @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.outTeam(user, id);
+            mailSenderService.sendOutMail(user, id, request.getLocalName());
         } catch (Exception e) {
             log.error("failed to out team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
