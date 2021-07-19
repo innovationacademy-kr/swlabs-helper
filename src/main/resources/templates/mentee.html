@@ -37,35 +37,30 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">프로젝트 명칭</th>
+                <th scope="col">제목</th>
                 <th scope="col">장소</th>
+                <th scope="col">희망 일시</th>
                 <th scope="col">희망 인원</th>
-                <th scope="col">희망 일자</th>
-                <th scope="col">희망 시간</th>
                 <th scope="col">개설자</th>
                 <th scope="col">작업</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="team : ${teams}">
-                <th scope="row" th:text="${team.teamId}">팀 아이디</th>
-                <td th:text="${team.project.getName()}">프로젝트 명칭</td>
+                <th scope="row" th:text="${team.teamId}">ID</th>
+                <td th:text="${team.project.getName()}">ProjectName</td>
+                <td th:text="${team.getSubject()}"></td>
                 <td th:text="${team.location.getName()}"></td>
-                <td th:text="${team.maxMemberCount} == 0 ? '상관 없음' : ${team.maxMemberCount}">3</td>
                 <td>
-                    <div th:if="${team.startTime} AND ${team.endTime}">
-                        <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</span>
-                    </div>
-                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                    <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">일자</span>
+                    <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
+                    ~
+                    <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
+                    <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
+                          th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                 </td>
                 <td>
-                    <div th:if="${team.startTime} AND ${team.endTime}">
-                        <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
-                        ~
-                        <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
-                        <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
-                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
-                    </div>
-                    <div th:if="${team.startTime} == null OR ${team.endTime} == null" th:text="상관없음"></div>
+                    <span th:text="${team.maxMemberCount}"></span>
                 </td>
                 <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
