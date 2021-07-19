@@ -37,7 +37,7 @@ public class TeamService {
     private final TeamRepository teamRepo;
     private final MemberRepository memberRepo;
     private final ProjectRepository projectRepo;
-    private final MailSenderService mailSenderService;
+    private final UserService userService;
 
     @Transactional
     public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
@@ -52,7 +52,7 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto createNewTeamMentee(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        User user = findUser(currentUser);
+        User user = userService.findUserBySession(currentUser);
         Project project = findProject(requestDto.getProjectId());
         Period period = Period.builder()
                 .startTime(requestDto.getStartTime())
@@ -76,7 +76,7 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto createNewTeamMentor(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        User user = findUser(currentUser);
+        User user = userService.findUserBySession(currentUser);
         Project project = findProject(requestDto.getProjectId());
         Period period = Period.builder()
                 .startTime(requestDto.getStartTime())
@@ -100,7 +100,7 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
-        User user = findUser(currentUser);
+        User user = userService.findUserBySession(currentUser);
         Team team = findTeam(teamId);
         Project project = findProject(requestDto.getProjectId());
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
@@ -121,10 +121,6 @@ public class TeamService {
                 .creator(false)
                 .build());
         List<Member> members = team.getMembers();
-        for (Member member : members) {
-            if (member.getCreator())
-                mailSenderService.sendMatchMail(member.getUser(), team);
-        }
         return new TeamResponseDto(team);
     }
 
@@ -147,7 +143,7 @@ public class TeamService {
 
     @Transactional
     public void joinTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = findUser(sessionUser);
+        User user = userService.findUserBySession(sessionUser);
         Team team = findTeam(id);
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Already joined");
@@ -171,7 +167,7 @@ public class TeamService {
 
     @Transactional
     public void outTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = findUser(sessionUser);
+        User user = userService.findUserBySession(sessionUser);
         Team team = findTeam(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
@@ -191,7 +187,7 @@ public class TeamService {
 
 
     public void endTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = findUser(sessionUser);
+        User user = userService.findUserBySession(sessionUser);
         Team team = findTeam(id);
         memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
                 .orElseThrow(() -> new Exception("Not this team mentor"));
@@ -203,9 +199,6 @@ public class TeamService {
         }
 
         List<Member> members = team.getMembers();
-        for (Member member : members) {
-            mailSenderService.sendEndMail(member.getUser(), team);
-        }
     }
 
     private boolean isCreator(Member member) {
@@ -218,7 +211,7 @@ public class TeamService {
 
     @Transactional
     public void deleteTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = findUser(sessionUser);
+        User user = userService.findUserBySession(sessionUser);
         Team team = findTeam(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
@@ -299,19 +292,7 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-    private User findUser(SessionUser currentUser) throws Exception {
-        if (currentUser == null) throw new Exception("not login");
-        return userRepo.findUserByNickname(currentUser.getNickname())
-                .orElseThrow(() -> new EntityNotFoundException("invalid user"));
-    }
-
-    private User findUser(String nickname) throws Exception {
-        if (nickname == null) throw new Exception("not login");
-        return userRepo.findUserByNickname(nickname)
-                .orElseThrow(() -> new EntityNotFoundException("invalid user"));
-    }
-
-    private Team findTeam(Long teamId) throws EntityNotFoundException {
+    public Team findTeam(Long teamId) throws EntityNotFoundException {
         return teamRepo.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
     }
