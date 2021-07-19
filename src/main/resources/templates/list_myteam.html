@@ -41,18 +41,18 @@
                 <th scope="col">
                     <div th:if="${#strings.contains(sort, 'project')}">
                         <div th:if="${#strings.contains(sort, 'asc')}">
-                            <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,desc')}">
+                            <a class="text-reset text-decoration-none" th:href="@{/list_myteam(sort='project,desc')}">
                                 프로젝트 명칭<i class="fa fa-fw fa-sort-asc"></i>
                             </a>
                         </div>
                         <div th:if="${#strings.contains(sort, 'desc')}">
-                            <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,asc')}">
+                            <a class="text-reset text-decoration-none" th:href="@{/list_myteam(sort='project,asc')}">
                                 프로젝트 명칭<i class="fa fa-fw fa-sort-desc"></i>
                             </a>
                         </div>
                     </div>
                     <div th:unless="${#strings.contains(sort, 'project')}">
-                        <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,asc')}">
+                        <a class="text-reset text-decoration-none" th:href="@{/list_myteam(sort='project,asc')}">
                             프로젝트 명칭<i class="fa fa-fw fa-sort"></i>
                         </a>
                     </div>
@@ -63,13 +63,13 @@
                     <div th:if="${#strings.contains(sort, 'startTime')}">
                         <div th:if="${#strings.contains(sort, 'asc')}">
                             <a class="text-reset text-decoration-none"
-                               th:href="@{/list_team(sort='period.startTime,desc')}">
+                               th:href="@{/list_myteam(sort='period.startTime,desc')}">
                                 일시<i class="fa fa-fw fa-sort-asc"></i>
                             </a>
                         </div>
                         <div th:if="${#strings.contains(sort, 'desc')}">
                             <a class="text-reset text-decoration-none"
-                               th:href="@{/list_team(sort='period.startTime,asc')}">
+                               th:href="@{/list_myteam(sort='period.startTime,asc')}">
                                 일시<i class="fa fa-fw fa-sort-desc"></i>
                             </a>
                         </div>
