@@ -10,6 +10,8 @@
               href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
         <!-- datepicker -->
         <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+        <!-- sort icon -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     </th:block>
 </head>
 
@@ -43,10 +45,49 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">프로젝트 명칭</th>
+                <th scope="col">
+                    <div th:if="${#strings.contains(sort, 'project')}">
+                        <div th:if="${#strings.contains(sort, 'asc')}">
+                            <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,desc')}">
+                                프로젝트 명칭<i class="fa fa-fw fa-sort-asc"></i>
+                            </a>
+                        </div>
+                        <div th:if="${#strings.contains(sort, 'desc')}">
+                            <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,asc')}">
+                                프로젝트 명칭<i class="fa fa-fw fa-sort-desc"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div th:unless="${#strings.contains(sort, 'project')}">
+                        <a class="text-reset text-decoration-none" th:href="@{/list_team(sort='project,asc')}">
+                            프로젝트 명칭<i class="fa fa-fw fa-sort"></i>
+                        </a>
+                    </div>
+                </th>
                 <th scope="col">제목</th>
                 <th scope="col">장소</th>
-                <th scope="col">일시</th>
+                <th scope="col">
+                    <div th:if="${#strings.contains(sort, 'startTime')}">
+                        <div th:if="${#strings.contains(sort, 'asc')}">
+                            <a class="text-reset text-decoration-none"
+                               th:href="@{/list_team(sort='period.startTime,desc')}">
+                                일시<i class="fa fa-fw fa-sort-asc"></i>
+                            </a>
+                        </div>
+                        <div th:if="${#strings.contains(sort, 'desc')}">
+                            <a class="text-reset text-decoration-none"
+                               th:href="@{/list_team(sort='period.startTime,asc')}">
+                                일시<i class="fa fa-fw fa-sort-desc"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div th:unless="${#strings.contains(sort, 'startTime')}">
+                        <a class="text-reset text-decoration-none"
+                           th:href="@{/list_myteam(sort='period.startTime,asc')}">
+                            일시<i class="fa fa-fw fa-sort"></i>
+                        </a>
+                    </div>
+                </th>
                 <th scope="col">인원</th>
                 <th scope="col">멘토</th>
                 <th scope="col">작업</th>
@@ -94,21 +135,24 @@
              aria-label="Page navigation">
             <ul class=" pagination justify-content-center">
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/list_myteam?(offset=0)}" th:text="'<<'"></a>
+                    <a class="page-link" th:href="@{/list_myteam(offset=0, sort=${sort})}" th:text="'<<'"></a>
                 </li>
                 <li th:if="${start > 1}" class="page-item">
-                    <a class="page-link" th:href="@{/list_myteam?(offset=${start - 2})}" th:text="'<'"></a>
+                    <a class="page-link" th:href="@{/list_myteam(offset=${start - 2}, sort=${sort})}" th:text="'<'"></a>
                 </li>
                 <li class="page-item"
                     th:each="offset: ${#numbers.sequence(start, end)}"
                     th:classappend="${offset == teams.number + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/list_myteam?(offset=${offset - 1})}" th:text="${offset}"></a>
+                    <a class="page-link" th:href="@{/list_myteam(offset=${offset - 1}, sort=${sort})}"
+                       th:text="${offset}"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/list_myteam?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                    <a class="page-link" th:href="@{/list_myteam(offset=${start + maxPage - 1}, sort=${sort})}"
+                       th:text="'>'"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/list_myteam?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                    <a class="page-link" th:href="@{/list_myteam(offset=${teams.totalPages - 1}, sort=${sort})}"
+                       th:text="'>>'"></a>
                 </li>
             </ul>
         </nav>
