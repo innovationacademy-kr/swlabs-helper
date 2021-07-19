@@ -192,7 +192,35 @@
         jQuery(document).ready(function () {
             jQuery.timeago.settings.allowFuture = true;
             jQuery("time.timeago").timeago();
+
+            openTeamModalByLink();
         });
+
+        function openTeamModalByLink() {
+            var team_hash = window.location.hash;
+            if (team_hash) {
+                $.ajax({
+                        type: 'GET',
+                        url: './api/v1/team/' + team_hash.substring(1),
+                        data: null,
+                        dataType: "JSON",
+                        contentType: 'application/json',
+                        success: (rst) => {
+                            if (rst.statusCode != 200) {
+                                alert("처리 도중 문제가 발생했습니다.\n" + rst.message);
+                            } else {
+                                onclick_detail_team(rst.data);
+                            }
+                        },
+                        error: (request, status, error) => {
+                            alert("서버상의 문제로 실패했습니다.\n해당 문제가 지속적으로 발생되면 github issue에 제보해주세요.\n" + request.status + "\nmessage: "
+                                + request.responseText + "\nerror:" + error);
+                        }
+                    }
+                );
+
+            }
+        }
     </script>
 </div>
 </html>

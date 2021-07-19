@@ -58,6 +58,27 @@ public class TeamApiController {
         }
     }
 
+    @GetMapping(value = "/api/v1/team/{id}")
+    public ResultResponseDto getTeam(@PathVariable Long id) {
+        TeamResponseDto data;
+        try {
+            data = new TeamResponseDto(teamService.findTeam(id));
+        } catch (Exception e) {
+            log.error("failed to get team : " + e.getMessage() + "\n\n" + e.getCause());
+            log.error(e.getMessage() + "\n\n" + e.getCause());
+            return ResultResponseDto.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .message(e.getMessage())
+                    .data(e.getMessage())
+                    .build();
+        }
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message(HttpStatus.OK.name())
+                .data(data)
+                .build();
+    }
+
     @GetMapping(value = "/api/v1/team/locations")
     public ResultResponseDto teamLocationList() {
         try {

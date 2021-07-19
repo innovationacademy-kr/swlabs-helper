@@ -311,7 +311,7 @@ public class TeamService {
                 .orElseThrow(() -> new EntityNotFoundException("invalid user"));
     }
 
-    private Team findTeam(Long teamId) throws EntityNotFoundException {
+    public Team findTeam(Long teamId) throws EntityNotFoundException {
         return teamRepo.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
     }
