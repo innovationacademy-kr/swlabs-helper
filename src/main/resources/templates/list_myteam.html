@@ -4,12 +4,19 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default_layout.html" th:with="currentPage='list_team'">
 <head>
-    <title>Home</title>
-    <!-- sort icon -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <th:block layout:fragment="custom-head">
+        <!-- Plugin CSS file with desired ski n-->
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+        <!-- datepicker -->
+        <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+        <!-- sort icon -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    </th:block>
 </head>
 
 <div layout:fragment="custom-content">
+    <div th:replace="fragment/team_viewer_modal :: modal"></div>
     <div class="page_title">
         <h2>팀 목록</h2>
         <p>모든 멘토링 팀 목록을 조회합니다.<br/>
@@ -112,13 +119,8 @@
                 </td>
                 <td>
                     <div th:if="${user != null}">
-                        <button type="button" class="btn btn-danger"
-                                th:if="${team.nicknameByMentor != user.getNickname()} and ${team.getNicknameByCreator() != user.getNickname()}"
-                                th:onclick="onclick_modal_alert([[${team}]])">팀 탈퇴
-                        </button>
-                        <button type="button" class="btn btn-danger"
-                                th:unless="${team.nicknameByMentor != user.getNickname()} and ${team.getNicknameByCreator() != user.getNickname()}"
-                                disabled>팀 탈퇴
+                        <button type="button" class="btn btn-primary" th:onclick="onclick_detail_team([[${team}]])">
+                            상세 보기
                         </button>
                     </div>
                 </td>
@@ -158,42 +160,23 @@
 
 </div>
 <div layout:fragment="custom-footer">
-    <div th:replace="fragment/alert_modal :: script"></div>
+    <div th:replace="fragment/team_viewer_modal :: script"></div>
 
     <script>
-        function onclick_modal_alert(team) {
-            const modal_title_text = '팀 탈퇴'
-            const modal_body_text = '정말로 팀을 나가시겠습니까?'
-
-            const cancel_btn_text = '취소'
-            const submit_btn_text = '탈퇴하기'
-
-            const success_message = "탈퇴되었습니다"
-            const fail_message = "탈퇴에 실패했습니다"
-
-            alert_modal_update({
+        function onclick_detail_team(team) {
+            team_viewer_modal_update({
                 team: team,
-                modal_content_text: {
-                    title: modal_title_text,
-                    body: modal_body_text,
-                    footer: {
-                        cancel_btn: cancel_btn_text,
-                        submit_btn: submit_btn_text
-                    }
-                },
-                ajax_req_info_alert: {
-                    url: "./api/v1/team/" + team.teamId + "/out",
-                    type: "DELETE",
-                    status_message: {
-                        success: success_message,
-                        fail: fail_message
-                    },
+                mode: "READONLY_OUT",
+                ajax_req_info: {
+                    url: './api/v1/team/' + team.teamId + '/out',
+                    type: 'DELETE',
+                    success_message: '해당 팀에서 탈퇴했습니다.',
                     success: function () {
                         window.location.href = '/list_myteam';
-                    },
-                },
-            })
-            alert_modal_show();
+                    }
+                }
+            });
+            team_viewer_modal_show();
         }
     </script>
 </div>
