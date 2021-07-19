@@ -1,9 +1,9 @@
 CREATE TABLE `member`
 (
-    `id`      bigint(20) NOT NULL AUTO_INCREMENT,
+    `id`      bigint(20)                              NOT NULL AUTO_INCREMENT,
     `role`    varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `team_id` bigint(20) NOT NULL,
-    `user_id` bigint(20) NOT NULL,
+    `team_id` bigint(20)                              NOT NULL,
+    `user_id` bigint(20)                              NOT NULL,
     `creator` bit(1)                                  NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -24,12 +24,13 @@ CREATE TABLE `project`
 CREATE TABLE `team`
 (
     `id`               bigint(20) NOT NULL AUTO_INCREMENT,
-    `end_time`         datetime(6) DEFAULT NULL,
+    `end_time`         datetime(6)                             DEFAULT NULL,
     `location`         varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `max_member_count` bigint(20) NOT NULL,
-    `start_time`       datetime(6) DEFAULT NULL,
+    `start_time`       datetime(6)                             DEFAULT NULL,
     `status`           varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    `project_id`       bigint(20) DEFAULT NULL,
+    `project_id`       bigint(20)                              DEFAULT NULL,
+    `subject`          varchar(255)                            DEFAULT NULL,
     `description`      text COLLATE utf8mb4_unicode_ci         DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
@@ -39,7 +40,7 @@ CREATE TABLE `team`
 
 CREATE TABLE `user`
 (
-    `id`       bigint(20) NOT NULL AUTO_INCREMENT,
+    `id`       bigint(20)                              NOT NULL AUTO_INCREMENT,
     `email`    varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `fullname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `nickname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
