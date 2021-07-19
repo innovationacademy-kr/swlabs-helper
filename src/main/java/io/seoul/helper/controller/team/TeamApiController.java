@@ -110,7 +110,7 @@ public class TeamApiController {
         TeamResponseDto data;
         try {
             data = teamService.updateTeamByMentor(user, id, requestDto);
-            mailSenderService.sendMatchMail(data.getTeamId(), request.getLocalName());
+            mailSenderService.sendMatchMail(data.getTeamId(), request.getServerName());
         } catch (Exception e) {
             log.error("failed to update teamWish : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -152,7 +152,7 @@ public class TeamApiController {
                                       @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.joinTeam(user, id);
-            mailSenderService.sendJoinMail(user, id, request.getLocalName());
+            mailSenderService.sendJoinMail(user, id, request.getServerName());
         } catch (Exception e) {
             log.error("failed to join team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -174,7 +174,7 @@ public class TeamApiController {
                                      @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.endTeam(user, id);
-            mailSenderService.sendEndMail(id, request.getLocalName());
+            mailSenderService.sendEndMail(id, request.getServerName());
         } catch (Exception e) {
             log.error("failed to end team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
@@ -196,7 +196,7 @@ public class TeamApiController {
                                      @LoginUser SessionUser user, @PathVariable Long id) {
         try {
             teamService.outTeam(user, id);
-            mailSenderService.sendOutMail(user, id, request.getLocalName());
+            mailSenderService.sendOutMail(user, id, request.getServerName());
         } catch (Exception e) {
             log.error("failed to out team : " + e.getMessage() + "\n\n" + e.getCause());
             log.error(e.getMessage() + "\n\n" + e.getCause());
