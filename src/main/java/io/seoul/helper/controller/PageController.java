@@ -4,6 +4,7 @@ import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
+import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.service.ProjectService;
 import io.seoul.helper.service.TeamService;
@@ -56,15 +57,18 @@ public class PageController {
 
     @GetMapping(value = "/list_team")
     public String teamList(Model model, @LoginUser SessionUser user,
-                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                           @RequestParam(value = "sort", required = false, defaultValue = "id,desc") String sort) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setOffset(offset);
         dto.setStartTimePrevious(LocalDateTime.now());
+        dto.setSort(sort);
         dto.setExcludeNickname(user.getNickname());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("sort", sort);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
 
@@ -73,15 +77,18 @@ public class PageController {
 
     @GetMapping(value = "/list_myteam")
     public String myTeamList(Model model, @LoginUser SessionUser user,
-                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                             @RequestParam(value = "sort", required = false, defaultValue = "id,desc") String sort) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setNickname(user.getNickname());
         dto.setOffset(offset);
+        dto.setSort(sort);
         dto.setEndTimePrevious(LocalDateTime.now());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("sort", sort);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
 
@@ -109,8 +116,8 @@ public class PageController {
     }
 
     @GetMapping(value = "/mentor")
-    public String createTeam(Model model, @LoginUser SessionUser user,
-                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+    public String createMentor(Model model, @LoginUser SessionUser user,
+                               @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
 
         TeamStatus status = TeamStatus.WAITING;
 
@@ -127,5 +134,24 @@ public class PageController {
         model.addAttribute("locations", teamService.findAllLocation());
 
         return "mentor";
+    }
+
+    @GetMapping(value = "/mymentor")
+    public String createMyMentor(Model model, @LoginUser SessionUser user,
+                                 @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+
+        TeamListRequestDto dto = new TeamListRequestDto();
+        dto.setOffset(offset);
+        dto.setStartTimePrevious(LocalDateTime.now());
+        dto.setNickname(user.getNickname());
+        dto.setMemberRole(MemberRole.MENTOR);
+        Page<TeamResponseDto> teams = teamService.findTeams(dto);
+
+        model.addAttribute("teams", teams);
+        model.addAttribute("user", user);
+        model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("locations", teamService.findAllLocation());
+
+        return "mymentor";
     }
 }

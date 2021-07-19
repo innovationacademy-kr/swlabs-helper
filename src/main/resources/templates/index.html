@@ -33,30 +33,32 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">프로젝트 명칭</th>
+                    <th scope="col">제목</th>
                     <th scope="col">장소</th>
-                    <th scope="col">희망 일자</th>
-                    <th scope="col">희망 시간</th>
-                    <th scope="col">전체 인원</th>
-                    <th scope="col">현재 인원</th>
-                    <th scope="col">남은 인원</th>
-                    <th scope="col">담당 멘토</th>
+                    <th scope="col">일시</th>
+                    <th scope="col">인원</th>
+                    <th scope="col">멘토</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="team : ${teams}">
                     <th scope="row" th:text="${team.teamId}">ID</th>
                     <td th:text="${team.project.getName()}">ProjectName</td>
+                    <td th:text="${team.getSubject()}"></td>
                     <td th:text="${team.location.getName()}"></td>
-                    <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                     <td>
+                        <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">일자</span>
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
                         <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
                         <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
-                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span></td>
-                    <td th:text="${team.maxMemberCount}">3</td>
-                    <td th:text="${team.currentMemberCount}">2</td>
-                    <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
+                              th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
+                    </td>
+                    <td>
+                        <span th:text="${team.currentMemberCount}"></span>
+                        /
+                        <span th:text="${team.maxMemberCount}"></span>
+                    </td>
                     <td>
                         <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
                         <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
@@ -66,7 +68,6 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
     <div th:if="${user != null}">
@@ -97,8 +98,13 @@
                             <span th:text="${team.project.getName()}">Project Title</span>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
+                            <span th:if="${#strings.contains(team.status, 'END')}"
+                                  class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">종료됨</span>
                             <i class="bi bi-calendar-week" style="font-size: 0.85rem;"></i>
-                            <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span>
+                            <span th:text="${#temporals.format(team.startTime, 'YYYY/MM/dd')}"></span><br/>
+                            <span style="font-size: 0.85rem">
+                                <time class="timeago" th:attr="datetime=${team.startTime}"></time>
+                            </span>
                         </h6>
                         <div class="mt-2">
                             <p class="card-text">
@@ -118,36 +124,38 @@
         <hr/>
         <h3>현재 멘토링 대기중인 모든 팀</h3>
         <div class="list-container">
+
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">프로젝트 명칭</th>
+                    <th scope="col">제목</th>
                     <th scope="col">장소</th>
-                    <th scope="col">희망 일자</th>
-                    <th scope="col">희망 시간</th>
-                    <th scope="col">전체 인원</th>
-                    <th scope="col">현재 인원</th>
-                    <th scope="col">남은 인원</th>
-                    <th scope="col">담당 멘토</th>
+                    <th scope="col">일시</th>
+                    <th scope="col">인원</th>
+                    <th scope="col">멘토</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="team : ${allTeams}">
                     <th scope="row" th:text="${team.teamId}">ID</th>
                     <td th:text="${team.project.getName()}">ProjectName</td>
+                    <td th:text="${team.getSubject()}"></td>
                     <td th:text="${team.location.getName()}"></td>
-                    <td th:text="${#temporals.format(team.startTime, 'MM/dd')}">날짜</td>
                     <td>
+                        <span th:text="${#temporals.format(team.startTime, 'MM/dd')}">일자</span>
                         <span th:text="${#temporals.format(team.startTime, 'HH:mm')}">시작시간</span>
                         ~
                         <span th:if="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'">24:00</span>
                         <span th:unless="${#temporals.format(team.endTime, 'HH:mm')} == '00:00'"
                               th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                     </td>
-                    <td th:text="${team.maxMemberCount}">3</td>
-                    <td th:text="${team.currentMemberCount}">2</td>
-                    <td th:text="${team.maxMemberCount - team.currentMemberCount}">1</td>
+                    <td>
+                        <span th:text="${team.currentMemberCount}"></span>
+                        /
+                        <span th:text="${team.maxMemberCount}"></span>
+                    </td>
                     <td>
                         <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
                         <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
@@ -182,6 +190,39 @@
                 }
             });
             team_viewer_modal_show();
+        }
+
+        jQuery(document).ready(function () {
+            jQuery.timeago.settings.allowFuture = true;
+            jQuery("time.timeago").timeago();
+
+            openTeamModalByLink();
+        });
+
+        function openTeamModalByLink() {
+            var team_hash = window.location.hash;
+            if (team_hash) {
+                $.ajax({
+                        type: 'GET',
+                        url: './api/v1/team/' + team_hash.substring(1),
+                        data: null,
+                        dataType: "JSON",
+                        contentType: 'application/json',
+                        success: (rst) => {
+                            if (rst.statusCode != 200) {
+                                alert("처리 도중 문제가 발생했습니다.\n" + rst.message);
+                            } else {
+                                onclick_detail_team(rst.data);
+                            }
+                        },
+                        error: (request, status, error) => {
+                            alert("서버상의 문제로 실패했습니다.\n해당 문제가 지속적으로 발생되면 github issue에 제보해주세요.\n" + request.status + "\nmessage: "
+                                + request.responseText + "\nerror:" + error);
+                        }
+                    }
+                );
+
+            }
         }
     </script>
 </div>

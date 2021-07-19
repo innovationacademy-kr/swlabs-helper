@@ -2,10 +2,10 @@
 
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="layout/default_layout.html" th:with="currentPage='mentee'">
+      layout:decorator="layout/default_layout.html" th:with="currentPage='mentor'">
 <head>
-    <title>시간 설정</title>
-    <!-- Plugin CSS file with desired skin -->
+    <title>Create team</title>
+    <!-- rangeSlider Plugin CSS file with desired skin-->
     <th:block layout:fragment="custom-head">
         <!-- Plugin CSS file with desired ski n-->
         <link rel="stylesheet"
@@ -17,21 +17,34 @@
 
 <div layout:fragment="custom-content">
     <div class="page_title">
-        <h2>멘티 신청</h2>
-        <p>원하는 멘토링을 설정할 수 있습니다. <b>멘토링 받기</b> 버튼을 눌러 과목과 시간, 그리고 날짜를 지정하면 멘토링이 개설됩니다.<br/>
-            이후 개설된 멘토링은 멘토가 멘토링을 지정하면 팀이 성사되고 멘티를 추가모집할 수 있습니다.</p>
+        <h2>멘토 신청</h2>
+        <p>멘토가 정해지지 않은 멘토링 팀을 조회 합니다.<br/>
+            <b>세부사항을 확인</b>하고 멘토로써 참여할 수 있습니다. 멘티 목록에서 멘토로 참여하게 되면 팀이 성사됩니다.</p>
+        <p>또는 <b>멘토링 하기</b> 버튼을 통해서 원하는 멘토링을 개설하고 바로 멘토로써 멘티를 받을 수 있습니다.</p>
     </div>
-    <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" onclick="onclick_create_team()">
-        멘토링 받기 (멘티)
+        멘토링 하기 (멘토)
     </button>
     <hr/>
     <!-- Modal -->
+    <div th:replace="fragment/team_viewer_modal :: modal"></div>
     <div th:replace="fragment/team_create_modal :: modal"></div>
-    <div th:replace="fragment/alert_modal :: modal"></div>
-    <!-- list -->
+    <div th:replace="fragment/team_matching_modal :: modal"></div>
+    <!-- Content-->
+    <h2>멘토를 기다리는 멘티 목록</h2>
+
+    <div class="inquery">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary" onclick="location.href='/mymentor'">내가 멘토인 팀
+                </button>
+                <button type="button" class="btn btn-outline-primary" onclick="location.href='/mentor'">멘토를 기다리는 멘티 목록
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="list-container">
-        <h2>내가 만든 멘토링 (멘티) 목록</h2>
         <table class="table">
             <thead>
             <tr>
@@ -39,9 +52,10 @@
                 <th scope="col">프로젝트 명칭</th>
                 <th scope="col">제목</th>
                 <th scope="col">장소</th>
-                <th scope="col">희망 일시</th>
-                <th scope="col">희망 인원</th>
-                <th scope="col">개설자</th>
+                <th scope="col">일시</th>
+                <th scope="col">인원</th>
+                <th scope="col">멘토</th>
+                <th scope="col">팀 상태</th>
                 <th scope="col">작업</th>
             </tr>
             </thead>
@@ -60,13 +74,27 @@
                           th:text="${#temporals.format(team.endTime, 'HH:mm')}">종료시간</span>
                 </td>
                 <td>
+                    <span th:text="${team.currentMemberCount}"></span>
+                    /
                     <span th:text="${team.maxMemberCount}"></span>
                 </td>
-                <td th:text="${team.getNicknameByMentee()}"></td>
                 <td>
-                    <button type="button" class="btn btn-danger"
-                            th:onclick="onclick_delete([[${team}]])">
-                        삭제
+                    <span th:if="${#strings.contains(team.getNicknameByMentor(),'empty')}">미지정</span>
+                    <span th:unless="${#strings.contains(team.getNicknameByMentor(),'empty')}"
+                          th:text="${team.getNicknameByMentor()}">멘토</span>
+                </td>
+                <td>
+                    <div th:if="${#strings.contains(team.status, 'END')}">
+                        종료
+                    </div>
+                    <div th:unless="${#strings.contains(team.status, 'END')}">
+                        진행중
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary"
+                            th:onclick="onclick_detail_team([[${team}]])">
+                        상세 보기
                     </button>
                 </td>
             </tr>
@@ -88,71 +116,59 @@
                 <li class="page-item"
                     th:each="offset: ${#numbers.sequence(start, end)}"
                     th:classappend="${offset == teams.number + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/mentor?(offset=${offset - 1})}" th:text="${offset}"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${offset - 1})}"
+                       th:text="${offset}"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/mentor?(offset=${start + maxPage - 1})}" th:text="'>'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${start + maxPage - 1})}"
+                       th:text="'>'"></a>
                 </li>
                 <li th:if="${end < teams.totalPages}" class="page-item">
-                    <a class="page-link" th:href="@{/mentor?(offset=${teams.totalPages - 1})}" th:text="'>>'"></a>
+                    <a class="page-link" th:href="@{/mentor?(offset=${teams.totalPages - 1})}"
+                       th:text="'>>'"></a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
+
 <div layout:fragment="custom-footer">
+    <div th:replace="fragment/team_viewer_modal :: script"></div>
     <div th:replace="fragment/team_create_modal :: script"></div>
-    <div th:replace="fragment/alert_modal :: script"></div>
+    <div th:replace="fragment/team_matching_modal :: script"></div>
     <script>
         function onclick_create_team() {
             team_create_modal_update({
-                mode: "CREATE_TEAMWISH_MENTEE", // for mentee
+                mode: "CREATE_TEAMWISH_MENTOR", // for mentor
                 ajax_req_info: {
                     url: "./api/v1/team",
                     type: "POST",
-                    success_message: '팀을 생성했습니다',
+                    success_message: '해당 팀에 맨토로 등록되었습니다.',
                     success: function () {
-                        window.location.href = '/mentee';
+                        window.location.href = '/mymentor';
                     },
-                    member_role: "MENTEE"
+                    member_role: 'MENTOR'
                 }
             });
             team_create_modal_show();
         }
 
-        function onclick_delete(team) {
-            const modal_title_text = '팀 삭제'
-            const modal_body_text = '정말로 팀을 삭제하시겠습니까?'
-
-            const cancel_btn_text = '취소'
-            const submit_btn_text = '삭제하기'
-
-            const success_message = "삭제되었습니다"
-            const fail_message = "삭제에 실패했습니다"
-
-            alert_modal_update({
+        function onclick_matching_team(team) {
+            team_matching_modal_update(team);
+            team_matching_modal_show();
+        }
+    </script>
+    <script>
+        function onclick_detail_team(team) {
+            team_viewer_modal_update({
                 team: team,
-                modal_content_text: {
-                    title: modal_title_text,
-                    body: modal_body_text,
-                    footer: {
-                        cancel_btn: cancel_btn_text,
-                        submit_btn: submit_btn_text
-                    }
-                },
-                ajax_req_info_alert: {
-                    url: "./api/v1/team/" + team.teamId,
-                    type: "DELETE",
-                    status_message: {
-                        success: success_message,
-                        fail: fail_message
-                    },
+                ajax_req_info: {
                     success: function () {
-                        window.location.href = '/mentee';
+                        window.location.href = '/mymentor';
                     }
                 }
-            })
-            alert_modal_show();
+            });
+            team_viewer_modal_show();
         }
     </script>
 </div>

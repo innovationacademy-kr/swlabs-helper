@@ -64,10 +64,17 @@
                             <input id="tv_input_time_rangeslider" type="text">
                         </div>
                     </div>
-                    <div class="mb-3">
+                    <div class="row">
                         <hr/>
-                        <label for="tv_pre_description" class="form-label">설명</label>
-                        <pre id="tv_pre_description"></pre>
+                        <div class="mb-3">
+                            <h4 id="tv_h4_subject"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                            <pre id="tv_pre_description"></pre>
+                        </div>
+                        <hr/>
                     </div>
                 </form>
                 <div class="members_in_team">
@@ -167,12 +174,12 @@
             team.members.forEach((member) => {
                 if (member.memberRole == "멘토") {
                     $memberList.append('<li class="list-group-item">' +
-                        '<a class="text-dark" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
+                        '<a class="text-dark" target="_blank" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
                         ' <span class="rounded-pill bg-danger text-light p-1" style="font-size: 0.85em">멘토</span>' +
                         '</li>');
                 } else {
                     $memberList.append('<li class="list-group-item">' +
-                        '<a class="text-dark" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
+                        '<a class="text-dark" target="_blank" href="https://profile.intra.42.fr/users/' + member.nickname + '">' + member.nickname + '</a>' +
                         '</li>');
                 }
             })
@@ -180,6 +187,7 @@
             $('#tv_input_datepicker').val(moment(team.startTime).format('YYYY-MM-DD'));
             $('#tv_input_max_member_count').val(team.maxMemberCount);
             $('#tv_create_team_form').attr('team_id', team.teamId);
+            $('#tv_h4_subject').text(team.subject);
             $('#tv_pre_description').text(team.description);
 
             $.ajax({
@@ -210,13 +218,28 @@
                     tv_ajax_req_info.url = './api/v1/team/' + team.teamId;
                     tv_ajax_req_info.success_message = '해당 팀을 삭제했습니다.'
                 }
-            } else {
+            }
+            if (team.status != 'END') {
                 let rst = team.members.some((member) => {
                     return (currentUser.nickname == member.nickname &&
-                        (member.memberRole == "멘토" || member.creator));
+                        (member.memberRole == "멘토"));
                 });
                 if (rst) {
-                    $('#tv_team_viewer_modal_btn_submit').text('팀 삭제');
+                    $('#tv_team_viewer_modal_btn_submit').text('멘토링 종료');
+                    $('#tv_team_viewer_modal_btn_submit').addClass('btn-danger');
+                    tv_ajax_req_info.url = './api/v1/team/' + team.teamId + '/end';
+                    tv_ajax_req_info.success_message = '해당 팀을 종료하였습니다.';
+                    tv_ajax_req_info.type = 'POST';
+                }
+            }
+            if (team.status == 'END') {
+                let rst = team.members.some((member) => {
+                    return (currentUser.nickname == member.nickname &&
+                        (member.memberRole == "멘토"));
+                });
+                if (rst) {
+                    $('#tv_team_viewer_modal_btn_submit').text('종료된 멘토링');
+                    $('#tv_team_viewer_modal_btn_submit').addClass('btn-danger');
                     $('#tv_team_viewer_modal_btn_submit').attr('disabled', 'disabled');
                 }
             }

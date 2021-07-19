@@ -2,7 +2,7 @@
 
 - 42helper는 도움을 원하는 카뎃과 도움을 줄 수 있는 카뎃을 이어주는 플랫폼 입니다.
 
-# Running locally server
+# Running local server
 
 ### Java 설치
 
@@ -47,7 +47,7 @@ export SECRET42={발급받은 SECRET}
 - DB가 있다면 미리 준비된 스키마로 쉽게 셋업할 수 있습니다.
 
 ```bash
-mysql -u [YOUR_USERNAME] -p [YOUR_DATABASE] < src/main/resources/db/h2/schema.sql
+mysql -u [YOUR_USERNAME] -p [YOUR_DATABASE] < src/main/resources/db/mariadb/schema.sql
 ```
 
 ## Environment Setup
