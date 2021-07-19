@@ -22,6 +22,7 @@ create table team
     start_time       timestamp,
     status           varchar(255),
     project_id       bigint,
+    subject          varchar(255),
     description      clob,
     primary key (id)
 );

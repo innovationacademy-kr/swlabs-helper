@@ -22,6 +22,7 @@ public class TeamResponseDto {
     private TeamStatus status;
     private TeamLocation location;
 
+    private String subject;
     private String description;
 
     private LocalDateTime startTime;
@@ -44,6 +45,7 @@ public class TeamResponseDto {
         this.members = team.getMembers().stream()
                 .map(member -> new TeamMemberDto(member))
                 .collect(Collectors.toList());
+        this.subject = team.getSubject();
         this.description = team.getDescription();
     }
 
