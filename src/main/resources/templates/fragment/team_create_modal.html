@@ -79,9 +79,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        <hr/>
                         <div class="mb-3">
-                            <hr/>
-                            <label for="tc_textarea_description" class="form-label">설명</label>
+                            <label for="tc_input_subject" class="form-label">멘토링 주제
+                                <span class="text-secondary"
+                                      style="font-size:0.85rem"> 팀 목록에 보여지는 멘토링 주제 입니다
+                                </span>
+                            </label><br/>
+                            <input id="tc_input_subject" class="form-control" type="text">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                            <label for="tc_textarea_description" class="form-label">멘토링 설명
+                                <span class="text-secondary"
+                                      style="font-size:0.85rem"> 세부사항에 보여지는 멘토링 설명 입니다
+                                </span>
+                            </label>
                             <textarea id="tc_textarea_description" class="form-control"></textarea>
                         </div>
                     </div>
@@ -144,6 +159,7 @@
         function set_team_create_modal_datepicker() {
             $('#tc_input_datepicker').datepicker({
                 uiLibrary: 'bootstrap4',
+                format: 'yyyy-mm-dd',
                 format: 'yyyy-mm-dd',
                 minDate: function () {
                     const date = new Date();
@@ -246,6 +262,7 @@
             end = parseInt(end) - offset_date;
             const start_date = date.valueOf() + start;
             const end_date = date.valueOf() + end;
+            const subject = $('#tc_input_subject').val();
             const description = $('#tc_textarea_description').val();
 
             $.ajax({
@@ -258,6 +275,7 @@
                         maxMemberCount: parseInt(maxMemberCount),
                         projectId: projectId,
                         memberRole: tc_ajax_req_info.member_role,
+                        subject: subject,
                         description: description
                     }),
                     dataType: "JSON",

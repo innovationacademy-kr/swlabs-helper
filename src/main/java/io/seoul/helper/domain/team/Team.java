@@ -41,6 +41,9 @@ public class Team {
     private Project project;
 
     @Column
+    private String subject;
+
+    @Column
     private String description;
 
     public Long getCurrentMemberCount() {
@@ -91,12 +94,13 @@ public class Team {
 
     @Builder
     public Team(Long id, Period period, Long maxMemberCount,
-                TeamLocation location, TeamStatus status, Project project, String description) {
+                TeamLocation location, TeamStatus status, Project project, String description, String subject) {
         this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;
         this.status = status;
         this.project = project;
+        this.subject = subject;
         this.description = description;
     }
 }

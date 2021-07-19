@@ -101,35 +101,35 @@ values (30, 'ft_transcendence');
 
 /*Team*/
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (1, '2021-08-03 13:00:00', '2021-08-03 15:00:00', 'GAEPO', 3, 'READY', 2);
+                  project_id, subject, description)
+values (1, '2021-08-03 13:00:00', '2021-08-03 15:00:00', 'GAEPO', 3, 'READY', 2, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (2, '2021-08-04 13:00:00', '2021-08-04 18:00:00', 'ONLINE', 4, 'WAITING', 3);
+                  project_id, subject, description)
+values (2, '2021-08-04 13:00:00', '2021-08-04 18:00:00', 'ONLINE', 4, 'WAITING', 3, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (3, '2021-08-04 11:00:00', '2021-08-04 19:00:00', 'SEOCHO', 4, 'READY', 4);
+                  project_id, subject, description)
+values (3, '2021-08-04 11:00:00', '2021-08-04 19:00:00', 'SEOCHO', 4, 'READY', 4, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (4, '2021-08-04 13:00:00', '2021-08-04 15:00:00', 'GAEPO', 4, 'WAITING', 2);
+                  project_id, subject, description)
+values (4, '2021-08-04 13:00:00', '2021-08-04 15:00:00', 'GAEPO', 4, 'WAITING', 2, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (5, '2021-08-01 13:00:00', '2021-08-01 15:00:00', 'ONLINE', 3, 'FULL', 2);
+                  project_id, subject, description)
+values (5, '2021-08-01 13:00:00', '2021-08-01 15:00:00', 'ONLINE', 3, 'FULL', 2, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (6, '2021-08-06 15:00:00', '2021-08-06 16:00:00', 'GAEPO', 3, 'WAITING', 3);
+                  project_id, subject, description)
+values (6, '2021-08-06 15:00:00', '2021-08-06 16:00:00', 'GAEPO', 3, 'WAITING', 3, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (7, '2021-08-10 13:00:00', '2021-08-10 15:00:00', 'ONLINE', 10, 'READY', 4);
+                  project_id, subject, description)
+values (7, '2021-08-10 13:00:00', '2021-08-10 15:00:00', 'ONLINE', 10, 'READY', 4, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (8, '2021-08-10 12:00:00', '2021-08-10 15:00:00', 'ONLINE', 3, 'WAITING', 4);
+                  project_id, subject, description)
+values (8, '2021-08-10 12:00:00', '2021-08-10 15:00:00', 'ONLINE', 3, 'WAITING', 4, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (9, '2021-08-30 09:00:00', '2021-08-30 12:00:00', 'ONLINE', 3, 'END', 1);
+                  project_id, subject, description)
+values (9, '2021-08-30 09:00:00', '2021-08-30 12:00:00', 'ONLINE', 3, 'END', 1, '제목입니다', '설명입니다');
 insert into team (id, start_time, end_time, location, max_member_count, status,
-                  project_id)
-values (10, '2021-08-22 09:00:00', '2021-08-22 12:00:00', 'ONLINE', 2, 'WAITING', 1);
+                  project_id, subject, description)
+values (10, '2021-08-22 09:00:00', '2021-08-22 12:00:00', 'ONLINE', 2, 'WAITING', 1, '제목입니다', '설명입니다');
 
 /*member*/
 insert into member (id, team_id, user_id, role, creator)
