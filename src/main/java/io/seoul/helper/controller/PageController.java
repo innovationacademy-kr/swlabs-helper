@@ -57,15 +57,18 @@ public class PageController {
 
     @GetMapping(value = "/list_team")
     public String teamList(Model model, @LoginUser SessionUser user,
-                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+                           @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                           @RequestParam(value = "sort", required = false, defaultValue = "id,desc") String sort) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setOffset(offset);
         dto.setStartTimePrevious(LocalDateTime.now());
+        dto.setSort(sort);
         dto.setExcludeNickname(user.getNickname());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("sort", sort);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
 
@@ -74,15 +77,18 @@ public class PageController {
 
     @GetMapping(value = "/list_myteam")
     public String myTeamList(Model model, @LoginUser SessionUser user,
-                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
+                             @RequestParam(value = "offset", required = false, defaultValue = "0") int offset,
+                             @RequestParam(value = "sort", required = false, defaultValue = "id,desc") String sort) {
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setNickname(user.getNickname());
         dto.setOffset(offset);
+        dto.setSort(sort);
         dto.setEndTimePrevious(LocalDateTime.now());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
         model.addAttribute("user", user);
+        model.addAttribute("sort", sort);
         model.addAttribute("projects", projectService.findAllProjects());
         model.addAttribute("locations", teamService.findAllLocation());
 
