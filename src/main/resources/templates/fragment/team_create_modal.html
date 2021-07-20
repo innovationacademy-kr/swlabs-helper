@@ -156,8 +156,10 @@
 
         const tc_time_rangeslider = $("#tc_input_time_rangeslider").data("ionRangeSlider");
 
+        var tc_datepicker;
+
         function set_team_create_modal_datepicker() {
-            $('#tc_input_datepicker').datepicker({
+            tc_datepicker = $('#tc_input_datepicker').datepicker({
                 uiLibrary: 'bootstrap4',
                 format: 'yyyy-mm-dd',
                 format: 'yyyy-mm-dd',
@@ -237,6 +239,9 @@
             detail_modal.show();
         }
 
+        $('#team_create_modal').on('hidden.bs.modal', function () {
+            tc_datepicker.close();
+        })
 
         /* ajax action func*/
         function submit_create_team() {
