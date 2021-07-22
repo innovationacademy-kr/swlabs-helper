@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    include:
+      - oauth
+      - mail
+  datasource:
+    embedded-database-connection: "h2"
+  sql:
+    init:
+      data-locations: classpath*:db/h2/data.sql
+      schema-locations: classpath*:db/h2/schema.sql
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+logging:
+  file:
+    name: helper.log

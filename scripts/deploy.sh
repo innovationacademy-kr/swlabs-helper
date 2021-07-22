@@ -31,7 +31,7 @@ fi
 
 # .jar 파일 java 실행합니다.
 echo ">>>> $JAR_PATH java execute."
-nohup java -jar $JAR_PATH --spring.config.location=classpath:/application.properties --spring.profiles.active=$RELEASE > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar $JAR_PATH --spring.config.location=classpath:/application.yaml --spring.profiles.active=$RELEASE > /dev/null 2> /dev/null < /dev/null &
 sleep 5
 CURRENT_PID=$(pgrep -f $APP_NAME)
 echo ">>>> New PID: $CURRENT_PID"
