@@ -1,0 +1,13 @@
+#Common Mail Setting
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "${HELPER42_MAIL_ADDRESS}"
+    password: "${HELPER42_MAIL_PASSWORD}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
