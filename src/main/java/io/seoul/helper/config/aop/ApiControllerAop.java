@@ -19,18 +19,21 @@ public class ApiControllerAop {
         try {
             return joinPoint.proceed();
         } catch (EntityNotFoundException e) {
+            log.error(joinPoint.getSignature().getName() + "fail : " + e.getMessage());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .message(e.getMessage())
                     .data(null)
                     .build();
         } catch (Exception e) {
+            log.error(joinPoint.getSignature().getName() + "fail : " + e.getMessage());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .message(e.getMessage())
                     .data(null)
                     .build();
         } catch (Throwable e) {
+            log.error(joinPoint.getSignature().getName() + "fail : " + e.getMessage());
             return ResultResponseDto.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .message(e.getMessage())

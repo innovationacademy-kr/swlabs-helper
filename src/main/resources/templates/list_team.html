@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default_layout.html" th:with="currentPage='list_team'">
 <head>
-    <title>Home</title>
+    <title>Team</title>
     <!-- Plugin CSS file with desired ski n-->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
@@ -171,7 +171,7 @@
                 team: team,
                 mode: "READONLY_JOIN",
                 ajax_req_info: {
-                    url: './api/v1/team/' + team.teamId + '/join',
+                    url: './api/v1/member',
                     type: 'POST',
                     success_message: '해당 팀에 가입되었습니다.',
                     success: function () {

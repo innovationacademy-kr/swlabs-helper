@@ -305,7 +305,10 @@
             $.ajax({
                     type: tv_ajax_req_info.type,
                     url: tv_ajax_req_info.url,
-                    data: null,
+                    data: JSON.stringify({
+                        teamId: tv_team.teamId,
+                        role: "MENTEE"
+                    }),
                     dataType: "JSON",
                     contentType: 'application/json',
                     success: (data) => {

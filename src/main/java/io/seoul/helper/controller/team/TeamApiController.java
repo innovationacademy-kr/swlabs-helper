@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -36,7 +36,7 @@ public class TeamApiController {
 
     @ApiControllerTryCatch
     @GetMapping(value = "/api/v1/teams")
-    public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) throws Exception {
+    public ResultResponseDto teamList(@ModelAttribute TeamListRequestDto requestDto) throws EntityNotFoundException {
         Page<TeamResponseDto> teams = teamService.findTeams(requestDto);
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
@@ -47,8 +47,8 @@ public class TeamApiController {
 
     @ApiControllerTryCatch
     @GetMapping(value = "/api/v1/team/{id}")
-    public ResultResponseDto getTeam(@PathVariable Long id) throws Exception {
-        TeamResponseDto data = new TeamResponseDto(teamService.findTeam(id));
+    public ResultResponseDto getTeam(@PathVariable Long id) throws EntityNotFoundException {
+        TeamResponseDto data = teamService.findTeam(id);
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(HttpStatus.OK.name())
@@ -69,8 +69,7 @@ public class TeamApiController {
 
     @ApiControllerTryCatch
     @PutMapping(value = "/api/v1/team/{id}")
-    public ResultResponseDto update(HttpServletRequest request,
-                                    @LoginUser SessionUser user,
+    public ResultResponseDto update(@LoginUser SessionUser user,
                                     @PathVariable Long id,
                                     @RequestBody TeamUpdateRequestDto requestDto) throws Exception {
         TeamResponseDto data = teamService.updateTeamByMentor(user, id, requestDto);
@@ -94,37 +93,10 @@ public class TeamApiController {
     }
 
     @ApiControllerTryCatch
-    @PostMapping(value = "/api/v1/team/{id}/join")
-    public ResultResponseDto joinTeam(HttpServletRequest request,
-                                      @LoginUser SessionUser user, @PathVariable Long id) throws Exception {
-        teamService.joinTeam(user, id);
-        mailSenderService.sendJoinMail(user, id, "helper.42seoul.io");
-        return ResultResponseDto.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("OK")
-                .data(null)
-                .build();
-    }
-
-    @ApiControllerTryCatch
     @PostMapping(value = "/api/v1/team/{id}/end")
-    public ResultResponseDto endTeam(HttpServletRequest request,
-                                     @LoginUser SessionUser user, @PathVariable Long id) throws Exception {
+    public ResultResponseDto endTeam(@LoginUser SessionUser user, @PathVariable Long id) throws Exception {
         teamService.endTeam(user, id);
         mailSenderService.sendEndMail(id, "helper.42seoul.io");
-        return ResultResponseDto.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("OK")
-                .data(null)
-                .build();
-    }
-
-    @ApiControllerTryCatch
-    @DeleteMapping(value = "/api/v1/team/{id}/out")
-    public ResultResponseDto outTeam(HttpServletRequest request,
-                                     @LoginUser SessionUser user, @PathVariable Long id) throws Exception {
-        teamService.outTeam(user, id);
-        mailSenderService.sendOutMail(user, id, "helper.42seoul.io");
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("OK")

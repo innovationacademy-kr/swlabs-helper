@@ -41,52 +41,22 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        if (requestDto.getMemberRole() == MemberRole.MENTOR) {
-            return createNewTeamMentor(currentUser, requestDto);
-        }
-        if (requestDto.getMemberRole() == MemberRole.MENTEE) {
-            return createNewTeamMentee(currentUser, requestDto);
-        }
-        throw new IllegalArgumentException("MemberRole is null.");
-    }
-
-    @Transactional
-    public TeamResponseDto createNewTeamMentee(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        User user = userService.findUserBySession(currentUser);
-        Project project = findProject(requestDto.getProjectId());
+        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
+        Project project = projectRepo.getById(requestDto.getProjectId());
         Period period = Period.builder()
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-        if (!period.isValid())
-            throw new IllegalArgumentException("Invalid Time");
-        if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
-            throw new IllegalArgumentException("Invalid people count");
-        Team team = requestDto.toEntity(project, TeamStatus.WAITING);
-        team = teamRepo.save(team);
-        Member member = Member.builder()
-                .team(team)
-                .user(user)
-                .role(MemberRole.MENTEE)
-                .creator(true)
-                .build();
-        memberRepo.save(member);
-        return new TeamResponseDto(team);
-    }
 
-    @Transactional
-    public TeamResponseDto createNewTeamMentor(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
-        User user = userService.findUserBySession(currentUser);
-        Project project = findProject(requestDto.getProjectId());
-        Period period = Period.builder()
-                .startTime(requestDto.getStartTime())
-                .endTime(requestDto.getEndTime())
-                .build();
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
         if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
             throw new IllegalArgumentException("Invalid people count");
-        Team team = requestDto.toEntity(project, TeamStatus.READY);
+        if (requestDto.getMemberRole() == null)
+            throw new IllegalArgumentException("MemberRole is null.");
+
+        Team team = requestDto.toEntity(project,
+                requestDto.getMemberRole() == MemberRole.MENTEE ? TeamStatus.WAITING : TeamStatus.READY);
         team = teamRepo.save(team);
         Member member = Member.builder()
                 .team(team)
@@ -100,9 +70,9 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
-        User user = userService.findUserBySession(currentUser);
-        Team team = findTeam(teamId);
-        Project project = findProject(requestDto.getProjectId());
+        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
+        Team team = findTeamById(teamId);
+        Project project = projectRepo.getById(requestDto.getProjectId());
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Not valid member");
         Period period = Period.builder()
@@ -137,58 +107,15 @@ public class TeamService {
         }
         teams = teamRepo.saveAll(teams);
 
-        return teams.stream().map(team -> new TeamResponseDto(team))
+        return teams.stream().map(TeamResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void joinTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = userService.findUserBySession(sessionUser);
-        Team team = findTeam(id);
-        if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
-            throw new Exception("Already joined");
-        if (team.getStatus() != TeamStatus.READY)
-            throw new Exception("This Team is not ready");
-        if (team.getCurrentMemberCount() >= team.getMaxMemberCount())
-            throw new Exception("member is full");
-        else {
-            team.joinTeam();
-            teamRepo.save(team);
-        }
-
-        Member member = Member.builder()
-                .team(team)
-                .user(user)
-                .creator(false)
-                .role(MemberRole.MENTEE)
-                .build();
-        memberRepo.save(member);
-    }
 
     @Transactional
-    public void outTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = userService.findUserBySession(sessionUser);
-        Team team = findTeam(id);
-        Member member = memberRepo.findMemberByTeamAndUser(team, user)
-                .orElseThrow(() -> new Exception("Not this team member"));
-        if (team.getStatus() == TeamStatus.END)
-            throw new Exception("This team is end status");
-        if (team.getStatus() == TeamStatus.WAITING)
-            throw new Exception("This team is waiting status");
-        if (isCreator(member))
-            throw new Exception("Creator can not leave the team");
-        if (isMentor(member)) {
-            throw new Exception("Mentor can not leave the team");
-        }
-        team.outTeam();
-        teamRepo.save(team);
-        memberRepo.delete(member);
-    }
-
-
-    public void endTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = userService.findUserBySession(sessionUser);
-        Team team = findTeam(id);
+    public void endTeam(SessionUser currentUser, Long id) throws Exception {
+        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
+        Team team = findTeamById(id);
         memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
                 .orElseThrow(() -> new Exception("Not this team mentor"));
         if (team.getStatus() == TeamStatus.END)
@@ -197,22 +124,13 @@ public class TeamService {
             team.updateTeamEnd();
             teamRepo.save(team);
         }
-
-        List<Member> members = team.getMembers();
     }
 
-    private boolean isCreator(Member member) {
-        return member.getCreator();
-    }
-
-    private boolean isMentor(Member member) {
-        return member.getRole() == MemberRole.MENTOR;
-    }
 
     @Transactional
-    public void deleteTeam(SessionUser sessionUser, Long id) throws Exception {
-        User user = userService.findUserBySession(sessionUser);
-        Team team = findTeam(id);
+    public void deleteTeam(SessionUser currentUser, Long id) throws Exception {
+        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
+        Team team = findTeamById(id);
         Member member = memberRepo.findMemberByTeamAndUser(team, user)
                 .orElseThrow(() -> new Exception("Not this team member"));
         if (team.getStatus() != TeamStatus.WAITING)
@@ -274,11 +192,12 @@ public class TeamService {
             log.error("failed to find teams : " + e.getMessage() + "\n\n" + e.getCause());
             return null;
         }
-        return teams.map(team -> new TeamResponseDto(team));
+        return teams.map(TeamResponseDto::new);
     }
 
     private List<Long> findTeamIdsByNickname(String nickName, boolean isCreator, MemberRole memberRole) {
-        User user = userRepo.findUserByNickname(nickName).get();
+        User user = userRepo.findUserByNickname(nickName).
+                orElseThrow(() -> new EntityNotFoundException("Invalid User"));
         List<Member> members;
 
         if (isCreator)
@@ -292,28 +211,23 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-    public Team findTeam(Long teamId) throws EntityNotFoundException {
-        return teamRepo.findById(teamId)
-                .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
-    }
-
-    private Project findProject(Long projectId) throws EntityNotFoundException {
-        return projectRepo.findById(projectId).
-                orElseThrow(() -> new EntityNotFoundException("invalid project"));
-    }
-
-    private Project findProject(String projectName) throws EntityNotFoundException {
-        return projectRepo.findProjectByName(projectName).
-                orElseThrow(() -> new EntityNotFoundException("invalid project"));
-    }
-
+    @Transactional
     public List<TeamLocationDto> findAllLocation() {
-        return Arrays.stream(TeamLocation.values()).map((o) -> {
-            return TeamLocationDto.builder()
-                    .id(o.getId())
-                    .code(o.name())
-                    .name(o.getName())
-                    .build();
-        }).collect(Collectors.toList());
+        return Arrays.stream(TeamLocation.values()).map(o -> TeamLocationDto.builder()
+                .id(o.getId())
+                .code(o.name())
+                .name(o.getName())
+                .build()
+        ).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TeamResponseDto findTeam(Long teamId) throws EntityNotFoundException {
+        return new TeamResponseDto(findTeamById(teamId));
+    }
+
+    private Team findTeamById(Long id) throws EntityNotFoundException {
+        return teamRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
     }
 }
