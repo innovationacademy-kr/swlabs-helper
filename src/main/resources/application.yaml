@@ -1,9 +1,8 @@
 spring:
   config:
-    activate:
-      on-profile:
-        - oauth
-        - mail
+    import:
+      - "classpath:/application-oauth.yaml"
+      - "classpath:/application-mail.yaml"
   datasource:
     embedded-database-connection: "h2"
   sql:
@@ -18,7 +17,6 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-
 server:
   port: 8080
   error:

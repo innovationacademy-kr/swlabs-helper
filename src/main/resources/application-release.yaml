@@ -1,9 +1,8 @@
 spring:
   config:
-    activate:
-      on-profile:
-        - oauth
-        - mail
+    import:
+      - "classpath:/application-oauth.yaml"
+      - "classpath:/application-mail.yaml"
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     username: "${HELPER42_DB_USERNAME_RELEASE}"
