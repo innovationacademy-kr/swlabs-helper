@@ -1,8 +1,9 @@
 spring:
-  profiles:
-    include:
-      - oauth
-      - mail
+  config:
+    activate:
+      on-profile:
+        - oauth
+        - mail
   datasource:
     embedded-database-connection: "h2"
   sql:

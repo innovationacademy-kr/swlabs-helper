@@ -1,8 +1,9 @@
 spring:
-  profiles:
-    include:
-      - oauth
-      - mail
+  config:
+    activate:
+      on-profile:
+        - oauth
+        - mail
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     username: "${HELPER42_DB_USERNAME}"
