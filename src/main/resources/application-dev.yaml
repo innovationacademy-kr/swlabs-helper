@@ -1,0 +1,35 @@
+spring:
+  config:
+    import:
+      - "classpath:/application-oauth.yaml"
+      - "classpath:/application-mail.yaml"
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: "${HELPER42_DB_USERNAME}"
+    password: "${HELPER42_DB_PASSWORD}"
+    url: "jdbc:mariadb://localhost:3306/${HELPER42_DB_NAME}"
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+#Server
+server:
+  port: 9090
+  error:
+    whitelabel:
+      enabled: false
+#Log
+logging:
+  file:
+    name: helper.log
+#Sentry
+Sentry:
+  dsn: "${HELPER42_SENTRY_DSN}"
+  environment: develop
+  logging:
+    minimum-breadcrumb-level: error

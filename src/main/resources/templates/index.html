@@ -181,7 +181,7 @@
                 team: team,
                 mode: "READONLY_OUT",
                 ajax_req_info: {
-                    url: './api/v1/team/' + team.teamId + '/out',
+                    url: './api/v1/member',
                     type: 'DELETE',
                     success_message: '해당 팀에서 탈퇴했습니다.',
                     success: function () {
@@ -209,7 +209,7 @@
                         dataType: "JSON",
                         contentType: 'application/json',
                         success: (rst) => {
-                            if (rst.statusCode != 200) {
+                            if (rst.statusCode !== 200) {
                                 alert("처리 도중 문제가 발생했습니다.\n" + rst.message);
                             } else {
                                 onclick_detail_team(rst.data);
