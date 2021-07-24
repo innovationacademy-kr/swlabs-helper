@@ -1,29 +1,41 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
+import io.seoul.helper.controller.user.dto.UserResponseDto;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    @Autowired
-    UserRepository userRepo;
+    private final UserRepository userRepo;
 
-    @Transactional
-    public User findUserBySession(SessionUser currentUser) throws Exception {
+    @Transactional(readOnly = true)
+    public UserResponseDto findUserBySession(SessionUser currentUser) throws Exception {
         if (currentUser == null) throw new Exception("not login");
-        return userRepo.findUserByNickname(currentUser.getNickname())
+        User user = userRepo.findUserByNickname(currentUser.getNickname())
                 .orElseThrow(() -> new EntityNotFoundException("invalid user"));
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .name(user.getFullname())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .build();
     }
 
     @Transactional
-    public User findUserById(Long id) throws Exception {
-        return userRepo.findById(id)
+    public UserResponseDto findUserById(Long id) throws Exception {
+        User user = userRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("invalid user"));
+        return UserResponseDto.builder()
+                .name(user.getFullname())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .build();
     }
 }

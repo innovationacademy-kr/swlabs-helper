@@ -1,5 +1,6 @@
 package io.seoul.helper.controller.team.dto;
 
+import io.seoul.helper.controller.member.dto.MemberResponseDto;
 import io.seoul.helper.controller.project.dto.ProjectDto;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.Team;
@@ -28,7 +29,7 @@ public class TeamResponseDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private List<TeamMemberDto> members;
+    private List<MemberResponseDto> members;
 
     public TeamResponseDto(Team team) {
         this.teamId = team.getId();
@@ -43,7 +44,13 @@ public class TeamResponseDto {
         this.startTime = team.getPeriod().getStartTime();
         this.endTime = team.getPeriod().getEndTime();
         this.members = team.getMembers().stream()
-                .map(member -> new TeamMemberDto(member))
+                .map(member -> MemberResponseDto.builder()
+                        .id(member.getId())
+                        .userId(member.getUser().getId())
+                        .nickname(member.getUser().getNickname())
+                        .memberRole(member.getRole().getName())
+                        .creator(member.getCreator())
+                        .build())
                 .collect(Collectors.toList());
         this.subject = team.getSubject();
         this.description = team.getDescription();
@@ -53,7 +60,7 @@ public class TeamResponseDto {
         String nickname = "empty";
         Optional<String> optional = Optional.of(nickname);
 
-        for (TeamMemberDto member : this.members) {
+        for (MemberResponseDto member : this.members) {
             if (memberRole.getName().equals(member.getMemberRole()))
                 return member.getNickname();
         }
@@ -64,7 +71,7 @@ public class TeamResponseDto {
         MemberRole memberRole = MemberRole.MENTEE;
         Optional<String> optional = Optional.of("empty");
 
-        for (TeamMemberDto member : this.members) {
+        for (MemberResponseDto member : this.members) {
             if (memberRole.getName().equals(member.getMemberRole()))
                 return member.getNickname();
         }
@@ -75,7 +82,7 @@ public class TeamResponseDto {
         MemberRole memberRole = MemberRole.MENTOR;
         Optional<String> optional = Optional.of("empty");
 
-        for (TeamMemberDto member : this.members) {
+        for (MemberResponseDto member : this.members) {
             if (memberRole.getName().equals(member.getMemberRole()))
                 return member.getNickname();
         }
@@ -85,7 +92,7 @@ public class TeamResponseDto {
     public String getNicknameByCreator() {
         Optional<String> optional = Optional.of("empty");
 
-        for (TeamMemberDto member : this.members) {
+        for (MemberResponseDto member : this.members) {
             if (member.getCreator())
                 return member.getNickname();
         }
