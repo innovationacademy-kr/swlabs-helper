@@ -14,7 +14,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor
 public class Review extends BaseTime {
     @Id
@@ -45,4 +44,14 @@ public class Review extends BaseTime {
     @Column
     @Enumerated(value = EnumType.STRING)
     private ReviewStatus status;
+
+    @Builder
+    public Review(Team team, User user, Member member, String description, Score score, ReviewStatus status) {
+        this.team = team;
+        this.user = user;
+        this.member = member;
+        this.description = description;
+        this.score = score;
+        this.status = status;
+    }
 }

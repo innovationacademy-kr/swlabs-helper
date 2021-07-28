@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Getter
-@Builder
 @Embeddable
 @NoArgsConstructor
 public class Score {
@@ -23,4 +22,12 @@ public class Score {
 
     @Column
     private Integer interested;
+
+    @Builder
+    public Score(Integer fun, Integer nice, Integer time, Integer interested) {
+        this.fun = fun;
+        this.nice = nice;
+        this.time = time;
+        this.interested = interested;
+    }
 }

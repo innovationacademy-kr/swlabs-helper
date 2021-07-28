@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -153,5 +154,15 @@ public class PageController {
         model.addAttribute("locations", teamService.findAllLocation());
 
         return "mymentor";
+    }
+
+    @GetMapping(value = "/{id}/review/new")
+    public String review(Model model, @LoginUser SessionUser user,
+                         @PathVariable(name = "id") Long id) {
+        TeamResponseDto team = teamService.findTeam(id);
+
+        model.addAttribute("user", user);
+        model.addAttribute("team", team);
+        return "review";
     }
 }

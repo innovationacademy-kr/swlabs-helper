@@ -199,17 +199,13 @@ public class ReviewServiceTest {
     }
 
     private void checkReviewCreated(Optional<Review> target) {
-        Review review = target.orElseThrow(() -> {
-            throw new EntityNotFoundException("review not found");
-        });
+        Review review = target.orElseThrow(() -> new EntityNotFoundException("review not found"));
         assertNull(review.getUpdated());
         assertNotNull(review.getCreated());
     }
 
     private void checkReviewUpdated(Optional<Review> target) {
-        Review review = target.orElseThrow(() -> {
-            throw new EntityNotFoundException("review not found");
-        });
+        Review review = target.orElseThrow(() -> new EntityNotFoundException("review not found"));
         assertNotNull(review.getUpdated());
         assertNotNull(review.getScore());
         assertNotNull(review.getDescription());

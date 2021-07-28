@@ -94,10 +94,11 @@ public class TeamService {
         return new TeamResponseDto(team);
     }
 
+    //TODO : batch 수정 (TIMEOUT)
     @Transactional
     public List<TeamResponseDto> updateTeamsLessThanCurrentTime() throws Exception {
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Team> teams = teamRepo.findTeamsByStatusNotAndEndTimeLessThan(TeamStatus.END, currentTime);
+        List<Team> teams = teamRepo.findTeamsByStatusNotAndEndTimeLessThan(TeamStatus.WAITING, currentTime);
 
         if (teams.isEmpty()) {
             throw new EntityNotFoundException("Nothing to change teams");
