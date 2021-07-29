@@ -94,7 +94,6 @@ public class TeamService {
         return new TeamResponseDto(team);
     }
 
-    //TODO : batch 수정 (TIMEOUT)
     @Transactional
     public List<TeamResponseDto> updateTeamsLessThanCurrentTime() throws Exception {
         LocalDateTime currentTime = LocalDateTime.now();
@@ -104,7 +103,7 @@ public class TeamService {
             throw new EntityNotFoundException("Nothing to change teams");
         }
         for (Team team : teams) {
-            team.updateTeamEnd();
+            team.updateTeamTimeout();
         }
         teams = teamRepo.saveAll(teams);
 
@@ -127,17 +126,27 @@ public class TeamService {
         }
     }
 
-
     @Transactional
-    public void deleteTeam(SessionUser currentUser, Long id) throws Exception {
+    public void revokeTeam(SessionUser currentUser, Long id) throws Exception {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Team team = findTeamById(id);
-        Member member = memberRepo.findMemberByTeamAndUser(team, user)
-                .orElseThrow(() -> new Exception("Not this team member"));
-        if (team.getStatus() != TeamStatus.WAITING)
-            throw new Exception("This Team is already Matched!");
-        memberRepo.delete(member);
-        teamRepo.delete(team);
+        List<Member> members = memberRepo.findMembersByTeam(team);
+        Member owner = members.stream()
+                .filter(m -> m.getRole() == MemberRole.MENTOR).findAny()
+                .orElseGet(() -> members.stream().filter(Member::getCreator).findAny()
+                        .orElse(null));
+
+        if (owner == null)
+            throw new Exception("Team is not valid!");
+        if (owner.getUser().getId() != user.getId())
+            throw new Exception("Invalid User");
+
+        members.forEach(m -> {
+            m.updateParticipation(false);
+            memberRepo.save(m);
+        });
+        team.updateTeamRevoke();
+        teamRepo.save(team);
     }
 
     private Pageable toPageable(int offset, int limit, String sort) throws Exception {

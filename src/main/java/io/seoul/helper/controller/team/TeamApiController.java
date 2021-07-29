@@ -6,6 +6,7 @@ import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.dto.ResultResponseDto;
 import io.seoul.helper.controller.team.dto.*;
 import io.seoul.helper.service.MailSenderService;
+import io.seoul.helper.service.ReviewService;
 import io.seoul.helper.service.TeamService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamApiController {
     private final TeamService teamService;
+    private final ReviewService reviewService;
     private final MailSenderService mailSenderService;
 
     @ApiControllerTryCatch
@@ -82,9 +84,11 @@ public class TeamApiController {
     }
 
     @ApiControllerTryCatch
-    @DeleteMapping(value = "/api/v1/team/{id}")
-    public ResultResponseDto delete(@LoginUser SessionUser user, @PathVariable Long id) throws Exception {
-        teamService.deleteTeam(user, id);
+    @PostMapping(value = "/api/v1/team/{id}/end")
+    public ResultResponseDto endTeam(@LoginUser SessionUser user, @PathVariable Long id) throws Exception {
+        teamService.endTeam(user, id);
+        reviewService.createReviews(id);
+        mailSenderService.sendEndMail(id, "helper.42seoul.io");
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("OK")
@@ -93,9 +97,9 @@ public class TeamApiController {
     }
 
     @ApiControllerTryCatch
-    @PostMapping(value = "/api/v1/team/{id}/end")
-    public ResultResponseDto endTeam(@LoginUser SessionUser user, @PathVariable Long id) throws Exception {
-        teamService.endTeam(user, id);
+    @PostMapping(value = "/api/v1/team/{id}/revoke")
+    public ResultResponseDto revokeTeam(@LoginUser SessionUser user, @PathVariable Long id) throws Exception {
+        teamService.revokeTeam(user, id);
         mailSenderService.sendEndMail(id, "helper.42seoul.io");
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())

@@ -92,6 +92,14 @@ public class Team {
         this.status = TeamStatus.END;
     }
 
+    public void updateTeamRevoke() {
+        this.status = TeamStatus.REVOKE;
+    }
+
+    public void updateTeamTimeout() {
+        this.status = TeamStatus.TIMEOUT;
+    }
+
     @Builder
     public Team(Long id, Period period, Long maxMemberCount,
                 TeamLocation location, TeamStatus status, Project project, String description, String subject) {
@@ -103,4 +111,6 @@ public class Team {
         this.subject = subject;
         this.description = description;
     }
+
+
 }
