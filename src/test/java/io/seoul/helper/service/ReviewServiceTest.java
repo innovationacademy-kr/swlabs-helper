@@ -60,9 +60,13 @@ public class ReviewServiceTest {
 
     ArrayList<User> userList;
     ArrayList<Long> teamIdList;
+    ArrayList<Long> reviewList;
 
     @BeforeAll
     public void setup() {
+        reviewList = new ArrayList<>();
+        userList = new ArrayList<>();
+        teamIdList = new ArrayList<>();
         try {
             addUsers();
             createTeams();
@@ -72,7 +76,6 @@ public class ReviewServiceTest {
     }
 
     private void addUsers() {
-        userList = new ArrayList<>();
         userList.add(User.builder()
                 .nickname("help_tester_1")
                 .fullname("Hyunjin Won")
@@ -113,7 +116,6 @@ public class ReviewServiceTest {
     private void createTeams() throws Exception {
         LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endTime = LocalDateTime.now().plusDays(1).withHour(12).withMinute(0).withSecond(0);
-        teamIdList = new ArrayList<>();
         teamIdList.add(teamService.createNewTeam(new SessionUser(userList.get(1)),
                 TeamCreateRequestDto.builder()
                         .subject("TEST TEAM MENTEE BUILD")
@@ -180,10 +182,18 @@ public class ReviewServiceTest {
     }
 
     @AfterAll
-    public void cleanup() {
-        userList.stream().forEach((u) -> {
-            Optional<User> target = userRepo.findUserByNickname(u.getNickname());
-            target.ifPresent(o -> userRepo.delete(o));
+    public void cleanup() throws Exception {
+        reviewList.forEach(r -> {
+            reviewRepo.findById(r).ifPresent(o -> reviewRepo.delete(o));
+        });
+        teamIdList.forEach(t -> {
+            teamRepo.findById(t).ifPresent(o -> {
+                memberRepo.findMembersByTeam(o).forEach(m -> memberRepo.delete(m));
+                teamRepo.delete(o);
+            });
+        });
+        userList.forEach((u) -> {
+            userRepo.findUserByNickname(u.getNickname()).ifPresent(o -> userRepo.delete(o));
         });
     }
 
@@ -225,6 +235,7 @@ public class ReviewServiceTest {
                         fail("fail : cannot found review");
                         return new Review();
                     });
+            reviewList.add(review.getId());
             ReviewUpdateRequestDto reviewUpdateRequestDto;
             reviewUpdateRequestDto = ReviewUpdateRequestDto.builder()
                     .id(review.getId())
