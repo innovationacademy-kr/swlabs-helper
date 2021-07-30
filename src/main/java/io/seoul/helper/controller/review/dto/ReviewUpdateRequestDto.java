@@ -9,10 +9,10 @@ import lombok.Getter;
 public class ReviewUpdateRequestDto {
     private Long id;
     private String description;
-    private NewScore score;
+    private ScoreDto score;
 
     @Builder
-    public ReviewUpdateRequestDto(Long id, String description, NewScore score) {
+    public ReviewUpdateRequestDto(Long id, String description, ScoreDto score) {
         this.id = id;
         this.description = description;
         this.score = score;
@@ -22,26 +22,11 @@ public class ReviewUpdateRequestDto {
         return Review.builder()
                 .description(description)
                 .score(Score.builder()
-                        .nice(score.nice)
-                        .fun(score.fun).time(score.time)
-                        .interested(score.interested)
+                        .nice(score.getNice())
+                        .fun(score.getFun())
+                        .time(score.getTime())
+                        .interested(score.getInterested())
                         .build())
                 .build();
-    }
-
-    @Getter
-    public static class NewScore {
-        private Integer fun;
-        private Integer nice;
-        private Integer time;
-        private Integer interested;
-
-        @Builder
-        public NewScore(Integer fun, Integer nice, Integer time, Integer interested) {
-            this.fun = fun;
-            this.nice = nice;
-            this.time = time;
-            this.interested = interested;
-        }
     }
 }

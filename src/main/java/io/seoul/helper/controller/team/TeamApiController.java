@@ -84,9 +84,10 @@ public class TeamApiController {
     }
 
     @ApiControllerTryCatch
-    @PostMapping(value = "api/v1/team/review")
+    @PostMapping(value = "/api/v1/team/{id}/review")
     public ResultResponseDto reviewTeam(@LoginUser SessionUser user,
-                                        @RequestBody TeamReviewRequestDto requestDto) throws Exception {
+                                        @RequestBody TeamReviewRequestDto requestDto,
+                                        @PathVariable String id) throws Exception {
         teamService.reviewTeam(user, requestDto);
         mailSenderService.sendEndMail(requestDto.getId(), "helper.42seoul.io");
         return ResultResponseDto.builder()

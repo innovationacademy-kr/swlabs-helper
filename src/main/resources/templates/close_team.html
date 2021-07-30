@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout.html" th:with="currentPage='mentor_review'">
+<head>
+    <meta charset="UTF-8">
+    <title>End Team</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<div layout:fragment="custom-content">
+    <h2 class="main-title primary text-center py-3" th:text="${team.subject}"></h2>
+    <div class="row">
+        <div class="col-sm-2 text-center">
+            <div class="bg-image-item center img-rounded square-l" th:data-tooltip-login="${user.nickname}"
+                 data-tooltip-url="https://profile.intra.42.fr"
+                 th:style="'margin: auto;background-image: url(' + ${user.picture} + ');'">
+            </div>
+            <b th:text="${user.nickname}"></b>
+        </div>
+
+        <!-- input slide 교체, hidden 교체  -->
+        <div class="col-sm-10">
+            <h2>참석 여부</h2>
+            <form id="feedback_form" class="simple_form form-horizontal" novalidate="novalidate"
+                  enctype="multipart/form-data" action="/events/7120/feedbacks" accept-charset="UTF-8" method="post">
+                <input hidden id="close_team_input_team_id" th:value="${team.teamId}">
+                <div class="row">
+                    <div class="py-3 col-lg-3 member" th:each="member : ${team.members}"
+                         th:if="${member.memberRole.equals('멘티')}">
+                        <input hidden class="input-member-id" th:value="${member.id}">
+                        <div class="bg-image-item center img-rounded square-m"
+                             data-tooltip-url="https://profile.intra.42.fr"
+                             th:style="'margin: auto;background-image: url(' + ${member.picture} + ');'">
+                        </div>
+                        <div class="d-flex justify-content-center " th:text="${member.nickname}"></div>
+                        <input hidden class="input-member-nickname" th:value="${member.nickname}">
+                        <div class="form-check form-switch d-flex justify-content-center">
+                            <input class="form-check-input" type="checkbox">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="close_team_submit(event)">
+                        <i class="bi bi-check-square"></i>
+                        팀 종료
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<div layout:fragment="custom-footer">
+    <script>
+        function close_team_submit(event) {
+            const m = document.getElementsByClassName('member');
+            let members = [];
+            const team_id = document.getElementById('close_team_input_team_id').value;
+            for (let i = 0; i < m.length; i++) {
+                let elements = m[i];
+                let inputs = elements.getElementsByTagName('input');
+                let member = {};
+                for (let j = 0; j < inputs.length; j++) {
+                    switch (inputs[j].className) {
+                        case 'input-member-nickname':
+                            break;
+                        case 'input-member-id':
+                            member['id'] = inputs[j].value;
+                            break;
+                        default:
+                            member['participation'] = inputs[j].checked;
+                            break;
+                    }
+                }
+                members.push(member);
+            }
+
+
+            fetch('/api/v1/team/' + team_id + '/review', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: team_id,
+                    members: members
+                }),
+            })
+                .then(function (response) {
+                    if (response.status != 200)
+                        throw new Error(response.status + ' : ' + response.statusText);
+                    return response.json();
+                }).then(function (responseJson) {
+                if (responseJson.statusCode != 200) {
+                    alert('팀이 정상종료되지 않았습니다.\n 재시도하거나 아래의 원인을 확인해주세요.\n' +
+                        '원인 : ' + responseJson.message);
+                } else {
+                    alert('팀이 정성적으로 종료됬습니다.');
+                    window.location.href = '/';
+                }
+            }).catch(function (error) {
+                alert('팀이 정상종료되지 않았습니다.\n 새로고침 후 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                    '원인 : ' + error);
+            });
+            event.preventDefault();
+        }
+    </script>
+</div>
+</html>

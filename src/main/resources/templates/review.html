@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Review</title>
-    <link rel="stylesheet" th:href="@{/css/image.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
 <div layout:fragment="custom-content">
@@ -21,85 +21,47 @@
 
         <!-- input slide 교체, hidden 교체  -->
         <div class="col-sm-10">
-            <form id="feedback_form" class="simple_form form-horizontal" novalidate="novalidate"
+            <form id="review_form" class="simple_form form-horizontal" novalidate="novalidate"
                   enctype="multipart/form-data" action="/events/7120/feedbacks" accept-charset="UTF-8" method="post">
-                <input name="utf8" type="hidden" value="✓">
-                <input type="hidden" name="authenticity_token"
-                       value="4fRw4ZOeNwyQt5I7c5aSBs9USviSZfChfR+EcFdDhFpyw+Uf3gfee40MsZ1nFHfC45JFgqrGSGfPOOhbrtZUjA==">
-
-
-                <div class="form-group range required feedback_feedback_details_rate">
+                <div class="form-group range required ">
                     <div class="col-sm-10">
                         <input class="form-range-input numeric range required star-range"
-                               data-star-range="0" type="range" autocomplete="off" value="0" max="4"
-                               step="1" name="feedback[feedback_details_attributes][0][rate]"
-                               id="feedback_feedback_details_attributes_0_rate">
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_fun">
                         <p class="help-block">멘토링에 시간이 잊혀질 정도로 즐거웠습니까?</p></div>
                 </div>
-                <div class="form-group hidden feedback_feedback_details_kind">
-                    <div class="col-sm-10">
-                        <input class="form-control hidden" value="accuracy" type="hidden"
-                               name="feedback[feedback_details_attributes][0][kind]"
-                               id="feedback_feedback_details_attributes_0_kind">
-                    </div>
-                </div>
-                <div class="form-group range required feedback_feedback_details_rate">
+                <div class="form-group range required ">
                     <div class="col-sm-10">
                         <input class="form-range-input numeric range required star-range"
-                               data-star-range="0" type="range" autocomplete="off" value="0" max="4"
-                               step="1" name="feedback[feedback_details_attributes][1][rate]"
-                               id="feedback_feedback_details_attributes_1_rate">
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_nice">
                         <p class="help-block">멘토가 매너있게 대했습니까?</p></div>
                 </div>
-                <div class="form-group hidden feedback_feedback_details_kind">
-                    <div class="col-sm-10">
-                        <input class="form-control hidden" value="interesting" type="hidden"
-                               name="feedback[feedback_details_attributes][1][kind]"
-                               id="feedback_feedback_details_attributes_1_kind"></div>
-                </div>
-                <div class="form-group range required feedback_feedback_details_rate">
+                <div class="form-group range required ">
                     <div class="col-sm-10">
                         <input class="form-range-input numeric range required star-range"
-                               data-star-range="0" type="range" autocomplete="off" value="0" max="4"
-                               step="1" name="feedback[feedback_details_attributes][2][rate]"
-                               id="feedback_feedback_details_attributes_2_rate">
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_time">
                         <p class="help-block">멘토가 시간에 맞추어 진행했습니까?</p>
                     </div>
                 </div>
-                <div class="form-group hidden feedback_feedback_details_kind">
-                    <div class="col-sm-10">
-                        <input class="form-control hidden" value="quality" type="hidden"
-                               name="feedback[feedback_details_attributes][2][kind]"
-                               id="feedback_feedback_details_attributes_2_kind"></div>
-                </div>
-                <div class="form-group range required feedback_feedback_details_rate">
+                <div class="form-group range required ">
                     <div class="col-sm-10">
                         <input class="form-range-input numeric range required star-range"
-                               data-star-range="0" type="range" autocomplete="off" value="0" max="4"
-                               step="1" name="feedback[feedback_details_attributes][3][rate]"
-                               id="feedback_feedback_details_attributes_3_rate">
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_interested">
                         <p class="help-block">멘토링을 받으면서 많은 도움이 되었습니까?</p></div>
                 </div>
-                <div class="form-group hidden feedback_feedback_details_kind">
-                    <div class="col-sm-10">
-                        <input class="form-control hidden" value="pertinent" type="hidden"
-                               name="feedback[feedback_details_attributes][3][kind]"
-                               id="feedback_feedback_details_attributes_3_kind"></div>
-                </div>
-                <div class="form-group text required feedback_comment col-sm-12">
+                <div class="form-group text required col-sm-12">
                     <div class="col-sm-10">
                         <textarea class="form-control text required" required="required"
-                                  aria-required="true" placeholder="Feedbacks"
-                                  name="feedback[comment]" id="feedback_comment"></textarea></div>
+                                  aria-required="true" placeholder="내가 배워간 것"
+                                  id="review_textarea_description"></textarea></div>
                 </div>
-                <div class="form-group hidden feedback_user_id">
-                    <div class="col-sm-10 py-3">
-                        <input class="form-control hidden" value="86905" type="hidden"
-                               name="feedback[user_id]" id="feedback_user_id"></div>
-                </div>
+                <input hidden id="review_input_id" th:value="${review.id}" type="number">
                 <div class="col-sm-10 py-3">
                     <button class="btn btn-primary full-width" data-disable-with="feedbacking..."
-                            type="submit">
+                            type="submit" onclick="review_team_submit(event)">
                         <i class="bi bi-check-square"></i>
                         작성 완료
                     </button>
@@ -109,4 +71,47 @@
     </div>
 </div>
 </body>
+<div layout:fragment="custom-footer">
+    <script>
+        function review_team_submit(event) {
+            let review_id = document.getElementById('review_input_id').value;
+            let description = document.getElementById('review_textarea_description').value;
+            let score = {
+                fun: document.getElementById('review_input_fun').value,
+                nice: document.getElementById('review_input_nice').value,
+                time: document.getElementById('review_input_time').value,
+                interested: document.getElementById('review_input_interested').value,
+            }
+            fetch('/api/v1/team/review', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: review_id,
+                    description: description,
+                    score: score,
+                }),
+            }).then(function (response) {
+                if (response.status != 200)
+                    throw new Error(response.status + ' : ' + response.statusText);
+                return response.json();
+            }).then(function (responseJson) {
+                if (responseJson.statusCode != 200) {
+                    alert('리뷰가 정상등록되지 않았습니다.\n' +
+                        '재시도하거나 아래의 원인을 확인해주세요.\n' +
+                        '원인 : ' + responseJson.message);
+                } else {
+                    alert('리뷰가 정상등록됬습니다.');
+                    window.location.href = '/';
+                }
+            }).catch(function (error) {
+                alert('리뷰가 정상등록되지 않았습지다.\n' +
+                    '복사 및 새로고침을 시도 해도 해당 문제가 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                    '원인 : ' + error);
+            });
+            event.preventDefault();
+        }
+    </script>
+</div>
 </html>

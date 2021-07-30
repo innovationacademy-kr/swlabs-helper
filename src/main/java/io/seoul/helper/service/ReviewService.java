@@ -1,6 +1,7 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
+import io.seoul.helper.controller.review.dto.ReviewResponseDto;
 import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
@@ -67,5 +68,24 @@ public class ReviewService {
         review.updateReview(requestDto.toEntitiy());
         reviewRepo.save(review);
         teamInnerService.endTeam(review.getTeam().getId());
+    }
+
+    public ReviewResponseDto getNewReview(SessionUser sessionUser, Long team_id) {
+        try {
+            User user = userRepo.getById(userService.findUserBySession(sessionUser).getId());
+            Team team = teamRepo.getById(team_id);
+            Review review = reviewRepo.findReviewByTeamAndUser(team, user)
+                    .orElseThrow(() -> new Exception("Review is not created!"));
+            if (review.getStatus() != ReviewStatus.WAIT)
+                throw new Exception("Already updated review");
+            return ReviewResponseDto.builder()
+                    .id(review.getId())
+                    .build();
+        } catch (Exception e) {
+            log.error("Unexpected access in getNewReview func" + e.getMessage());
+            return ReviewResponseDto.builder()
+                    .id(-1L)
+                    .build();
+        }
     }
 }

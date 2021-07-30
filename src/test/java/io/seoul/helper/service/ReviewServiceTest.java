@@ -3,6 +3,7 @@ package io.seoul.helper.service;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.member.dto.MemberRequestDto;
 import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
+import io.seoul.helper.controller.review.dto.ScoreDto;
 import io.seoul.helper.controller.team.dto.TeamCreateRequestDto;
 import io.seoul.helper.controller.team.dto.TeamReviewRequestDto;
 import io.seoul.helper.controller.team.dto.TeamUpdateRequestDto;
@@ -239,7 +240,7 @@ public class ReviewServiceTest {
             ReviewUpdateRequestDto reviewUpdateRequestDto;
             reviewUpdateRequestDto = ReviewUpdateRequestDto.builder()
                     .id(review.getId())
-                    .score(ReviewUpdateRequestDto.NewScore.builder()
+                    .score(ScoreDto.builder()
                             .fun(4).interested(4).nice(4).time(4)
                             .build())
                     .description("ok")
