@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ReviewStatus {
     WAIT("STATUS_WAIT", "작성 대기중"),
     UPDATED("STATUS_UPDATED", "작성됨"),
-    TIMEOUT("STATUS_TIMEOUT", "만료됨"),
-    ABSENCE("STATUS_ABSENCE", "미참여");
-
+    TIMEOUT("STATUS_TIMEOUT", "만료됨");
+    
     private final String key;
     private final String name;
 }

@@ -21,9 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +38,8 @@ public class TeamService {
     private final MemberRepository memberRepo;
     private final ProjectRepository projectRepo;
     private final UserService userService;
+    private final ReviewService reviewService;
+    private final MemberService memberService;
 
     @Transactional
     public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
@@ -61,7 +63,7 @@ public class TeamService {
         Member member = Member.builder()
                 .team(team)
                 .user(user)
-                .role(MemberRole.MENTOR)
+                .role(requestDto.getMemberRole())
                 .creator(true)
                 .build();
         memberRepo.save(member);
@@ -71,7 +73,8 @@ public class TeamService {
     @Transactional
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
-        Team team = findTeamById(teamId);
+        Team team = teamRepo.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("Team is not exist"));
         Project project = projectRepo.getById(requestDto.getProjectId());
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Not valid member");
@@ -111,25 +114,11 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-
-    @Transactional
-    public void endTeam(SessionUser currentUser, Long id) throws Exception {
-        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
-        Team team = findTeamById(id);
-        memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
-                .orElseThrow(() -> new Exception("Not this team mentor"));
-        if (team.getStatus() == TeamStatus.END)
-            throw new Exception("Already end status");
-        else {
-            team.updateTeamEnd();
-            teamRepo.save(team);
-        }
-    }
-
     @Transactional
     public void revokeTeam(SessionUser currentUser, Long id) throws Exception {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
-        Team team = findTeamById(id);
+        Team team = teamRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Team is not exist"));
         List<Member> members = memberRepo.findMembersByTeam(team);
         Member owner = members.stream()
                 .filter(m -> m.getRole() == MemberRole.MENTOR).findAny()
@@ -147,6 +136,23 @@ public class TeamService {
         });
         team.updateTeamRevoke();
         teamRepo.save(team);
+    }
+
+    @Transactional
+    public void reviewTeam(SessionUser currentUser, TeamReviewRequestDto requestDto) throws Exception {
+        User user = userRepo.getById(currentUser.getId());
+        Team team = teamRepo.findById(requestDto.getId())
+                .orElseThrow(() -> new Exception("Team is not exist"));
+        memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
+                .orElseThrow(() -> new Exception("Not this team mentor"));
+        if (team.getStatus() != TeamStatus.READY && team.getStatus() != TeamStatus.FULL) {
+            throw new Exception("Not progressed team");
+        } else {
+            team.updateTeamReview();
+            teamRepo.save(team);
+        }
+        memberService.participateMembers(currentUser, requestDto);
+        reviewService.createReviews(requestDto.getId());
     }
 
     private Pageable toPageable(int offset, int limit, String sort) throws Exception {
@@ -233,11 +239,9 @@ public class TeamService {
 
     @Transactional
     public TeamResponseDto findTeam(Long teamId) throws EntityNotFoundException {
-        return new TeamResponseDto(findTeamById(teamId));
+        return new TeamResponseDto(teamRepo.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("Team is not exist")));
     }
 
-    private Team findTeamById(Long id) throws EntityNotFoundException {
-        return teamRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Team not exist!"));
-    }
+
 }

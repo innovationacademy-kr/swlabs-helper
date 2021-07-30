@@ -3,6 +3,8 @@ spring:
     import:
       - "classpath:/application-oauth.yaml"
       - "classpath:/application-mail.yaml"
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     embedded-database-connection: "h2"
   sql:

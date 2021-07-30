@@ -92,6 +92,10 @@ public class Team {
         this.status = TeamStatus.END;
     }
 
+    public void updateTeamReview() {
+        this.status = TeamStatus.REVIEW;
+    }
+
     public void updateTeamRevoke() {
         this.status = TeamStatus.REVOKE;
     }
@@ -103,6 +107,7 @@ public class Team {
     @Builder
     public Team(Long id, Period period, Long maxMemberCount,
                 TeamLocation location, TeamStatus status, Project project, String description, String subject) {
+        this.id = id;
         this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;
@@ -111,6 +116,4 @@ public class Team {
         this.subject = subject;
         this.description = description;
     }
-
-
 }

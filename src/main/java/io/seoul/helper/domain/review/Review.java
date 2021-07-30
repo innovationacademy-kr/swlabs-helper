@@ -1,14 +1,12 @@
 package io.seoul.helper.domain.review;
 
 import io.seoul.helper.domain.common.BaseTime;
-import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 
@@ -21,24 +19,19 @@ public class Review extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "team_id")
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @CreatedBy
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @LastModifiedBy
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     @Column
     private String description;
 
-    @Column
+    @Embedded
     private Score score;
 
     @Column
@@ -46,12 +39,18 @@ public class Review extends BaseTime {
     private ReviewStatus status;
 
     @Builder
-    public Review(Team team, User user, Member member, String description, Score score, ReviewStatus status) {
+    public Review(Team team, User user, String description, Score score, ReviewStatus status) {
         this.team = team;
         this.user = user;
-        this.member = member;
         this.description = description;
         this.score = score;
         this.status = status;
+    }
+
+    public Review updateReview(Review review) {
+        this.description = review.description;
+        this.score = review.score;
+        this.status = ReviewStatus.UPDATED;
+        return this;
     }
 }

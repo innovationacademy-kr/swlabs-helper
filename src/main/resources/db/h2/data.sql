@@ -132,41 +132,41 @@ insert into team (id, start_time, end_time, location, max_member_count, status,
 values (10, '2021-08-22 09:00:00', '2021-08-22 12:00:00', 'ONLINE', 2, 'WAITING', 1, '제목입니다', '설명입니다');
 
 /*member*/
-insert into member (id, team_id, user_id, role, creator)
-values (1, 1, 1, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (2, 1, 2, 'MENTOR', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (3, 2, 1, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (4, 3, 1, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (5, 3, 2, 'MENTEE', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (6, 3, 3, 'MENTOR', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (7, 3, 4, 'MENTEE', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (8, 4, 5, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (9, 5, 1, 'MENTOR', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (10, 5, 2, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (11, 5, 5, 'MENTEE', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (12, 6, 2, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (13, 7, 1, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (14, 7, 4, 'MENTOR', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (15, 8, 2, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (16, 9, 1, 'MENTEE', 1);
-insert into member (id, team_id, user_id, role, creator)
-values (17, 9, 2, 'MENTEE', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (18, 9, 3, 'MENTOR', 0);
-insert into member (id, team_id, user_id, role, creator)
-values (19, 10, 4, 'MENTEE', 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (1, 1, 1, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (2, 1, 2, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (3, 2, 1, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (4, 3, 1, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (5, 3, 2, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (6, 3, 3, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (7, 3, 4, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (8, 4, 5, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (9, 5, 1, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (10, 5, 2, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (11, 5, 5, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (12, 6, 2, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (13, 7, 1, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (14, 7, 4, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (15, 8, 2, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (16, 9, 1, 'MENTEE', 1, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (17, 9, 2, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (18, 9, 3, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (19, 10, 4, 'MENTEE', 1, 1);
