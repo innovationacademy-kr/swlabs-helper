@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout.html" th:with="currentPage='mentor_review'">
+<head>
+    <meta charset="UTF-8">
+    <title>Review</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<div layout:fragment="custom-content">
+    <h2 class="main-title primary text-center py-3" th:text="${team.subject}"></h2>
+    <div class="row">
+        <div class="col-sm-2 text-center">
+            <div class="bg-image-item center img-rounded square-l" data-tooltip-login="hwon"
+                 data-tooltip-url="https://profile.intra.42.fr"
+                 th:style="'margin: auto;background-image: url(' + ${user.picture} + ');'">
+            </div>
+            <b th:text="${user.nickname}"></b>
+        </div>
+
+        <!-- input slide 교체, hidden 교체  -->
+        <div class="col-sm-10">
+            <form id="review_form" class="simple_form form-horizontal" novalidate="novalidate"
+                  enctype="multipart/form-data" action="/events/7120/feedbacks" accept-charset="UTF-8" method="post">
+                <div class="form-group range required ">
+                    <div class="col-sm-10">
+                        <input class="form-range-input numeric range required star-range"
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_fun">
+                        <p class="help-block">멘토링에 시간이 잊혀질 정도로 즐거웠습니까?</p></div>
+                </div>
+                <div class="form-group range required ">
+                    <div class="col-sm-10">
+                        <input class="form-range-input numeric range required star-range"
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_nice">
+                        <p class="help-block">멘토가 매너있게 대했습니까?</p></div>
+                </div>
+                <div class="form-group range required ">
+                    <div class="col-sm-10">
+                        <input class="form-range-input numeric range required star-range"
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_time">
+                        <p class="help-block">멘토가 시간에 맞추어 진행했습니까?</p>
+                    </div>
+                </div>
+                <div class="form-group range required ">
+                    <div class="col-sm-10">
+                        <input class="form-range-input numeric range required star-range"
+                               data-star-range="0" type="range" autocomplete="off" value="0" max="4" step="1"
+                               id="review_input_interested">
+                        <p class="help-block">멘토링을 받으면서 많은 도움이 되었습니까?</p></div>
+                </div>
+                <div class="form-group text required col-sm-12">
+                    <div class="col-sm-10">
+                        <textarea class="form-control text required" required="required"
+                                  aria-required="true" placeholder="내가 배워간 것"
+                                  id="review_textarea_description"></textarea></div>
+                </div>
+                <input hidden id="review_input_id" th:value="${review.id}" type="number">
+                <div class="col-sm-10 py-3">
+                    <button class="btn btn-primary full-width" data-disable-with="feedbacking..."
+                            type="submit" onclick="review_team_submit(event)">
+                        <i class="bi bi-check-square"></i>
+                        작성 완료
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<div layout:fragment="custom-footer">
+    <script>
+        function review_team_submit(event) {
+            let review_id = document.getElementById('review_input_id').value;
+            let description = document.getElementById('review_textarea_description').value;
+            let score = {
+                fun: document.getElementById('review_input_fun').value,
+                nice: document.getElementById('review_input_nice').value,
+                time: document.getElementById('review_input_time').value,
+                interested: document.getElementById('review_input_interested').value,
+            }
+            fetch('/api/v1/team/review', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: review_id,
+                    description: description,
+                    score: score,
+                }),
+            }).then(function (response) {
+                if (response.status != 200)
+                    throw new Error(response.status + ' : ' + response.statusText);
+                return response.json();
+            }).then(function (responseJson) {
+                if (responseJson.statusCode != 200) {
+                    alert('리뷰가 정상등록되지 않았습니다.\n' +
+                        '재시도하거나 아래의 원인을 확인해주세요.\n' +
+                        '원인 : ' + responseJson.message);
+                } else {
+                    alert('리뷰가 정상등록됬습니다.');
+                    window.location.href = '/';
+                }
+            }).catch(function (error) {
+                alert('리뷰가 정상등록되지 않았습지다.\n' +
+                    '복사 및 새로고침을 시도 해도 해당 문제가 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                    '원인 : ' + error);
+            });
+            event.preventDefault();
+        }
+    </script>
+</div>
+</html>

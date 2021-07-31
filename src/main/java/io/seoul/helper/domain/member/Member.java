@@ -32,11 +32,19 @@ public class Member {
     @Column(nullable = false)
     private Boolean creator;
 
+    @Column(nullable = false)
+    private Boolean participation;
+
+    public void updateParticipation(Boolean check) {
+        this.participation = check;
+    }
+
     @Builder
     public Member(Team team, User user, MemberRole role, Boolean creator) {
         this.team = team;
         this.user = user;
         this.role = role;
         this.creator = creator;
+        this.participation = true;
     }
 }

@@ -169,11 +169,7 @@
         function onclick_join(team) {
             team_viewer_modal_update({
                 team: team,
-                mode: "READONLY_JOIN",
                 ajax_req_info: {
-                    url: './api/v1/member',
-                    type: 'POST',
-                    success_message: '해당 팀에 가입되었습니다.',
                     success: function () {
                         window.location.href = '/list_team';
                     }
