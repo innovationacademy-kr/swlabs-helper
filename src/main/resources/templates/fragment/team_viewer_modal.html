@@ -386,7 +386,7 @@
         function submit_viewer_team_revoke() {
             let ajax_req_info = {
                 type: 'POST',
-                url: './api/v1/team',
+                url: './api/v1/team/' + tv_team.teamId + '/revoke',
                 success: function () {
                     window.location.href = '/'
                 },
