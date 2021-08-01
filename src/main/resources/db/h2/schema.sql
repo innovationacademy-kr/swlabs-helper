@@ -6,6 +6,8 @@ create table member
     user_id       bigint       not null,
     creator       smallint(1) not null,
     participation smallint (1) not null,
+    created       timestamp,
+    updated       timestamp,
     primary key (id)
 );
 create table project
@@ -25,6 +27,8 @@ create table team
     project_id       bigint,
     subject          varchar(255),
     description      clob,
+    created          timestamp,
+    updated          timestamp,
     primary key (id)
 );
 create table user
@@ -35,6 +39,8 @@ create table user
     nickname varchar(255) not null,
     picture  varchar(255),
     role     varchar(255) not null,
+    created  timestamp,
+    updated  timestamp,
     primary key (id)
 );
 create table review

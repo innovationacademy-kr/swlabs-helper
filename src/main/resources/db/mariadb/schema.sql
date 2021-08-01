@@ -1,10 +1,13 @@
 CREATE TABLE `member`
 (
-    `id`      bigint(20) NOT NULL AUTO_INCREMENT,
-    `role`    varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `team_id` bigint(20) NOT NULL,
-    `user_id` bigint(20) NOT NULL,
-    `creator` bit(1)                                  NOT NULL,
+    `id`            bigint(20) NOT NULL AUTO_INCREMENT,
+    `role`          varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `team_id`       bigint(20) NOT NULL,
+    `user_id`       bigint(20) NOT NULL,
+    `creator`       bit(1)                                  NOT NULL,
+    `participation` bit(1),
+    `created`       timestamp,
+    `updated`       timestamp,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 127
@@ -32,6 +35,8 @@ CREATE TABLE `team`
     `project_id`       bigint(20) DEFAULT NULL,
     `subject`          varchar(255)                            DEFAULT NULL,
     `description`      text COLLATE utf8mb4_unicode_ci         DEFAULT NULL,
+    `created`          timestamp,
+    `updated`          timestamp,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 55
@@ -46,6 +51,8 @@ CREATE TABLE `user`
     `nickname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `picture`  varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `role`     varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `created`  timestamp,
+    `updated`  timestamp,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 40
@@ -57,7 +64,7 @@ CREATE TABLE `review`
     `id`          bigint NOT NULL AUTO_INCREMENT,
     `team_id`     bigint,
     `user_id`     bigint,
-    `description` text,
+    `description` text COLLATE utf8mb4_unicode_ci,
     `fun`         int,
     `interested`  int,
     `nice`        int,

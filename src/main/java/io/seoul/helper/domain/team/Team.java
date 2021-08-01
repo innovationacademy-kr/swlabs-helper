@@ -1,5 +1,6 @@
 package io.seoul.helper.domain.team;
 
+import io.seoul.helper.domain.common.BaseTime;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.project.Project;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Team {
+public class Team extends BaseTime {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
