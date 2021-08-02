@@ -82,7 +82,7 @@
                 time: document.getElementById('review_input_time').value,
                 interested: document.getElementById('review_input_interested').value,
             }
-            fetch('/api/v1/team/review', {
+            fetch('/api/v1/review', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
