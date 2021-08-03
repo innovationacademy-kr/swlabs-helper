@@ -73,6 +73,15 @@
 </body>
 <div layout:fragment="custom-footer">
     <script>
+        window.onload = function () {
+            /* check review is valid or access is valid */
+            let review_id = document.getElementById('review_input_id').value;
+            if (review_id < 0) {
+                alert("해당 페이지는 이미 만료되었거나 접근할 수 없습니다");
+                window.location.href = '/';
+            }
+        }
+
         function review_team_submit(event) {
             let review_id = document.getElementById('review_input_id').value;
             let description = document.getElementById('review_textarea_description').value;

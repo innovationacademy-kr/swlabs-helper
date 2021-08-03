@@ -51,6 +51,32 @@
 </body>
 <div layout:fragment="custom-footer">
     <script>
+        window.onload = function () {
+            let team_id = document.getElementById('close_team_input_team_id').value;
+            if (team_id < 0) {
+                alert('비정상 접근입니다.');
+                window.location.href = '/';
+                return undefined;
+            }
+
+            fetch('/api/v1/team/' + team_id, {method: 'GET'})
+                .then(response => {
+                    if (response.status !== 200)
+                        throw new Error("서버상의 문제로 접근할 수 없습니다.");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.statusCode !== 200)
+                        throw new Error("잘못된 접근입니다.");
+                    if (data.data.status !== 'FULL' && data.data.status !== 'READY')
+                        throw new Error("해당 팀 상태가 유효하지 않습니다.")
+                })
+                .catch(err => {
+                    alert(err);
+                    window.location.href = '/';
+                });
+        }
+
         function close_team_submit(event) {
             const m = document.getElementsByClassName('member');
             let members = [];
