@@ -7,23 +7,38 @@
 ### Java 설치
 
 JDK 1.8 버전을 사용합니다.
- - [자바 jdk 8 설치 방법 - okdevtv](https://okdevtv.com/mib/java)
- - java 를 미리 실행 환경에 설치해주세
+
+- [자바 jdk 8 설치 방법 - okdevtv](https://okdevtv.com/mib/java)
+- java 를 미리 실행 환경에 설치해주세
 
 ### DB 설치
+
 - 로컬에서 실행하기 위한 별도의 DB설정이 필요 없습니다. (H2 Database 사용)
 - 서버 실행 후 `http://localhost:8080/h2-console` 로 데이터베이스를 관리 할 수 있습니다.
 
 ### API 키 발급
+
 ```bash
 export SECRET42={발급받은 UID}
 export SECRET42={발급받은 SECRET}
 ```
+
 - 42 api 발급 방법은 [api 발급 가이드](https://www.notion.so/epicarts2/42-API-f817378828524392be3fc4432c780bc3) 를 참고하세요
 - 42api를 발급받고 `[application.properties](http://application.properties)` 에서 사용할 `UID42`와 `SECRET42`
-  환경변수 등록이 필요합니다. 
+  환경변수 등록이 필요합니다.
+
+### Mail 연동
+
+```bash
+export HELPER42_MAIL_ADDRESS={전송 메일 주소}
+export HELPER42_MAIL_PASSWORD=전송 메일 계정 비밀번호}
+```
+
+- 해당 프로젝트는 gmail 을 통해서 메일 알람을 전송합니다.
+- 설정을 변경하실 경우 application-mail.yaml 를 참고해주세요. (단 PR 이 거부될 수 있습니다.)
 
 ### run spring-boot server
+
 ```bash
 ./mvnw spring-boot:run
 ```
@@ -91,13 +106,12 @@ java -jar helper-0.0.1-SNAPSHOT.jar --spring.config.location=classpath:/applicat
 
 ## Contribution guidess
 
-- [issues](https://github.com/innovationacademy-kr/swlabs-helper/issues)를 통해서 버그 리포트나 기능 제안 또는 요청을 할
-  수 있습니다.
-- 직접 코드 Pull request를 위해 [checkstyle](https://checkstyle.sourceforge.io/)을 통해 코드 컨벤션을 쉽게 맞출 수 있습니다.
-  우리 프로젝트의 checkstyle 코드컨벤션 파일은 아래 경로에 위치합니다.
+- [issues](https://github.com/innovationacademy-kr/swlabs-helper/issues)를 통해서 버그 리포트나 기능 제안 또는 요청을 할 수 있습니다.
+- 직접 코드 Pull request를 위해 [checkstyle](https://checkstyle.sourceforge.io/)을 통해 코드 컨벤션을 쉽게 맞출 수 있습니다. 우리 프로젝트의 checkstyle
+  코드컨벤션 파일은 아래 경로에 위치합니다.
     - `/checkstyle/checkstyle.xml`
 - 더 자세한 내용은 [컨트리뷰터 가이드 문서](https://www.notion.so/epicarts2/Contribution-guide-0d31b324e31c49fdb14eea75b058665a)
-를 참고해주세요.
+  를 참고해주세요.
 
 ## License
 
