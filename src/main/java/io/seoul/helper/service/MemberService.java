@@ -2,6 +2,7 @@ package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.member.dto.MemberRequestDto;
+import io.seoul.helper.controller.team.dto.TeamReviewRequestDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.Team;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -77,5 +80,20 @@ public class MemberService {
         return member.getRole() == MemberRole.MENTOR;
     }
 
+    @Transactional
+    public void participateMembers(SessionUser currentUser, TeamReviewRequestDto requestDto) throws Exception {
+        User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
+        Team team = teamRepo.getById(requestDto.getId());
+        memberRepo.findMemberByTeamAndUserAndRole(team, user, MemberRole.MENTOR)
+                .orElseThrow(() -> new Exception("Not this team mentor"));
+        List<Member> mentees = new ArrayList<>();
 
+        for (TeamReviewRequestDto.MemberParticipation m : requestDto.getMembers()) {
+            Member mentee = memberRepo.findById(m.getId())
+                    .orElseThrow(() -> new Exception("Not this team mentee"));
+            mentee.updateParticipation(m.getParticipation());
+            mentees.add(mentee);
+        }
+        memberRepo.saveAll(mentees);
+    }
 }

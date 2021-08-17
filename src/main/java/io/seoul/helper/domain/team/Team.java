@@ -1,5 +1,6 @@
 package io.seoul.helper.domain.team;
 
+import io.seoul.helper.domain.common.BaseTime;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.project.Project;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Team {
+public class Team extends BaseTime {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,9 +93,22 @@ public class Team {
         this.status = TeamStatus.END;
     }
 
+    public void updateTeamReview() {
+        this.status = TeamStatus.REVIEW;
+    }
+
+    public void updateTeamRevoke() {
+        this.status = TeamStatus.REVOKE;
+    }
+
+    public void updateTeamTimeout() {
+        this.status = TeamStatus.TIMEOUT;
+    }
+
     @Builder
     public Team(Long id, Period period, Long maxMemberCount,
                 TeamLocation location, TeamStatus status, Project project, String description, String subject) {
+        this.id = id;
         this.period = period;
         this.maxMemberCount = maxMemberCount;
         this.location = location;

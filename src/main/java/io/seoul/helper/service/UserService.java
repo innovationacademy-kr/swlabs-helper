@@ -5,6 +5,7 @@ import io.seoul.helper.controller.user.dto.UserResponseDto;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @AllArgsConstructor
+@EnableJpaAuditing
 public class UserService {
     private final UserRepository userRepo;
 

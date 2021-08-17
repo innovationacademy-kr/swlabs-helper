@@ -16,7 +16,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByTeamAndUser(Team team, User user);
 
     Optional<Member> findMemberByTeamAndUserAndRole(Team team, User user, MemberRole memberRole);
+
+    List<Member> findMembersByTeam(Team team);
     
+    List<Member> findMembersByTeamAndAndRole(Team team, MemberRole role);
+
     @Query("SELECT m FROM Member m " +
             "WHERE (m.user = :user) and " +
             "(:memberRole is null or m.role = :memberRole)")
@@ -27,4 +31,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "(m.creator = :isCreator) and " +
             "(:memberRole is null or m.role = :memberRole)")
     List<Member> findMembersByUserAndCreatorAndRole(User user, boolean isCreator, MemberRole memberRole);
+
 }

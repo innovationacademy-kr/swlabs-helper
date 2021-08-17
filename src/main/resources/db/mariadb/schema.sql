@@ -1,10 +1,13 @@
 CREATE TABLE `member`
 (
-    `id`      bigint(20)                              NOT NULL AUTO_INCREMENT,
-    `role`    varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `team_id` bigint(20)                              NOT NULL,
-    `user_id` bigint(20)                              NOT NULL,
-    `creator` bit(1)                                  NOT NULL,
+    `id`            bigint(20) NOT NULL AUTO_INCREMENT,
+    `role`          varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `team_id`       bigint(20) NOT NULL,
+    `user_id`       bigint(20) NOT NULL,
+    `creator`       bit(1)                                  NOT NULL,
+    `participation` bit(1),
+    `created`       timestamp,
+    `updated`       timestamp,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 127
@@ -24,14 +27,16 @@ CREATE TABLE `project`
 CREATE TABLE `team`
 (
     `id`               bigint(20) NOT NULL AUTO_INCREMENT,
-    `end_time`         datetime(6)                             DEFAULT NULL,
+    `end_time`         datetime(6) DEFAULT NULL,
     `location`         varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `max_member_count` bigint(20) NOT NULL,
-    `start_time`       datetime(6)                             DEFAULT NULL,
+    `start_time`       datetime(6) DEFAULT NULL,
     `status`           varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    `project_id`       bigint(20)                              DEFAULT NULL,
+    `project_id`       bigint(20) DEFAULT NULL,
     `subject`          varchar(255)                            DEFAULT NULL,
     `description`      text COLLATE utf8mb4_unicode_ci         DEFAULT NULL,
+    `created`          timestamp,
+    `updated`          timestamp,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 55
@@ -40,13 +45,34 @@ CREATE TABLE `team`
 
 CREATE TABLE `user`
 (
-    `id`       bigint(20)                              NOT NULL AUTO_INCREMENT,
+    `id`       bigint(20) NOT NULL AUTO_INCREMENT,
     `email`    varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `fullname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `nickname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `picture`  varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `role`     varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `created`  timestamp,
+    `updated`  timestamp,
     PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 40
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE `review`
+(
+    `id`          bigint NOT NULL AUTO_INCREMENT,
+    `team_id`     bigint,
+    `user_id`     bigint,
+    `description` text COLLATE utf8mb4_unicode_ci,
+    `fun`         int,
+    `interested`  int,
+    `nice`        int,
+    `time`        int,
+    `status`      varchar(255),
+    `created`     timestamp,
+    `updated`     timestamp,
+    PRIMARY KEY (id)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 40
   DEFAULT CHARSET = utf8mb4
@@ -58,3 +84,7 @@ ALTER TABLE member
     ADD CONSTRAINT FK_MEMBER_USER FOREIGN KEY (user_id) REFERENCES user (id);
 ALTER TABLE team
     ADD CONSTRAINT FK_TEAM_PROJECT FOREIGN KEY (project_id) REFERENCES project (id);
+ALTER TABLE review
+    ADD CONSTRAINT FK_REVIEW_TEAM FOREIGN KEY (team_id) REFERENCES team (id);
+ALTER TABLE review
+    ADD CONSTRAINT FK_REVIEW_USER FOREIGN KEY (user_id) REFERENCES user (id);

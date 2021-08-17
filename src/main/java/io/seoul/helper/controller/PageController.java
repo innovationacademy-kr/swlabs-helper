@@ -2,28 +2,30 @@ package io.seoul.helper.controller;
 
 import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
+import io.seoul.helper.controller.review.dto.ReviewResponseDto;
 import io.seoul.helper.controller.team.dto.TeamListRequestDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.service.ProjectService;
+import io.seoul.helper.service.ReviewService;
 import io.seoul.helper.service.TeamService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 
 @Controller
+@AllArgsConstructor
 public class PageController {
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private ProjectService projectService;
+    private final TeamService teamService;
+    private final ProjectService projectService;
+    private final ReviewService reviewService;
 
     @GetMapping(value = "/")
     public String home(Model model, @LoginUser SessionUser user) {
@@ -153,5 +155,27 @@ public class PageController {
         model.addAttribute("locations", teamService.findAllLocation());
 
         return "mymentor";
+    }
+
+    @GetMapping(value = "/{id}/review/new")
+    public String newReview(Model model, @LoginUser SessionUser user,
+                            @PathVariable(name = "id") Long id) {
+        TeamResponseDto team = teamService.findTeam(id);
+        ReviewResponseDto review = reviewService.getNewReview(user, id);
+
+        model.addAttribute("user", user);
+        model.addAttribute("team", team);
+        model.addAttribute("review", review);
+        return "review";
+    }
+
+    @GetMapping(value = "/{id}/close")
+    public String closeTeam(Model model, @LoginUser SessionUser user,
+                            @PathVariable(name = "id") Long id) {
+        TeamResponseDto team = teamService.findTeam(id);
+
+        model.addAttribute("user", user);
+        model.addAttribute("team", team);
+        return "close_team";
     }
 }

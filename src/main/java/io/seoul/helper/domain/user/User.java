@@ -1,5 +1,6 @@
 package io.seoul.helper.domain.user;
 
+import io.seoul.helper.domain.common.BaseTime;
 import io.seoul.helper.domain.member.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-public class User {
+public class User extends BaseTime {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)

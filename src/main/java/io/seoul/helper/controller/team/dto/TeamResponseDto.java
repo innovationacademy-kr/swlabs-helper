@@ -50,6 +50,7 @@ public class TeamResponseDto {
                         .nickname(member.getUser().getNickname())
                         .memberRole(member.getRole().getName())
                         .creator(member.getCreator())
+                        .participation(member.getParticipation())
                         .build())
                 .collect(Collectors.toList());
         this.subject = team.getSubject();

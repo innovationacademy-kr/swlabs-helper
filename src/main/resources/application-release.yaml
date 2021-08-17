@@ -3,6 +3,8 @@ spring:
     import:
       - "classpath:/application-oauth.yaml"
       - "classpath:/application-mail.yaml"
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     username: "${HELPER42_DB_USERNAME_RELEASE}"

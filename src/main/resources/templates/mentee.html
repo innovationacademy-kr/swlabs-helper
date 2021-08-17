@@ -141,8 +141,8 @@
                     }
                 },
                 ajax_req_info_alert: {
-                    url: "./api/v1/team/" + team.teamId,
-                    type: "DELETE",
+                    url: "./api/v1/team/" + team.teamId + '/revoke',
+                    type: "POST",
                     status_message: {
                         success: success_message,
                         fail: fail_message
