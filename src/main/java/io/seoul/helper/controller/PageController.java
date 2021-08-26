@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -32,20 +34,36 @@ public class PageController {
         if (user == null) {
             TeamListRequestDto dto = new TeamListRequestDto();
             dto.setStartTimePrevious(LocalDateTime.now());
+            List<TeamStatus> activeTeamStatusList = new ArrayList<>();
+            activeTeamStatusList.add(TeamStatus.WAITING);
+            activeTeamStatusList.add(TeamStatus.READY);
+            activeTeamStatusList.add(TeamStatus.FULL);
+            dto.setStatusList(activeTeamStatusList);
             Page<TeamResponseDto> teams = teamService.findTeams(dto);
             model.addAttribute("teams", teams);
         }
         if (user != null) {
+            List<TeamStatus> activeTeamStatusList = new ArrayList<>();
+            activeTeamStatusList.add(TeamStatus.WAITING);
+            activeTeamStatusList.add(TeamStatus.READY);
+            activeTeamStatusList.add(TeamStatus.FULL);
             TeamListRequestDto allTeamDto = new TeamListRequestDto();
             allTeamDto.setStartTimePrevious(LocalDateTime.now());
             allTeamDto.setExcludeNickname(user.getNickname());
+            allTeamDto.setStatusList(activeTeamStatusList);
             Page<TeamResponseDto> allTeams = teamService.findTeams(allTeamDto);
             model.addAttribute("allTeams", allTeams);
 
+            List<TeamStatus> myTeamStatusList = new ArrayList<>();
+            myTeamStatusList.add(TeamStatus.WAITING);
+            myTeamStatusList.add(TeamStatus.READY);
+            myTeamStatusList.add(TeamStatus.FULL);
+            myTeamStatusList.add(TeamStatus.REVIEW);
             TeamListRequestDto myTeamDto = new TeamListRequestDto();
             myTeamDto.setEndTimePrevious(LocalDateTime.now());
             myTeamDto.setNickname(user.getNickname());
             myTeamDto.setSort("period.startTime,asc");
+            myTeamDto.setStatusList(myTeamStatusList);
             Page<TeamResponseDto> myTeams = teamService.findTeams(myTeamDto);
             model.addAttribute("myTeams", myTeams);
 
@@ -104,11 +122,13 @@ public class PageController {
             model.addAttribute("userNickname", user.getNickname());
             model.addAttribute("user", user);
         }
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.WAITING);
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setNickname(user.getNickname());
         dto.setCreateor(true);
         dto.setOffset(offset);
-        dto.setStatus(TeamStatus.WAITING);
+        dto.setStatusList(statusList);
         dto.setEndTimePrevious(LocalDateTime.now());
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
         model.addAttribute("teams", teams);
@@ -121,10 +141,11 @@ public class PageController {
     public String createMentor(Model model, @LoginUser SessionUser user,
                                @RequestParam(value = "offset", required = false, defaultValue = "0") int offset) {
 
-        TeamStatus status = TeamStatus.WAITING;
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.WAITING);
 
         TeamListRequestDto dto = new TeamListRequestDto();
-        dto.setStatus(status);
+        dto.setStatusList(statusList);
         dto.setOffset(offset);
         dto.setStartTimePrevious(LocalDateTime.now());
         dto.setExcludeNickname(user.getNickname());
