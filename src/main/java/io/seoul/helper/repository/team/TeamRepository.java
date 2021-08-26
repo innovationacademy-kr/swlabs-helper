@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
     @Query("SELECT t FROM Team t " +
-            "WHERE ((:statusList) is null or t.status IN (:statusList)) and " +
+            "WHERE (t.status IN (:statusList)) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
             "(:endTimePrevious is null or t.period.endTime > :endTimePrevious)")
@@ -23,7 +23,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
                                           List<TeamStatus> statusList, TeamLocation location, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
-            "WHERE ((:statusList) is null or t.status in (:statusList)) and " +
+            "WHERE (t.status in (:statusList)) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
             "(:endTimePrevious is null or t.period.endTime > :endTimePrevious) and " +
@@ -32,7 +32,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
                                    List<TeamStatus> statusList, TeamLocation location, List<Long> teamId, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
-            "WHERE ((:statusList) is null or t.status in (:statusList)) and " +
+            "WHERE (t.status in (:statusList)) and " +
             "(:location is null or t.location = :location) and " +
             "(:startTimePrevious is null or t.period.startTime > :startTimePrevious) and " +
             "(:endTimePrevious is null or t.period.endTime > :endTimePrevious) and " +
@@ -41,7 +41,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
                                       List<TeamStatus> statusList, TeamLocation location, List<Long> teamId, Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
-            "WHERE (:status is null or t.status <> :status) and " +
+            "WHERE (t.status = :status) and " +
             "(:currentTime is null or t.period.endTime <= :currentTime)")
     List<Team> findTeamsByStatusNotAndEndTimeLessThan(TeamStatus status, LocalDateTime currentTime);
 }
