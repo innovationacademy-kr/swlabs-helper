@@ -7,6 +7,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class TeamListRequestDto {
@@ -16,7 +17,7 @@ public class TeamListRequestDto {
     private String excludeNickname;
     private MemberRole memberRole;
     private boolean isCreateor;
-    private TeamStatus status;
+    private List<TeamStatus> statusList;
     private TeamLocation location;
     private String sort;
 
