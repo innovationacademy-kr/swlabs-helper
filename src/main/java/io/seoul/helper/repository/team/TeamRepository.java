@@ -29,7 +29,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "(:endTimePrevious is null or t.period.endTime > :endTimePrevious) and " +
             "t.id IN :teamId")
     Page<Team> findTeamsByTeamIdIn(LocalDateTime startTimePrevious, LocalDateTime endTimePrevious,
-                                   List<TeamStatus> statusList, TeamLocation location, List<Long> teamId, Pageable pageable);
+                                   List<TeamStatus> statusList, TeamLocation location, List<Long> teamId,
+                                   Pageable pageable);
 
     @Query("SELECT DISTINCT t FROM Team t " +
             "WHERE (t.status in (:statusList)) and " +
