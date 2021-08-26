@@ -84,6 +84,15 @@ public class PageController {
         dto.setStartTimePrevious(LocalDateTime.now());
         dto.setSort(sort);
         dto.setExcludeNickname(user.getNickname());
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.WAITING);
+        statusList.add(TeamStatus.READY);
+        statusList.add(TeamStatus.FULL);
+        statusList.add(TeamStatus.REVIEW);
+        statusList.add(TeamStatus.END);
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.TIMEOUT);
+        dto.setStatusList(statusList);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
@@ -104,6 +113,15 @@ public class PageController {
         dto.setOffset(offset);
         dto.setSort(sort);
         dto.setEndTimePrevious(LocalDateTime.now());
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.WAITING);
+        statusList.add(TeamStatus.READY);
+        statusList.add(TeamStatus.FULL);
+        statusList.add(TeamStatus.REVIEW);
+        statusList.add(TeamStatus.END);
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.TIMEOUT);
+        dto.setStatusList(statusList);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
@@ -124,6 +142,12 @@ public class PageController {
         }
         List<TeamStatus> statusList = new ArrayList<>();
         statusList.add(TeamStatus.WAITING);
+        statusList.add(TeamStatus.READY);
+        statusList.add(TeamStatus.FULL);
+        statusList.add(TeamStatus.REVIEW);
+        statusList.add(TeamStatus.END);
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.TIMEOUT);
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setNickname(user.getNickname());
         dto.setCreateor(true);
@@ -143,6 +167,12 @@ public class PageController {
 
         List<TeamStatus> statusList = new ArrayList<>();
         statusList.add(TeamStatus.WAITING);
+        statusList.add(TeamStatus.READY);
+        statusList.add(TeamStatus.FULL);
+        statusList.add(TeamStatus.REVIEW);
+        statusList.add(TeamStatus.END);
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.TIMEOUT);
 
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setStatusList(statusList);
@@ -168,6 +198,15 @@ public class PageController {
         dto.setStartTimePrevious(LocalDateTime.now());
         dto.setNickname(user.getNickname());
         dto.setMemberRole(MemberRole.MENTOR);
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.WAITING);
+        statusList.add(TeamStatus.READY);
+        statusList.add(TeamStatus.FULL);
+        statusList.add(TeamStatus.REVIEW);
+        statusList.add(TeamStatus.END);
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.TIMEOUT);
+        dto.setStatusList(statusList);
         Page<TeamResponseDto> teams = teamService.findTeams(dto);
 
         model.addAttribute("teams", teams);
