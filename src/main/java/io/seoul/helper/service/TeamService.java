@@ -184,24 +184,24 @@ public class TeamService {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 teams = teamRepo.findTeamsByTeamIdIn(
-                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
+                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatusList(),
                         requestDto.getLocation(), teamIds, pageable);
             } else if (requestDto.getExcludeNickname() != null) {
                 List<Long> teamIds = findTeamIdsByNickname(requestDto.getExcludeNickname(), requestDto.isCreateor(), requestDto.getMemberRole());
 
                 if (teamIds.isEmpty()) {
                     teams = teamRepo.findTeamsByQueryParameters(
-                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
+                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatusList(),
                             requestDto.getLocation(), pageable);
                 } else {
                     teams = teamRepo.findTeamsByTeamIdNotIn(
-                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
+                            requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatusList(),
                             requestDto.getLocation(), teamIds, pageable);
                 }
 
             } else {
                 teams = teamRepo.findTeamsByQueryParameters(
-                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatus(),
+                        requestDto.getStartTimePrevious(), requestDto.getEndTimePrevious(), requestDto.getStatusList(),
                         requestDto.getLocation(), pageable);
             }
         } catch (Exception e) {
