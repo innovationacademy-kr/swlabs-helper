@@ -60,7 +60,6 @@ public class PageController {
             myTeamStatusList.add(TeamStatus.FULL);
             myTeamStatusList.add(TeamStatus.REVIEW);
             TeamListRequestDto myTeamDto = new TeamListRequestDto();
-            myTeamDto.setEndTimePrevious(LocalDateTime.now());
             myTeamDto.setNickname(user.getNickname());
             myTeamDto.setSort("period.startTime,asc");
             myTeamDto.setStatusList(myTeamStatusList);
@@ -107,7 +106,7 @@ public class PageController {
         dto.setNickname(user.getNickname());
         dto.setOffset(offset);
         dto.setSort(sort);
-        dto.setEndTimePrevious(LocalDateTime.now());
+        dto.setEndTimePrevious(null);
         List<TeamStatus> statusList = new ArrayList<>();
         statusList.add(TeamStatus.WAITING);
         statusList.add(TeamStatus.READY);
