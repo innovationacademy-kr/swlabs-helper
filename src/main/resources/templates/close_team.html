@@ -67,7 +67,7 @@
                 })
                 .then(data => {
                     if (data.statusCode !== 200)
-                        throw new Error("잘못된 접근입니다.");
+                        throw new Error("잘못된 접근입니다. 다시 확인해주세요");
                     if (data.data.status !== 'FULL' && data.data.status !== 'READY')
                         throw new Error("해당 팀 상태가 유효하지 않습니다.")
                 })
