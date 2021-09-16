@@ -18,7 +18,6 @@ spring:
     database: h2
     hibernate:
       ddl-auto: none
-    show-sql: true
     properties:
       hibernate:
         default_batch_fetch_size: 100
