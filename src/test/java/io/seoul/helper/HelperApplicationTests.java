@@ -17,17 +17,8 @@ import java.util.stream.Stream;
 @SpringBootTest
 class HelperApplicationTests {
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private MemberRepository memberRepository;
-	@Autowired
-	private TeamRepository teamRepository;
-
 	@Test
 	void contextLoads() {
-		User byId = userRepository.getById(1L);
-		System.out.println("byId = " + byId.getEmail());
 	}
 
 }

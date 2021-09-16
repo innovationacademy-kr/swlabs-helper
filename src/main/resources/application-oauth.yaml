@@ -7,7 +7,7 @@ spring:
           intra42:
             client-id: "${UID42}"
             client-secret: "${SECRET42}"
-            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-name: intra42
             scope: public
