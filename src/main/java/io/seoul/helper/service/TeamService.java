@@ -45,11 +45,15 @@ public class TeamService {
     public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Project project = projectRepo.getById(requestDto.getProjectId());
+        List<Member> members = userRepo.findUserByNickname(currentUser.getNickname()).get().getMembers();
+        TeamDateDto teamDateDto = new TeamDateDto(requestDto);
         Period period = Period.builder()
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
 
+        if (!teamDateDto.isDuplicateTime(teamDateDto,members))
+            throw new IllegalArgumentException("Time overlap");
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
         if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
@@ -69,6 +73,8 @@ public class TeamService {
         memberRepo.save(member);
         return new TeamResponseDto(team);
     }
+
+
 
     @Transactional
     public TeamResponseDto updateTeamByMentor(SessionUser currentUser, Long teamId, TeamUpdateRequestDto requestDto) throws Exception {

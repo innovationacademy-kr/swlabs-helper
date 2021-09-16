@@ -7,6 +7,9 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     embedded-database-connection: "h2"
+    url: "jdbc:h2:tcp://localhost/~/test"
+    username: "sa"
+    password:
   sql:
     init:
       data-locations: classpath*:db/h2/data.sql
