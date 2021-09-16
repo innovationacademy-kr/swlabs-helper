@@ -45,11 +45,14 @@ public class TeamService {
     public TeamResponseDto createNewTeam(SessionUser currentUser, TeamCreateRequestDto requestDto) throws Exception {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Project project = projectRepo.getById(requestDto.getProjectId());
+        List<Member> members = userRepo.findUserByNickname(currentUser.getNickname()).get().getMembers();
+        TeamDateDto teamDateDto = new TeamDateDto(requestDto);
         Period period = Period.builder()
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-
+        if (!isOverlapTime(teamDateDto,members))
+            throw new IllegalArgumentException("Time overlap");
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
         if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
@@ -68,6 +71,25 @@ public class TeamService {
                 .build();
         memberRepo.save(member);
         return new TeamResponseDto(team);
+    }
+
+    private boolean isOverlapTime(TeamDateDto teamDateDto, List<Member> members) {
+        for (int i = 0; i < members.size(); i++) {
+            LocalDateTime startTime = members.get(i).getTeam().getPeriod().getStartTime();
+            LocalDateTime endTime = members.get(i).getTeam().getPeriod().getEndTime();
+            if (startTime.getMonthValue() == teamDateDto.getMonth())
+                if (startTime.getDayOfMonth() == teamDateDto.getDay()) {
+                    if (teamDateDto.getStartHour() <= startTime.getHour()) {
+                        if (teamDateDto.getEndHour() > startTime.getHour())
+                            return false;
+                    }
+                    else if (teamDateDto.getEndHour() >= endTime.getHour()) {
+                        if (teamDateDto.getStartHour() < endTime.getHour())
+                            return false;
+                    }
+                }
+        }
+        return true;
     }
 
     @Transactional
