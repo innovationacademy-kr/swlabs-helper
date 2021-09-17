@@ -155,8 +155,6 @@ public class PageController {
 
         List<TeamStatus> statusList = new ArrayList<>();
         statusList.add(TeamStatus.WAITING);
-        statusList.add(TeamStatus.READY);
-        statusList.add(TeamStatus.FULL);
 
         TeamListRequestDto dto = new TeamListRequestDto();
         dto.setStatusList(statusList);
