@@ -95,7 +95,6 @@ public class TeamService {
                 .role(MemberRole.MENTOR)
                 .creator(false)
                 .build());
-        List<Member> members = team.getMembers();
         return new TeamResponseDto(team);
     }
 
