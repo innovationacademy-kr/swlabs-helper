@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -245,4 +247,54 @@ public class TeamService {
     }
 
 
+    @Transactional(readOnly = true)
+    public TeamCountResponseDto getTeamCount(TeamCountRequestDto requestDto) {
+        Set<TeamStatus> statusSet = new HashSet();
+
+        statusSet.clear();
+        statusSet.add(TeamStatus.END);
+        Integer endTeamCount = teamRepo.findTeamCountByUpdatedTimeRangeAndStatus(
+                requestDto.getStart(),
+                requestDto.getEnd(), statusSet);
+        statusSet.clear();
+        statusSet.add(TeamStatus.WAITING);
+
+        Integer waitTeamCount = teamRepo.findTeamCountByStartTimeRangeAndStatus(
+                requestDto.getStart(),
+                requestDto.getEnd(),
+                statusSet);
+
+        statusSet.clear();
+        statusSet.add(TeamStatus.READY);
+        statusSet.add(TeamStatus.FULL);
+        Integer readyTeamCount = teamRepo.findTeamCountByStartTimeRangeAndStatus(
+                requestDto.getStart(),
+                requestDto.getEnd(), statusSet);
+
+        statusSet.clear();
+        statusSet.add(TeamStatus.REVIEW);
+        Integer reviewTeamCount = teamRepo.findTeamCountByUpdatedTimeRangeAndStatus(
+                requestDto.getStart(),
+                requestDto.getEnd(),
+                statusSet);
+
+        statusSet.add(TeamStatus.WAITING);
+        statusSet.add(TeamStatus.READY);
+        statusSet.add(TeamStatus.FULL);
+        statusSet.add(TeamStatus.REVIEW);
+        statusSet.add(TeamStatus.END);
+        statusSet.add(TeamStatus.REVOKE);
+        statusSet.add(TeamStatus.TIMEOUT);
+        Integer createdTeamCount = teamRepo.findTeamCountByUpdatedTimeRangeAndStatus(
+                requestDto.getStart(),
+                requestDto.getEnd(), statusSet);
+        
+        return TeamCountResponseDto.builder()
+                .createdTeamCount(createdTeamCount)
+                .waitTeamCount(waitTeamCount)
+                .readyTeamCount(readyTeamCount)
+                .reviewTeamCount(reviewTeamCount)
+                .endTeamCount(endTeamCount)
+                .build();
+    }
 }

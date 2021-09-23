@@ -43,6 +43,10 @@
                 <a href="/list_team" class="nav-link"
                    th:classappend="${currentPage} == 'list_team' ? 'active' : '' ">팀 목록</a>
             </li>
+            <li th:if="${user != null && user.role.name == 'ADMIN'}">
+                <a href="/admin/index" class="nav-link"
+                   th:classappend="${currentPage} == 'admin' ? 'active' : '' ">관리자</a>
+            </li>
         </ul>
     </header>
 
