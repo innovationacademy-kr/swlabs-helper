@@ -3,8 +3,8 @@ package io.seoul.helper.service;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.review.dto.ReviewResponseDto;
 import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
+import io.seoul.helper.controller.review.dto.ScoreDto;
 import io.seoul.helper.domain.member.Member;
-import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.review.Review;
 import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.review.Score;
@@ -17,8 +17,8 @@ import io.seoul.helper.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class ReviewService {
         List<Member> members = memberRepo.findMembersByTeam(team);
 
         List<Review> reviews = members.stream()
-                .filter(m -> m.getParticipation() && m.getRole() == MemberRole.MENTEE)
+                .filter(m -> m.getParticipation())
                 .map(m -> Review.builder()
                         .status(ReviewStatus.WAIT)
                         .team(team)
@@ -87,5 +87,25 @@ public class ReviewService {
                     .id(-1L)
                     .build();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponseDto findReviewByMemberId(Long memberId) throws Exception {
+        Member member = memberRepo.findById(memberId)
+                .orElseThrow(() -> new Exception("Not Exist Member!"));
+        Review review = reviewRepo.findReviewByTeamAndUser(member.getTeam(), member.getUser())
+                .orElseThrow(() -> new Exception("Not Exist Review!"));
+        Score score = review.getScore();
+        return ReviewResponseDto.builder()
+                .id(review.getId())
+                .score(ScoreDto.builder()
+                        .fun(score.getFun())
+                        .nice(score.getNice())
+                        .time(score.getTime())
+                        .interested(score.getInterested())
+                        .build())
+                .description(review.getDescription())
+                .status(review.getStatus())
+                .build();
     }
 }

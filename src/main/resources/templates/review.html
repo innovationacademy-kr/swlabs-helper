@@ -91,6 +91,11 @@
                 time: document.getElementById('review_input_time').value,
                 interested: document.getElementById('review_input_interested').value,
             }
+            if (description.length <= 10) {
+                alert("리뷰 내용이 너무 적습니다. 차후 평가에 반영되니 상세히 적어주세요");
+                event.preventDefault();
+                return;
+            }
             fetch('/api/v1/review', {
                 method: 'POST',
                 headers: {
