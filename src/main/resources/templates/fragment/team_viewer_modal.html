@@ -271,9 +271,24 @@
                 }
                 case 'REVIEW': {
                     let rst = team.members.some((member) => {
-                        return (currentUser.nickname == member.nickname &&
-                            member.memberRole != "멘토" && member.participation == true);
+                        let review;
+                        $.ajax({
+                                type: 'GET',
+                                url: './api/v1/review?memberId=' + member.id,
+                                data: null,
+                                dataType: "JSON",
+                                contentType: 'application/json',
+                                async: false,
+                                success: (data) => {
+                                    review = data.data;
+                                }
+                            }
+                        );
+                        return (currentUser.nickname == member.nickname && member.participation == true
+                            && review != null && review.status == "WAIT");
                     });
+
+
                     if (rst) {
                         $('#tv_team_viewer_modal_btn_review').removeAttr('hidden');
                     }

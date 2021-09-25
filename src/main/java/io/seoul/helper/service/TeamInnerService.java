@@ -1,7 +1,6 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.domain.member.Member;
-import io.seoul.helper.domain.member.MemberRole;
 import io.seoul.helper.domain.review.Review;
 import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.team.Team;
@@ -32,7 +31,7 @@ public class TeamInnerService {
         if (members.stream().anyMatch(m -> m.getParticipation() == null))
             return;
         if (members.stream()
-                .filter(m -> m.getParticipation() && m.getRole() != MemberRole.MENTOR)
+                .filter(m -> m.getParticipation())
                 .map(m -> reviewRepo.findReviewByTeamAndUser(m.getTeam(), m.getUser())
                         .orElseGet(() -> Review.builder()
                                 .status(ReviewStatus.WAIT)

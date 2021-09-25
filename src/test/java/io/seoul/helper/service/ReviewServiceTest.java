@@ -225,7 +225,7 @@ public class ReviewServiceTest {
     public void checkReview(User user, TeamReviewRequestDto requestDto) throws Exception {
         teamService.reviewTeam(new SessionUser(user), requestDto);
         Team team = teamRepo.getById(requestDto.getId());
-        List<User> users = memberRepo.findMembersByTeamAndAndRole(team, MemberRole.MENTEE).stream()
+        List<User> users = memberRepo.findMembersByTeam(team).stream()
                 .map(Member::getUser)
                 .collect(Collectors.toList());
         users.forEach(m -> checkReviewCreated(reviewRepo.findReviewByTeamAndUser(team, m)));
