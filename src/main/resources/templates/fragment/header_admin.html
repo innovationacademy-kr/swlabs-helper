@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thyemleaf.org">
+<div th:fragment="fragment-header" class="container header">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <div th:if="${user} != null" class="dropdown text-end me-auto">
+            <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+               data-bs-toggle="dropdown" aria-expanded="false">
+                <img th:src="${user.picture}" th:alt="${user.nickname}" width="32" height="32" class="rounded-circle">
+                <strong th:text="${user.nickname}"></strong>
+            </a>
+            <ul class=" dropdown-menu text-small" aria-labelledby="dropdownUser1">
+                <li><a class="dropdown-item" href="/admin/index">Signed in as <strong
+                        th:text="${user.nickname}"></strong></a>
+                </li>
+                <li><a class="dropdown-item" href="/admin/index">Profile</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#sign-out" href="#">Sign out</a>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${user == null}" class="me-auto">
+            <button type="button" class="btn btn-primary" role="button"
+                    onclick="location.href='/oauth2/authorize/intra42'">42 Login
+            </button>
+        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a href="/admin/index" class="nav-link"
+                   th:classappend="${currentPage} == 'admin/index' ? 'active' : '' ">홈</a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/settle" class="nav-link"
+                   th:classappend="${currentPage} == 'admin/settle' ? 'active' : '' ">정산하기</a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/settle_history" class="nav-link"
+                   th:classappend="${currentPage} == 'admin/settled_history' ? 'active' : '' ">정산확인</a>
+            </li>
+            <li th:if="${user != null}">
+                <a href="/" class="nav-link"
+                   th:classappend="${currentPage} == 'admin' ? 'active' : '' ">일반 페이지로</a>
+            </li>
+        </ul>
+    </header>
+
+    <div class="modal fade" id="sign-out" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">로그아웃</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div>intra 아이디는 수동으로 로그아웃해주세요</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            onclick="location.href = '/logout'">
+                        로그아웃하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
