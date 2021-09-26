@@ -41,4 +41,20 @@ public class PageAdminController {
         model.addAttribute("today", start.format(DateTimeFormatter.ofPattern("yyyy.MM")));
         return "admin/index";
     }
+
+    @GetMapping("settle")
+    public String settle(Model model, @LoginUser SessionUser user) {
+        if (user == null)
+            return "index";
+        model.addAttribute("user", user);
+        return "admin/settle";
+    }
+
+    @GetMapping("settle_history")
+    public String settleHistory(Model model, @LoginUser SessionUser user) {
+        if (user == null)
+            return "index";
+        model.addAttribute("user", user);
+        return "admin/settle_history";
+    }
 }
