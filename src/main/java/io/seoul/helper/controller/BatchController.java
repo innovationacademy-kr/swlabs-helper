@@ -3,7 +3,6 @@ package io.seoul.helper.controller;
 import io.seoul.helper.controller.dto.ResultResponseDto;
 import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.service.TeamService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 public class BatchController {
 
+    @Autowired
     private TeamService teamService;
 
     @PostMapping(value = "/api/v1/batch/teams/status")
