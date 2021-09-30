@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
@@ -52,4 +53,24 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "((t.period.startTime is null or (t.period.startTime <= :startTime and t.period.endTime <= :endTime and t.period.endTime > :startTime)) or" +
             "(t.period.endTime is null or (t.period.startTime >= :startTime and t.period.endTime >= :endTime and t.period.startTime < :endTime)))")
     List<Team> findTeamsByDuplicateDateTime(TeamStatus revoke, TeamStatus ended, LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.created between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByCreateTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.updated between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByUpdatedTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.period.startTime between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByStartTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.period.endTime between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByEndTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
 }
