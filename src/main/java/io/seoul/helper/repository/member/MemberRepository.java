@@ -18,6 +18,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByTeamAndUserAndRole(Team team, User user, MemberRole memberRole);
 
     List<Member> findMembersByTeam(Team team);
+
+    List<Member> findMembersByUser(User user);
     
     List<Member> findMembersByTeamAndAndRole(Team team, MemberRole role);
 

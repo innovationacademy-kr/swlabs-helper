@@ -1,5 +1,7 @@
 package io.seoul.helper.repository.team;
 
+import io.seoul.helper.controller.team.dto.TeamDateDto;
+import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamLocation;
 import io.seoul.helper.domain.team.TeamStatus;
@@ -45,4 +47,11 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "WHERE (t.status = :status) and " +
             "(:currentTime is null or t.period.endTime <= :currentTime)")
     List<Team> findTeamsByStatusNotAndEndTimeLessThan(TeamStatus status, LocalDateTime currentTime);
+
+
+    @Query("SELECT DISTINCT t FROM Team t " +
+            "WHERE (t.status NOT IN (:revoke, :ended)) and " +
+            "(t.period.startTime is null or t.period.startTime >= :startTime) and" +
+            "(t.period.endTime is null or t.period.endTime <= :endTime)")
+    List<Team> findTeamsByDuplicateDateTime(TeamStatus revoke, TeamStatus ended, LocalDateTime startTime, LocalDateTime endTime);
 }

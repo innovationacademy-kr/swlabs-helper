@@ -2,6 +2,7 @@ package io.seoul.helper.domain.user;
 
 import io.seoul.helper.domain.common.BaseTime;
 import io.seoul.helper.domain.member.Member;
+import io.seoul.helper.domain.team.Team;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

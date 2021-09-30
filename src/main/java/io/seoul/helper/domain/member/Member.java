@@ -2,12 +2,14 @@ package io.seoul.helper.domain.member;
 
 import io.seoul.helper.domain.common.BaseTime;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
