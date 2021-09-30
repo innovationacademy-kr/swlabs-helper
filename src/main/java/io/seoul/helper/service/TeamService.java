@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +48,11 @@ public class TeamService {
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.END);
+        if (teamRepo.findTeamsByDuplicateDateTime(statusList, requestDto.getStartTime(), requestDto.getEndTime()).size() != 0)
+            throw new IllegalArgumentException("Time Overlap");
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
         if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
