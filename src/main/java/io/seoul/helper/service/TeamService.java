@@ -49,11 +49,6 @@ public class TeamService {
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .build();
-        List<Team> teamsByDuplicateDateTime = teamRepo.findTeamsByDuplicateDateTime(TeamStatus.REVOKE, TeamStatus.END, requestDto.getStartTime(), requestDto.getEndTime());
-        log.info("team size : {}", teamsByDuplicateDateTime.size());
-        teamsByDuplicateDateTime.stream().forEach(t -> {
-            log.info("team status : {}",t.getStatus());
-        });
         if (teamRepo.findTeamsByDuplicateDateTime(TeamStatus.REVOKE, TeamStatus.END,
                 requestDto.getStartTime(), requestDto.getEndTime()).size() != 0) {
             throw new IllegalArgumentException("Time Overlap");

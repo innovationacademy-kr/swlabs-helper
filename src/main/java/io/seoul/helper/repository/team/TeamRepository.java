@@ -47,7 +47,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "(:currentTime is null or t.period.endTime <= :currentTime)")
     List<Team> findTeamsByStatusNotAndEndTimeLessThan(TeamStatus status, LocalDateTime currentTime);
 
-
     @Query("SELECT DISTINCT t FROM Team t " +
             "WHERE (t.status NOT IN (:revoke, :ended)) and " +
             "((t.period.startTime is null or (t.period.startTime <= :startTime and t.period.endTime <= :endTime and t.period.endTime > :startTime)) or" +
