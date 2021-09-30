@@ -83,6 +83,8 @@ public class TeamService {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Team team = teamRepo.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("Team is not exist"));
+        if (team.getStatus() != TeamStatus.WAITING)
+            throw new Exception("The team already has mentor");
         Project project = projectRepo.getById(requestDto.getProjectId());
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Not valid member");
@@ -101,7 +103,6 @@ public class TeamService {
                 .role(MemberRole.MENTOR)
                 .creator(false)
                 .build());
-        List<Member> members = team.getMembers();
         return new TeamResponseDto(team);
     }
 
