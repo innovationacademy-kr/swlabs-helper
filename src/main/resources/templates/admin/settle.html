@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default_layout_admin.html" th:with="currentPage='mentor_review'">
+<head>
+    <meta charset="UTF-8">
+    <title>Settle</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/custom-font.css}">
+</head>
+<body>
+<div layout:fragment="custom-content">
+    <div class="page_title">
+        <h2>정산 페이지</h2>
+        <p>리뷰에 대한 정산을 진행합니다.<br/>
+            오늘을 기준으로 현재까지 해당 사이트에서 팀 모임을 진행하고 작성된 리뷰가 표기됩니다.<br/>
+            각 리뷰에 <b>통과, 미달</b> 버튼을 클릭하여, 정산을 진행하실 수 있습니다.<br/>
+            이후 해당 내용을 정산기록 에서 재확인할 수 있습니다.</p>
+    </div>
+    <ul th:if="${reviews != null}" th:each="review : ${reviews}">
+        <li th:each="" class="table-item scaleteam-list-item">
+            <div class="header">
+                <b><a data-tooltip-login="hwon" data-tooltip-url="https://profile.intra.42.fr"
+                      href="https://profile.intra.42.fr/users/hwon">hwon</a></b>
+                evaluated
+                <b><a data-tooltip-login="hyeojung" data-tooltip-url="https://profile.intra.42.fr"
+                      href="https://profile.intra.42.fr/users/hyeojung">hyeojung's group-1</a></b>
+                scheduled on
+                <b>September 15, 2021 21:15</b>
+                <div class="pull-right">
+                    <b>Born2beroot</b>
+                    <code class="rating" data-positive="">ok</code>
+                    <a class="btn btn-info btn-xs" href="/1994/hyeojung">show</a>
+                </div>
+            </div>
+            <div class="final-mark">
+                <div class="rating" data-positive="">
+                    100 %
+                </div>
+                <div class="comment">
+                    정말로 꼼꼼하게 설명을 진행해주셔서 놀랐습니다. 모든 명령어에 대해 대부분 꿰차고 있을 정도로 잘 사용하셨고, 특정 참고도 없이 바로바로 요구사항을 충족해주셔서 놀랐습니다. 특히
+                    저는 데비안리눅스에 대해 자세히 알지 못했는데 이번에 특징에 대해 잘 알아가게 되었습니다. 1시간이 넘게 진행되는 평가여도 피곤한 기색 없이 진행하셨습니다. 늦은시간동안
+                    고생하셨습니다!
+                </div>
+            </div>
+            <div class="feedback">
+                <div class="rating" data-placement="top" data-positive="" data-toggle="tooltip" title=""
+                     data-original-title="Nice: 4 / 4
+Rigorous: 4 / 4
+Interested: 4 / 4
+Punctuality: 4 / 4">
+                    5 / 5
+                </div>
+                <div class="comment">
+                    고수의 향기가 풍기는 분이셨습니다..! 저보다 더 잘 알고 계신 것 같은데 제 설명 경청해주시고 이것저것 꼼꼼하게 확인해주셔서 너무 감사합니다 ,,, 중간중간 아시는 걸
+                    알려주시기도 해서 평가 받는 건데 오히려 배워가는 것 같습니다 :)
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+<div layout:fragment="custom-footer">
+</div>
+</html>

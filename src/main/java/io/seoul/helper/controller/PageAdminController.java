@@ -47,6 +47,7 @@ public class PageAdminController {
         if (user == null)
             return "index";
         model.addAttribute("user", user);
+        model.addAttribute("reviews", null);
         return "admin/settle";
     }
 
@@ -55,6 +56,7 @@ public class PageAdminController {
         if (user == null)
             return "index";
         model.addAttribute("user", user);
+        model.addAttribute("reviews", null);
         return "admin/settle_history";
     }
 }

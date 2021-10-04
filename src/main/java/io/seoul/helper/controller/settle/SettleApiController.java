@@ -20,8 +20,8 @@ public class SettleApiController {
 
     @ApiControllerTryCatch
     @PostMapping("settle")
-    public ResultResponseDto postSettle(@LoginUser SessionUser user, SettlePostRequestDto dto,
-                                        ServerHttpResponse responseHttp) throws Exception {
+    public ResultResponseDto<?> postSettle(@LoginUser SessionUser user, SettlePostRequestDto dto,
+                                           ServerHttpResponse responseHttp) throws Exception {
         SettleResponseDto responseDto = settleService.postSettle(user, dto);
         responseHttp.setStatusCode(HttpStatus.CREATED);
         responseHttp.getHeaders().add("Location", "/api/v1/settle/" + responseDto.getId());
@@ -34,7 +34,7 @@ public class SettleApiController {
 
     @ApiControllerTryCatch
     @GetMapping("settle/{id}")
-    public ResultResponseDto getSettle(@PathVariable Long id) throws Exception {
+    public ResultResponseDto<?> getSettle(@PathVariable Long id) throws Exception {
         SettleResponseDto responseDto = settleService.getSettle(id);
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
@@ -42,5 +42,7 @@ public class SettleApiController {
                 .data(responseDto)
                 .build();
     }
+
+    //TODO: PAGEBLE 조회 필요
 
 }
