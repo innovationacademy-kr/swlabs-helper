@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
@@ -45,4 +46,35 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "WHERE (t.status = :status) and " +
             "(:currentTime is null or t.period.endTime <= :currentTime)")
     List<Team> findTeamsByStatusNotAndEndTimeLessThan(TeamStatus status, LocalDateTime currentTime);
+
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.created between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByCreateTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.updated between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByUpdatedTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.period.startTime between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByStartTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT count(t) from Team t " +
+            "WHERE (t.period.endTime between :start and :end) and " +
+            "(t.status IN :statusList)")
+    Integer findTeamCountByEndTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
+
+    @Query("SELECT DISTINCT t FROM Team t " +
+            "WHERE (t.id IN (SELECT m.team.id FROM Member m WHERE m.user.id = :userId)) and " +
+            "(t.status NOT IN (:statusList)) and " +
+            "((t.period.startTime <= :startTime and t.period.endTime <= :endTime and t.period.endTime > :startTime) or" +
+            "(t.period.startTime >= :startTime and t.period.endTime >= :endTime and t.period.startTime < :endTime) or" +
+            "(t.period.startTime <= :startTime and t.period.endTime >= :endTime) or " +
+            "(t.period.startTime >= :startTime and t.period.endTime <= :endTime))")
+    List<Team> findTeamsByUserAndDuplicateDateTime(List<TeamStatus> statusList, Long userId,
+                                                   LocalDateTime startTime, LocalDateTime endTime);
 }

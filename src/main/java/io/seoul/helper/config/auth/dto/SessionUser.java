@@ -1,5 +1,6 @@
 package io.seoul.helper.config.auth.dto;
 
+import io.seoul.helper.domain.user.Role;
 import io.seoul.helper.domain.user.User;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ public class SessionUser implements Serializable {
     private String fullname;
     private String email;
     private String picture;
+    private Role role;
 
     public SessionUser(User user) {
         this.id = user.getId();
@@ -19,5 +21,6 @@ public class SessionUser implements Serializable {
         this.fullname = user.getFullname();
         this.email = user.getEmail();
         this.picture = user.getPicture();
+        this.role = user.getRole();
     }
 }

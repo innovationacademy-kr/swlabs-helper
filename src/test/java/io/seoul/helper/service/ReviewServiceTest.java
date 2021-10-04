@@ -72,7 +72,8 @@ public class ReviewServiceTest {
             addUsers();
             createTeams();
         } catch (Exception e) {
-            fail("fail : cannot create team");
+            log.error(e.getMessage());
+            fail("fail : cannot create team\nCause : " + e.getMessage());
         }
     }
 
@@ -133,8 +134,8 @@ public class ReviewServiceTest {
                 TeamCreateRequestDto.builder()
                         .subject("TEST TEAM MENTOR BUILD")
                         .description("TEST TEAM MENTOR BUILD")
-                        .startTime(startTime)
-                        .endTime(endTime)
+                        .startTime(startTime.plusDays(1))
+                        .endTime(endTime.plusDays(1))
                         .location(TeamLocation.ONLINE)
                         .maxMemberCount(4L)
                         .memberRole(MemberRole.MENTOR)
@@ -183,7 +184,7 @@ public class ReviewServiceTest {
     }
 
     @AfterAll
-    public void cleanup() throws Exception {
+    public void cleanup() {
         reviewList.forEach(r -> {
             reviewRepo.findById(r).ifPresent(o -> reviewRepo.delete(o));
         });
@@ -225,7 +226,7 @@ public class ReviewServiceTest {
     public void checkReview(User user, TeamReviewRequestDto requestDto) throws Exception {
         teamService.reviewTeam(new SessionUser(user), requestDto);
         Team team = teamRepo.getById(requestDto.getId());
-        List<User> users = memberRepo.findMembersByTeamAndAndRole(team, MemberRole.MENTEE).stream()
+        List<User> users = memberRepo.findMembersByTeam(team).stream()
                 .map(Member::getUser)
                 .collect(Collectors.toList());
         users.forEach(m -> checkReviewCreated(reviewRepo.findReviewByTeamAndUser(team, m)));

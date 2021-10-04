@@ -78,6 +78,11 @@
         }
 
         function close_team_submit(event) {
+            let confirm_answer = confirm("팀을 종료하겠습니까?");
+            if (!confirm_answer) {
+                event.preventDefault();
+                return;
+            }
             const m = document.getElementsByClassName('member');
             let members = [];
             const team_id = document.getElementById('close_team_input_team_id').value;
