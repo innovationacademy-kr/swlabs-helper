@@ -72,7 +72,8 @@ public class ReviewServiceTest {
             addUsers();
             createTeams();
         } catch (Exception e) {
-            fail("fail : cannot create team");
+            log.error(e.getMessage());
+            fail("fail : cannot create team\nCause : " + e.getMessage());
         }
     }
 
@@ -133,8 +134,8 @@ public class ReviewServiceTest {
                 TeamCreateRequestDto.builder()
                         .subject("TEST TEAM MENTOR BUILD")
                         .description("TEST TEAM MENTOR BUILD")
-                        .startTime(startTime)
-                        .endTime(endTime)
+                        .startTime(startTime.plusDays(1))
+                        .endTime(endTime.plusDays(1))
                         .location(TeamLocation.ONLINE)
                         .maxMemberCount(4L)
                         .memberRole(MemberRole.MENTOR)
@@ -183,7 +184,7 @@ public class ReviewServiceTest {
     }
 
     @AfterAll
-    public void cleanup() throws Exception {
+    public void cleanup() {
         reviewList.forEach(r -> {
             reviewRepo.findById(r).ifPresent(o -> reviewRepo.delete(o));
         });
