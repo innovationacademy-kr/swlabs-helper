@@ -69,10 +69,12 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Integer findTeamCountByEndTimeRangeAndStatus(LocalDateTime start, LocalDateTime end, Set<TeamStatus> statusList);
 
     @Query("SELECT DISTINCT t FROM Team t " +
-            "WHERE (t.status NOT IN (:statusList)) and " +
+            "WHERE (t.id IN (SELECT m.team.id FROM Member m WHERE m.user.id = :userId)) and " +
+            "(t.status NOT IN (:statusList)) and " +
             "((t.period.startTime <= :startTime and t.period.endTime <= :endTime and t.period.endTime > :startTime) or" +
             "(t.period.startTime >= :startTime and t.period.endTime >= :endTime and t.period.startTime < :endTime) or" +
             "(t.period.startTime <= :startTime and t.period.endTime >= :endTime) or " +
             "(t.period.startTime >= :startTime and t.period.endTime <= :endTime))")
-    List<Team> findTeamsByDuplicateDateTime(List<TeamStatus> statusList, LocalDateTime startTime, LocalDateTime endTime);
+    List<Team> findTeamsByUserAndDuplicateDateTime(List<TeamStatus> statusList, Long userId,
+                                                   LocalDateTime startTime, LocalDateTime endTime);
 }

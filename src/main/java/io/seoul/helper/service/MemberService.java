@@ -32,6 +32,16 @@ public class MemberService {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Team team = teamRepo.findById(requestDto.getTeamId()).orElseThrow(() ->
                 new EntityNotFoundException("Team not exist"));
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.END);
+        teamRepo.findTeamsByUserAndDuplicateDateTime(statusList, user.getId(),
+                team.getPeriod().getStartTime(), team.getPeriod().getEndTime())
+                .stream()
+                .findAny()
+                .ifPresent(o -> {
+                    throw new RuntimeException("Time Overlap - Team #" + o.getId());
+                });
         if (memberRepo.findMemberByTeamAndUser(team, user).isPresent())
             throw new Exception("Already joined");
         if (team.getStatus() != TeamStatus.READY)

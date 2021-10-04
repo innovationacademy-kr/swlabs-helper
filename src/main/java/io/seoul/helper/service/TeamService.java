@@ -51,8 +51,14 @@ public class TeamService {
         List<TeamStatus> statusList = new ArrayList<>();
         statusList.add(TeamStatus.REVOKE);
         statusList.add(TeamStatus.END);
-        if (teamRepo.findTeamsByDuplicateDateTime(statusList, requestDto.getStartTime(), requestDto.getEndTime()).size() != 0)
-            throw new IllegalArgumentException("Time Overlap");
+        teamRepo.findTeamsByUserAndDuplicateDateTime(
+                statusList, user.getId(),
+                requestDto.getStartTime(), requestDto.getEndTime())
+                .stream()
+                .findAny()
+                .ifPresent(o -> {
+                    throw new RuntimeException("Time Overlap - Team #" + o.getId());
+                });
         if (!period.isValid())
             throw new IllegalArgumentException("Invalid Time");
         if (requestDto.getMaxMemberCount() < 1 || requestDto.getMaxMemberCount() > 100)
@@ -78,6 +84,18 @@ public class TeamService {
         User user = userRepo.getById(userService.findUserBySession(currentUser).getId());
         Team team = teamRepo.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("Team is not exist"));
+
+        List<TeamStatus> statusList = new ArrayList<>();
+        statusList.add(TeamStatus.REVOKE);
+        statusList.add(TeamStatus.END);
+        teamRepo.findTeamsByUserAndDuplicateDateTime(
+                statusList,
+                user.getId(),
+                requestDto.getStartTime(),
+                requestDto.getEndTime()).stream().findAny()
+                .ifPresent(o -> {
+                    throw new RuntimeException("Time Overlap - Team #" + o.getId());
+                });
         if (team.getStatus() != TeamStatus.WAITING)
             throw new Exception("The team already has mentor");
         Project project = projectRepo.getById(requestDto.getProjectId());
@@ -102,7 +120,7 @@ public class TeamService {
     }
 
     @Transactional
-    public List<TeamResponseDto> updateTeamsLessThanCurrentTime() throws Exception {
+    public List<TeamResponseDto> updateTeamsLessThanCurrentTime() throws EntityNotFoundException {
         LocalDateTime currentTime = LocalDateTime.now();
         List<Team> teams = teamRepo.findTeamsByStatusNotAndEndTimeLessThan(TeamStatus.WAITING, currentTime);
 
@@ -131,7 +149,7 @@ public class TeamService {
 
         if (owner == null)
             throw new Exception("Team is not valid!");
-        if (owner.getUser().getId() != user.getId())
+        if (owner.getUser().getId().equals(user.getId()))
             throw new Exception("Invalid User");
 
         members.forEach(m -> {
@@ -250,9 +268,8 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public TeamCountResponseDto getTeamCount(TeamCountRequestDto requestDto) {
-        Set<TeamStatus> statusSet = new HashSet();
+        Set<TeamStatus> statusSet = new HashSet<>();
 
-        statusSet.clear();
         statusSet.add(TeamStatus.END);
         Integer endTeamCount = teamRepo.findTeamCountByUpdatedTimeRangeAndStatus(
                 requestDto.getStart(),
@@ -289,7 +306,7 @@ public class TeamService {
         Integer createdTeamCount = teamRepo.findTeamCountByUpdatedTimeRangeAndStatus(
                 requestDto.getStart(),
                 requestDto.getEnd(), statusSet);
-        
+
         return TeamCountResponseDto.builder()
                 .createdTeamCount(createdTeamCount)
                 .waitTeamCount(waitTeamCount)
