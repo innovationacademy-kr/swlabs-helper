@@ -9,6 +9,7 @@ import io.seoul.helper.domain.review.Review;
 import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.review.Score;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.user.Role;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.review.ReviewRepository;
@@ -16,10 +17,13 @@ import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -107,5 +111,27 @@ public class ReviewService {
                 .description(review.getDescription())
                 .status(review.getStatus())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> findReviewsNotSettle(SessionUser sessionUser, int limit) throws Exception {
+        Optional.of(sessionUser)
+                .filter(o -> o.getRole() == Role.ADMIN)
+                .orElseThrow(() -> new Exception("Not valid User"));
+        Pageable p = PageRequest.of(0, limit);
+        List<Review> lists = reviewRepo.findReviewsByNotSettle(p);
+        return lists.stream()
+                .map(review -> ReviewResponseDto.builder()
+                        .id(review.getId())
+                        .score(ScoreDto.builder()
+                                .fun(review.getScore().getFun())
+                                .nice(review.getScore().getNice())
+                                .time(review.getScore().getTime())
+                                .interested(review.getScore().getInterested())
+                                .build())
+                        .description(review.getDescription())
+                        .status(review.getStatus())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

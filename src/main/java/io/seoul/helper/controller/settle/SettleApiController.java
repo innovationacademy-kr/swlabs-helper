@@ -42,7 +42,4 @@ public class SettleApiController {
                 .data(responseDto)
                 .build();
     }
-
-    //TODO: PAGEBLE 조회 필요
-
 }

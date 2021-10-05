@@ -29,7 +29,6 @@ public class SettleService {
     @Transactional
     public SettleResponseDto postSettle(SessionUser userSession, SettlePostRequestDto dto) throws Exception {
         Optional<SessionUser> admin = Optional.ofNullable(userSession);
-        //TODO: check it will be Valid if userSession is not valid
         User user = admin.map(o -> userRepo.getById(o.getId()))
                 .filter(o -> o.getRole() == Role.ADMIN)
                 .orElseThrow(() -> new Exception("관리자가 아닙니다."));

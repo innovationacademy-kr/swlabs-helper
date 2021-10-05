@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class ReviewApiController {
@@ -40,6 +42,16 @@ public class ReviewApiController {
                 .build();
     }
 
-    //TODO: 정산필요 목록 조회 필요 (남은 정산수, Review 업데이트가 가장 최신순으로 데이터 조회)
+    @ApiControllerTryCatch
+    @GetMapping(value = "/api/v1/reviews/candidate")
+    public ResultResponseDto<?> findReviewNeedSettle(@LoginUser SessionUser sessionUser,
+                                                     @RequestParam(defaultValue = "10") int limit) throws Exception {
+        List<ReviewResponseDto> dtos = reviewService.findReviewsNotSettle(sessionUser, limit);
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OK")
+                .data(dtos)
+                .build();
+    }
 
 }
