@@ -1,9 +1,9 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.controller.review.dto.ReviewResponseDto;
-import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
-import io.seoul.helper.controller.review.dto.ScoreDto;
+import io.seoul.helper.controller.member.dto.MemberResponseDto;
+import io.seoul.helper.controller.review.dto.*;
+import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.review.Review;
 import io.seoul.helper.domain.review.ReviewStatus;
@@ -114,24 +114,48 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> findReviewsNotSettle(SessionUser sessionUser, int limit) throws Exception {
+    public List<ReviewNeedSettleResponseDto> findReviewsNotSettle(SessionUser sessionUser, int limit) throws Exception {
         Optional.of(sessionUser)
                 .filter(o -> o.getRole() == Role.ADMIN)
                 .orElseThrow(() -> new Exception("Not valid User"));
         Pageable p = PageRequest.of(0, limit);
         List<Review> lists = reviewRepo.findReviewsByNotSettle(p);
         return lists.stream()
-                .map(review -> ReviewResponseDto.builder()
-                        .id(review.getId())
-                        .score(ScoreDto.builder()
-                                .fun(review.getScore().getFun())
-                                .nice(review.getScore().getNice())
-                                .time(review.getScore().getTime())
-                                .interested(review.getScore().getInterested())
-                                .build())
-                        .description(review.getDescription())
-                        .status(review.getStatus())
-                        .build())
+                .map(review -> {
+                    User user = review.getUser();
+                    Team team = review.getTeam();
+                    Member member = memberRepo.findMemberByTeamAndUser(review.getTeam(), review.getUser())
+                            .orElseThrow(() -> new RuntimeException("Not exist member"));
+                    return ReviewNeedSettleResponseDto.builder()
+                            .id(review.getId())
+                            .score(ScoreDto.builder()
+                                    .fun(review.getScore().getFun())
+                                    .nice(review.getScore().getNice())
+                                    .time(review.getScore().getTime())
+                                    .interested(review.getScore().getInterested())
+                                    .build())
+                            .description(review.getDescription())
+                            .status(review.getStatus())
+                            .member(MemberResponseDto.builder()
+                                    .id(member.getId())
+                                    .userId(user.getId())
+                                    .nickname(user.getNickname())
+                                    .memberRole(member.getRole().toString())
+                                    .picture(user.getPicture())
+                                    .creator(member.getCreator())
+                                    .build())
+                            .team(new TeamResponseDto(team))
+                            .updated(review.getUpdated())
+                            .build();
+                })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReviewNeedSettleCountResponseDto getReviewNeedSettleCount() {
+        Long count = reviewRepo.getReviewNeedSettleCount();
+        return ReviewNeedSettleCountResponseDto.builder()
+                .count(count)
+                .build();
     }
 }

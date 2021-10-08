@@ -4,6 +4,8 @@ import io.seoul.helper.config.aop.ApiControllerTryCatch;
 import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.dto.ResultResponseDto;
+import io.seoul.helper.controller.review.dto.ReviewNeedSettleCountResponseDto;
+import io.seoul.helper.controller.review.dto.ReviewNeedSettleResponseDto;
 import io.seoul.helper.controller.review.dto.ReviewResponseDto;
 import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
 import io.seoul.helper.service.ReviewService;
@@ -46,7 +48,7 @@ public class ReviewApiController {
     @GetMapping(value = "/api/v1/reviews/candidate")
     public ResultResponseDto<?> findReviewNeedSettle(@LoginUser SessionUser sessionUser,
                                                      @RequestParam(defaultValue = "10") int limit) throws Exception {
-        List<ReviewResponseDto> dtos = reviewService.findReviewsNotSettle(sessionUser, limit);
+        List<ReviewNeedSettleResponseDto> dtos = reviewService.findReviewsNotSettle(sessionUser, limit);
         return ResultResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("OK")
@@ -54,4 +56,14 @@ public class ReviewApiController {
                 .build();
     }
 
+    @ApiControllerTryCatch
+    @GetMapping(value = "/api/v1/reviews/left-settle-count")
+    public ResultResponseDto<?> findReviewNeedSettleCount() throws Exception {
+        ReviewNeedSettleCountResponseDto dto = reviewService.getReviewNeedSettleCount();
+        return ResultResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("OK")
+                .data(dto)
+                .build();
+    }
 }

@@ -9,8 +9,10 @@ import io.seoul.helper.controller.settle.dto.SettleResponseDto;
 import io.seoul.helper.service.SettleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -20,16 +22,14 @@ public class SettleApiController {
 
     @ApiControllerTryCatch
     @PostMapping("settle")
-    public ResultResponseDto<?> postSettle(@LoginUser SessionUser user, SettlePostRequestDto dto,
-                                           ServerHttpResponse responseHttp) throws Exception {
+    public ResponseEntity<?> postSettle(@LoginUser SessionUser user, @RequestBody SettlePostRequestDto dto) throws Exception {
         SettleResponseDto responseDto = settleService.postSettle(user, dto);
-        responseHttp.setStatusCode(HttpStatus.CREATED);
-        responseHttp.getHeaders().add("Location", "/api/v1/settle/" + responseDto.getId());
-        return ResultResponseDto.builder()
+        ResultResponseDto rst = ResultResponseDto.builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .message("CREATED")
                 .data(responseDto)
                 .build();
+        return ResponseEntity.created(URI.create("/api/v1/settle/" + responseDto.getId())).body(rst);
     }
 
     @ApiControllerTryCatch

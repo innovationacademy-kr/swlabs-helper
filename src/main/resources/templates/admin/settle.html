@@ -6,11 +6,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Settle</title>
+    <!-- Plugin CSS file with desired skin-->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    <!-- datepicker -->
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+    <!-- custom -->
     <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link rel="stylesheet" th:href="@{/css/custom-font.css}">
+    <link rel="stylesheet" th:href="@{/css/settle.css}">
 </head>
 <body>
 <div layout:fragment="custom-content">
+    <div th:replace="fragment/team_viewer_modal :: modal"></div>
     <div class="page_title">
         <h2>정산 페이지</h2>
         <p>리뷰에 대한 정산을 진행합니다.<br/>
@@ -18,49 +26,184 @@
             각 리뷰에 <b>통과, 미달</b> 버튼을 클릭하여, 정산을 진행하실 수 있습니다.<br/>
             이후 해당 내용을 정산기록 에서 재확인할 수 있습니다.</p>
     </div>
-    <ul th:if="${reviews != null}" th:each="review : ${reviews}">
-        <li th:each="" class="table-item scaleteam-list-item">
-            <div class="header">
-                <b><a data-tooltip-login="hwon" data-tooltip-url="https://profile.intra.42.fr"
-                      href="https://profile.intra.42.fr/users/hwon">hwon</a></b>
-                evaluated
-                <b><a data-tooltip-login="hyeojung" data-tooltip-url="https://profile.intra.42.fr"
-                      href="https://profile.intra.42.fr/users/hyeojung">hyeojung's group-1</a></b>
-                scheduled on
-                <b>September 15, 2021 21:15</b>
-                <div class="pull-right">
-                    <b>Born2beroot</b>
-                    <code class="rating" data-positive="">ok</code>
-                    <a class="btn btn-info btn-xs" href="/1994/hyeojung">show</a>
+    <div>
+        <div class="row">
+            <b th:text="'남은 리뷰 수 : ' + ${leftCount}"> </b>
+            <div class="col">
+                <button type="button" class="btn btn-primary" onclick="location.href='/admin/settle'">새로고침
+                </button>
+            </div>
+        </div>
+    </div>
+    <div th:if="${reviews != null}" th:each="review : ${reviews}">
+        <div class="correction-item" th:id="'review' + ${review.id}">
+            <div class="corrected-item">
+                <div class="bg-image-item img-rounded square-s" data-placement="bottom" data-toggle="tooltip"
+                     th:style="'background-image: url(' + ${review.member.picture} + ')'" title="">
+                </div>
+                <div class="corrected-item-text">
+                    <div class="corrected-header">
+                        Reviewed by
+                        <b><a data-tooltip-url="https://profile.intra.42.fr"
+                              th:href="'https://profile.intra.42.fr/users/' + ${review.member.nickname}"
+                              th:text="${review.member.nickname}">default nickname</a></b>
+                        <b>
+                            <span th:text="${#temporals.format(review.updated, 'yyyy.MM.dd')}">time</span>
+                        </b>
+                    </div>
+                    <div class="corrected-header">
+                        <span>Team </span>
+                        <a th:text="${review.team.subject}" href="#"
+                           th:onclick="onclick_detail_team([[${review.team}]]); return false;"></a>
+                        -
+                        <b class="pull-right">
+                            <span class="icon-check text-success"></span>
+                            <span class="text-success" th:text="${review.member.memberRole}"></span>
+                        </b>
+                    </div>
+                    <div class="correction-comment-item">
+                        <span style="white-space: pre-wrap" th:text="${review.description}"></span>
+                        <div class="correction-comment-body"
+                             th:with="totalScore=${review.score.interested} + ${review.score.fun} + ${review.score.nice} + ${review.score.time}">
+                            <span class="review-item" data-placement="top" data-toggle="tooltip" title=""
+                                  data-original-title="Evaluation Rated 3/5">
+                                <i class="bi text-warning"
+                                   th:classappend="${totalScore < 3} ? ( ${totalScore == 0} ? 'bi-star' : 'bi-star-half' ) : 'bi-star-fill'"></i>
+                                <i class="bi text-warning"
+                                   th:classappend="${totalScore < 6} ? ( ${totalScore <= 3} ? 'bi-star' : 'bi-star-half' ) : 'bi-star-fill'"></i>
+                                <i class="bi text-warning"
+                                   th:classappend="${totalScore < 9} ? ( ${totalScore <= 6} ? 'bi-star' : 'bi-star-half' ) : 'bi-star-fill'"></i>
+                                <i class="bi text-warning"
+                                   th:classappend="${totalScore < 12} ? ( ${totalScore <= 9} ? 'bi-star' : 'bi-star-half' ) : 'bi-star-fill'"></i>
+                                <i class="bi text-warning"
+                                   th:classappend="${totalScore < 16} ? ( ${totalScore <= 12} ? 'bi-star' : 'bi-star-half' ) : 'bi-star-fill'"></i>
+                            </span>
+                            <span class="review-item" data-toggle="tooltip" title="" data-original-title="Fun">
+                                <i class="bi bi-emoji-laughing"></i>
+                                <span th:classappend="${review.score.fun > 2 ? 'text-success' : 'text-danger'}"
+                                      th:text="${review.score.fun} + ' / 4' "></span>
+                            </span>
+                            <span class="review-item" data-toggle="tooltip" title="" data-original-title="Interested">
+                                <i class="bi bi-lightbulb"></i>
+                                <span th:classappend="${review.score.interested > 2 ? 'text-success' : 'text-danger'}"
+                                      th:text="${review.score.interested} + ' / 4' "></span>
+                            </span>
+                            <span class="review-item" data-toggle="tooltip" title="" data-original-title="Nice">
+                                <i class="bi bi-hand-thumbs-up"></i>
+                                <span th:classappend="${review.score.nice > 2 ? 'text-success' : 'text-danger'}"
+                                      th:text="${review.score.nice} + ' / 4' "></span>
+                            </span>
+                            <span class="review-item" data-toggle="tooltip" title="" data-original-title="Time">
+                                <i class="bi bi-clock"></i>
+                                <span th:classappend="${review.score.time > 2 ? 'text-success' : 'text-danger'}"
+                                      th:text="${review.score.time} + ' / 4' "></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="correction-check-pass">
+                        <button class="btn btn-primary" th:onclick="onclick_pass([[${review.id}]])">PASS</button>
+                        <button class="btn btn-danger" th:onclick="onclick_fail([[${review.id}]])">FAIL</button>
+                    </div>
                 </div>
             </div>
-            <div class="final-mark">
-                <div class="rating" data-positive="">
-                    100 %
-                </div>
-                <div class="comment">
-                    정말로 꼼꼼하게 설명을 진행해주셔서 놀랐습니다. 모든 명령어에 대해 대부분 꿰차고 있을 정도로 잘 사용하셨고, 특정 참고도 없이 바로바로 요구사항을 충족해주셔서 놀랐습니다. 특히
-                    저는 데비안리눅스에 대해 자세히 알지 못했는데 이번에 특징에 대해 잘 알아가게 되었습니다. 1시간이 넘게 진행되는 평가여도 피곤한 기색 없이 진행하셨습니다. 늦은시간동안
-                    고생하셨습니다!
-                </div>
-            </div>
-            <div class="feedback">
-                <div class="rating" data-placement="top" data-positive="" data-toggle="tooltip" title=""
-                     data-original-title="Nice: 4 / 4
-Rigorous: 4 / 4
-Interested: 4 / 4
-Punctuality: 4 / 4">
-                    5 / 5
-                </div>
-                <div class="comment">
-                    고수의 향기가 풍기는 분이셨습니다..! 저보다 더 잘 알고 계신 것 같은데 제 설명 경청해주시고 이것저것 꼼꼼하게 확인해주셔서 너무 감사합니다 ,,, 중간중간 아시는 걸
-                    알려주시기도 해서 평가 받는 건데 오히려 배워가는 것 같습니다 :)
-                </div>
-            </div>
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
 </body>
 <div layout:fragment="custom-footer">
+    <div th:replace="fragment/team_viewer_modal :: script"></div>
+    <script>
+        function onclick_detail_team(team) {
+            team_viewer_modal_update({
+                team: team,
+                mode: "READONLY_OUT",
+            });
+            team_viewer_modal_show();
+        }
+
+        function onclick_pass(review_id) {
+            request_settle({
+                reviewId: review_id,
+                status: 'PASS',
+            })
+        }
+
+        function onclick_fail(review_id) {
+            let r = confirm("헤당 리뷰를 정산에서 제외하시겠습니까?");
+            if (r == false) {
+                return;
+            }
+            request_settle({
+                reviewId: review_id,
+                status: 'SHORT',
+            })
+        }
+
+        function request_settle(request_settle) {
+            fetch('/api/v1/settle', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(request_settle),
+            }).then(function (response) {
+                if (response.status != 201)
+                    throw new Error(response.status + ' : ' + response.statusText);
+                return response.json();
+            }).then(function (responseJson) {
+                if (responseJson.statusCode != 201) {
+                    alert('정상처리되지 않았습니다.\n' +
+                        '재시도하거나 아래의 원인을 확인해주세요.\n' +
+                        '원인 : ' + responseJson.message);
+                } else {
+                    let item = document.getElementById('review' + request_settle.reviewId);
+                    item.hidden = true;
+                    check_review_left();
+                }
+            }).catch(function (error) {
+                alert('정상등록되지 않았습지다.\n' +
+                    '복사 및 새로고침을 시도 해도 해당 문제가 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                    '원인 : ' + error);
+            });
+        }
+
+        function check_review_left() {
+            let count = 0;
+            document.querySelectorAll('.correction-item').forEach(o => {
+                if (!o.hidden)
+                    count++;
+            })
+
+            if (count == 0) {
+                fetch('/api/v1/reviews/left-settle-count', {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then(function (response) {
+                    if (response.status != 200)
+                        throw new Error(response.status + ' : ' + response.statusText);
+                    return response.json();
+                }).then(function (responseJson) {
+                    if (responseJson.statusCode != 200) {
+                        alert('정상처리되지 않았습니다.\n' +
+                            '재시도하거나 아래의 원인을 확인해주세요.\n' +
+                            '원인 : ' + responseJson.message);
+                    } else {
+                        let left_count = responseJson.data.count;
+                        if (left_count > 0) {
+                            window.location.href = '/admin/settle';
+                        } else {
+                            alert("더이상 정산할 리뷰가 없습니다.");
+                        }
+                    }
+                }).catch(function (error) {
+                    alert('정상처리되지 않았습지다.\n' +
+                        '복사 및 새로고침을 시도 해도 해당 문제가 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                        '원인 : ' + error);
+                });
+            }
+        }
+    </script>
 </div>
 </html>

@@ -1,7 +1,7 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.controller.review.dto.ReviewResponseDto;
+import io.seoul.helper.controller.review.dto.ReviewNeedSettleResponseDto;
 import io.seoul.helper.controller.settle.dto.SettlePostRequestDto;
 import io.seoul.helper.controller.settle.dto.SettleResponseDto;
 import io.seoul.helper.domain.member.Member;
@@ -170,7 +170,7 @@ public class SettleServiceTest {
     @Order(1)
     public void findTargetReview() {
         try {
-            List<ReviewResponseDto> rst = reviewService.findReviewsNotSettle(new SessionUser(userList.get(0)), 10);
+            List<ReviewNeedSettleResponseDto> rst = reviewService.findReviewsNotSettle(new SessionUser(userList.get(0)), 10);
             if (rst.size() <= 0) {
                 fail("fail to find target review");
             }
@@ -183,7 +183,7 @@ public class SettleServiceTest {
     @Test
     public void findTargetLimit() {
         try {
-            List<ReviewResponseDto> rst = reviewService.findReviewsNotSettle(new SessionUser(userList.get(0)), 3);
+            List<ReviewNeedSettleResponseDto> rst = reviewService.findReviewsNotSettle(new SessionUser(userList.get(0)), 3);
             if (rst.size() > 3)
                 fail("fail to find reviewServiceLimit : overload limit");
         } catch (Exception e) {
@@ -213,7 +213,7 @@ public class SettleServiceTest {
         SessionUser sessionUser = new SessionUser(userList.get(0));
         try {
             while (true) {
-                List<ReviewResponseDto> reviews = reviewService.findReviewsNotSettle(sessionUser, 2);
+                List<ReviewNeedSettleResponseDto> reviews = reviewService.findReviewsNotSettle(sessionUser, 2);
                 if (reviews.isEmpty()) break;
                 reviews.forEach(o -> {
                     try {

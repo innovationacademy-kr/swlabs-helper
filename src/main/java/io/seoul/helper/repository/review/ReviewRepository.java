@@ -25,4 +25,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "WHERE s.review.id is NULL AND r.status = 'UPDATED' ORDER BY r.updated DESC, r.id DESC"
     )
     List<Review> findReviewsByNotSettle(Pageable pageable);
+
+    @Query(value = "SELECT count(r.id) " +
+            "FROM Review r " +
+            "LEFT JOIN Settle s " +
+            "ON r.id = s.review.id " +
+            "WHERE s.review.id is NULL AND r.status = 'UPDATED' " +
+            "GROUP BY r.status"
+    )
+    Long getReviewNeedSettleCount();
 }
