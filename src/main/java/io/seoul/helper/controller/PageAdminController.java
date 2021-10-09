@@ -4,8 +4,6 @@ import io.seoul.helper.config.auth.LoginUser;
 import io.seoul.helper.config.auth.dto.SessionUser;
 import io.seoul.helper.controller.review.dto.ReviewNeedSettleResponseDto;
 import io.seoul.helper.controller.settle.dto.SettleNeedPaidGroupByUserResponseDto;
-import io.seoul.helper.controller.team.dto.TeamCountRequestDto;
-import io.seoul.helper.controller.team.dto.TeamCountResponseDto;
 import io.seoul.helper.service.ReviewService;
 import io.seoul.helper.service.SettleService;
 import io.seoul.helper.service.TeamService;
@@ -17,9 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Slf4j
@@ -30,27 +25,6 @@ public class PageAdminController {
     private final TeamService teamService;
     private final ReviewService reviewService;
     private final SettleService settleService;
-
-    @GetMapping("index")
-    public String home(Model model, @LoginUser SessionUser user) {
-        if (user == null)
-            return "index";
-
-        LocalDateTime start = LocalDateTime.now().with(TemporalAdjusters.firstDayOfMonth())
-                .withHour(0).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime end = LocalDateTime.now().plusMonths(1).with(TemporalAdjusters.firstDayOfMonth())
-                .withHour(0).withMinute(0).withSecond(0).withNano(0);
-        TeamCountRequestDto teamCountRequestDto = TeamCountRequestDto.builder()
-                .start(start)
-                .end(end)
-                .build();
-
-        TeamCountResponseDto responseDto = teamService.getTeamCount(teamCountRequestDto);
-        model.addAttribute("user", user);
-        model.addAttribute("teamCount", responseDto);
-        model.addAttribute("today", start.format(DateTimeFormatter.ofPattern("yyyy.MM")));
-        return "admin/index";
-    }
 
     @GetMapping("settle")
     public String settle(Model model, @LoginUser SessionUser user, @RequestParam(defaultValue = "10") int limit) {

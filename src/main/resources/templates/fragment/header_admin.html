@@ -29,16 +29,12 @@
         </div>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a href="/admin/index" class="nav-link"
-                   th:classappend="${currentPage} == 'admin/index' ? 'active' : '' ">홈</a>
-            </li>
-            <li class="nav-item">
                 <a href="/admin/settle" class="nav-link"
                    th:classappend="${currentPage} == 'admin/settle' ? 'active' : '' ">정산하기</a>
             </li>
             <li class="nav-item">
                 <a href="/admin/settle_history" class="nav-link"
-                   th:classappend="${currentPage} == 'admin/settled_history' ? 'active' : '' ">정산확인</a>
+                   th:classappend="${currentPage} == 'admin/settle_history' ? 'active' : '' ">정산확인</a>
             </li>
             <li th:if="${user != null}">
                 <a href="/" class="nav-link"
