@@ -1,14 +1,15 @@
 package io.seoul.helper.service;
 
 import io.seoul.helper.config.auth.dto.SessionUser;
-import io.seoul.helper.controller.review.dto.ReviewResponseDto;
-import io.seoul.helper.controller.review.dto.ReviewUpdateRequestDto;
-import io.seoul.helper.controller.review.dto.ScoreDto;
+import io.seoul.helper.controller.member.dto.MemberResponseDto;
+import io.seoul.helper.controller.review.dto.*;
+import io.seoul.helper.controller.team.dto.TeamResponseDto;
 import io.seoul.helper.domain.member.Member;
 import io.seoul.helper.domain.review.Review;
 import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.review.Score;
 import io.seoul.helper.domain.team.Team;
+import io.seoul.helper.domain.user.Role;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
 import io.seoul.helper.repository.review.ReviewRepository;
@@ -16,10 +17,13 @@ import io.seoul.helper.repository.team.TeamRepository;
 import io.seoul.helper.repository.user.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -106,6 +110,52 @@ public class ReviewService {
                         .build())
                 .description(review.getDescription())
                 .status(review.getStatus())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewNeedSettleResponseDto> findReviewsNotSettle(SessionUser sessionUser, int limit) throws Exception {
+        Optional.of(sessionUser)
+                .filter(o -> o.getRole() == Role.ADMIN)
+                .orElseThrow(() -> new Exception("Not valid User"));
+        Pageable p = PageRequest.of(0, limit);
+        List<Review> lists = reviewRepo.findReviewsByNotSettle(p);
+        return lists.stream()
+                .map(review -> {
+                    User user = review.getUser();
+                    Team team = review.getTeam();
+                    Member member = memberRepo.findMemberByTeamAndUser(review.getTeam(), review.getUser())
+                            .orElseThrow(() -> new RuntimeException("Not exist member"));
+                    return ReviewNeedSettleResponseDto.builder()
+                            .id(review.getId())
+                            .score(ScoreDto.builder()
+                                    .fun(review.getScore().getFun())
+                                    .nice(review.getScore().getNice())
+                                    .time(review.getScore().getTime())
+                                    .interested(review.getScore().getInterested())
+                                    .build())
+                            .description(review.getDescription())
+                            .status(review.getStatus())
+                            .member(MemberResponseDto.builder()
+                                    .id(member.getId())
+                                    .userId(user.getId())
+                                    .nickname(user.getNickname())
+                                    .memberRole(member.getRole().toString())
+                                    .picture(user.getPicture())
+                                    .creator(member.getCreator())
+                                    .build())
+                            .team(new TeamResponseDto(team))
+                            .updated(review.getUpdated())
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReviewNeedSettleCountResponseDto getReviewNeedSettleCount() {
+        Long count = reviewRepo.getReviewNeedSettleCount();
+        return ReviewNeedSettleCountResponseDto.builder()
+                .count(count)
                 .build();
     }
 }

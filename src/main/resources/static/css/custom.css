@@ -1,3 +1,4 @@
+/*use profile-image round*/
 .square-l {
     height: 100px;
     width: 100px;
@@ -8,6 +9,12 @@
     height: 70px;
     width: 70px;
     line-height: 70px;
+}
+
+.square-s {
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
 }
 
 .img-rounded {

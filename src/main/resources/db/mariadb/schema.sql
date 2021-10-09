@@ -78,6 +78,21 @@ CREATE TABLE `review`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
 
+create table settle
+(
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT,
+    `admin_id`    bigint(20) NOT NULL,
+    `review_id`   bigint(20) NOT NULL,
+    `status`      varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `wallet_paid` bit(1),
+    `created`     timestamp,
+    `updated`     timestamp,
+    primary key (id)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 31
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
 ALTER TABLE member
     ADD CONSTRAINT FK_MEMBER_TEAM FOREIGN KEY (team_id) REFERENCES team (id);
 ALTER TABLE member
@@ -88,3 +103,7 @@ ALTER TABLE review
     ADD CONSTRAINT FK_REVIEW_TEAM FOREIGN KEY (team_id) REFERENCES team (id);
 ALTER TABLE review
     ADD CONSTRAINT FK_REVIEW_USER FOREIGN KEY (user_id) REFERENCES user (id);
+ALTER TABLE settle
+    ADD CONSTRAINT FK_SETTLE_REVIEW FOREIGN KEY (review_id) REFERENCES review (id);
+ALTER TABLE settle
+    ADD CONSTRAINT FK_SETTLE_ADMIN FOREIGN KEY (admin_id) REFERENCES user (id);

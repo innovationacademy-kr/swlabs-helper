@@ -213,7 +213,7 @@
 
             $.ajax({
                     type: 'GET',
-                    url: './api/v1/user/current',
+                    url: '/api/v1/user/current',
                     data: null,
                     dataType: "JSON",
                     contentType: 'application/json',
@@ -274,7 +274,7 @@
                         let review;
                         $.ajax({
                                 type: 'GET',
-                                url: './api/v1/review?memberId=' + member.id,
+                                url: '/api/v1/review?memberId=' + member.id,
                                 data: null,
                                 dataType: "JSON",
                                 contentType: 'application/json',
@@ -373,7 +373,7 @@
         function submit_viewer_team_join() {
             let ajax_req_info = {
                 type: 'POST',
-                url: './api/v1/member',
+                url: '/api/v1/member',
                 success: tv_ajax_req_info.success,
                 data: {
                     teamId: tv_team.teamId,
@@ -387,7 +387,7 @@
         function submit_viewer_team_out() {
             let ajax_req_info = {
                 type: 'DELETE',
-                url: './api/v1/member',
+                url: '/api/v1/member',
                 success: tv_ajax_req_info.success,
                 data: {
                     teamId: tv_team.teamId,
@@ -401,7 +401,7 @@
         function submit_viewer_team_revoke() {
             let ajax_req_info = {
                 type: 'POST',
-                url: './api/v1/team/' + tv_team.teamId + '/revoke',
+                url: '/api/v1/team/' + tv_team.teamId + '/revoke',
                 success: function () {
                     window.location.href = '/'
                 },
