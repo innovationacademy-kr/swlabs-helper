@@ -130,6 +130,10 @@ values (9, '2022-08-30 09:00:00', '2022-08-30 12:00:00', 'ONLINE', 3, 'END', 1, 
 insert into team (id, start_time, end_time, location, max_member_count, status,
                   project_id, subject, description)
 values (10, '2022-08-22 09:00:00', '2022-08-22 12:00:00', 'ONLINE', 2, 'WAITING', 1, '제목입니다', '설명입니다');
+/*for settle*/
+insert into team (id, start_time, end_time, location, max_member_count, status,
+                  project_id, subject, description)
+values (11, '2022-08-22 09:00:00', '2022-08-22 12:00:00', 'ONLINE', 10, 'REVIEW', 1, '제목입니다', '설명입니다');
 
 /*member*/
 insert into member (id, team_id, user_id, role, creator, participation)
@@ -170,3 +174,28 @@ insert into member (id, team_id, user_id, role, creator, participation)
 values (18, 9, 3, 'MENTOR', 0, 1);
 insert into member (id, team_id, user_id, role, creator, participation)
 values (19, 10, 4, 'MENTEE', 1, 1);
+/* for settle */
+insert into member (id, team_id, user_id, role, creator, participation)
+values (20, 11, 1, 'MENTOR', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (21, 11, 2, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (22, 11, 3, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (23, 11, 4, 'MENTEE', 0, 1);
+insert into member (id, team_id, user_id, role, creator, participation)
+values (24, 11, 5, 'MENTEE', 0, 1);
+
+
+/*review*/
+/* for settle */
+insert into review (id, team_id, user_id, description, fun, interested, nice, time, status, created, updated)
+values (1, 11, 1, 'USER1 review', 4, 4, 4, 4, 'UPDATED', '2021-10-01', '2021-10-01');
+insert into review (id, team_id, user_id, description, fun, interested, nice, time, status, created, updated)
+values (2, 11, 2, 'USER2 review', 2, 3, 4, 1, 'UPDATED', '2021-10-01', '2021-10-01');
+insert into review (id, team_id, user_id, description, fun, interested, nice, time, status, created, updated)
+values (3, 11, 3, 'USER3 review', 4, 2, 3, 4, 'TIMEOUT', '2021-10-01', '2021-10-01');
+insert into review (id, team_id, user_id, description, fun, interested, nice, time, status, created, updated)
+values (4, 11, 4, 'USER4 review', 4, 3, 3, 4, 'UPDATED', '2021-10-01', '2021-10-01');
+insert into review (id, team_id, user_id, description, fun, interested, nice, time, status, created, updated)
+values (5, 11, 5, 'USER5 review', 1, 2, 1, 1, 'UPDATED', '2021-10-01', '2021-10-01');

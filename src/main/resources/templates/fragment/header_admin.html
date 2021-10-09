@@ -10,9 +10,10 @@
                 <strong th:text="${user.nickname}"></strong>
             </a>
             <ul class=" dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                <li><a class="dropdown-item" href="/">Signed in as <strong th:text="${user.nickname}"></strong></a>
+                <li><a class="dropdown-item" href="/admin/index">Signed in as <strong
+                        th:text="${user.nickname}"></strong></a>
                 </li>
-                <li><a class="dropdown-item" href="/">Profile</a></li>
+                <li><a class="dropdown-item" href="/admin/index">Profile</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
@@ -28,24 +29,16 @@
         </div>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a href="/" class="nav-link"
-                   th:classappend="${currentPage} == 'index' ? 'active' : '' ">홈</a>
-            </li>
-            <li class="nav-item">
-                <a href="/mentee" class="nav-link"
-                   th:classappend="${currentPage} == 'mentee' ? 'active' : '' ">멘티 신청</a>
-            </li>
-            <li class="nav-item">
-                <a href="/mentor" class="nav-link"
-                   th:classappend="${currentPage} == 'mentor' ? 'active' : '' ">멘토 신청</a>
-            </li>
-            <li class="nav-item">
-                <a href="/list_team" class="nav-link"
-                   th:classappend="${currentPage} == 'list_team' ? 'active' : '' ">팀 목록</a>
-            </li>
-            <li th:if="${user != null && user.role.name == 'ADMIN'}">
                 <a href="/admin/settle" class="nav-link"
-                   th:classappend="${currentPage} == 'admin' ? 'active' : '' ">관리자</a>
+                   th:classappend="${currentPage} == 'admin/settle' ? 'active' : '' ">정산하기</a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/settle_history" class="nav-link"
+                   th:classappend="${currentPage} == 'admin/settle_history' ? 'active' : '' ">정산확인</a>
+            </li>
+            <li th:if="${user != null}">
+                <a href="/" class="nav-link"
+                   th:classappend="${currentPage} == 'admin' ? 'active' : '' ">일반 페이지로</a>
             </li>
         </ul>
     </header>
