@@ -8,11 +8,107 @@
     <title>Settle History</title>
     <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link rel="stylesheet" th:href="@{/css/custom-font.css}">
+    <link rel="stylesheet" th:href="@{/css/settle.css}">
 </head>
 <body>
 <div layout:fragment="custom-content">
+    <div class="page_title">
+        <h2>정산 확인 페이지</h2>
+        <p>정산이 완료된 리뷰를 유저별로 확인합니다.<br/>
+            오늘을 기준으로 정산이 완료되었으나, Wallet이 지급되지 않은 리뷰를 유저별로 보여줍니다.<br/>
+            유저별 멘토, 멘티로서 작성한 리뷰의 개수가 표시되며 <b>지급완료</b> 버튼을 클릭하여 최종 지급확인을 합니다.<br/>
+            이후 지급완료 처리된 리뷰는 표시되지 않습니다.</p>
+    </div>
+    <div th:if="${settledUsers != null}" th:each="settledUser : ${settledUsers}">
+        <div class="correction-item" th:id="'settleUser' + ${settledUser.user.id}">
+            <div class="corrected-item">
+                <div class="bg-image-item img-rounded square-s" data-placement="bottom" data-toggle="tooltip"
+                     th:style="'background-image: url(' + ${settledUser.user.picture} + ')'" title="">
+                </div>
+                <div class="corrected-item-text correction-comment-item">
+                    <div class="corrected-header">
+                        User :
+                        <b><a data-tooltip-url="https://profile.intra.42.fr"
+                              th:href="'https://profile.intra.42.fr/users/' + ${settledUser.user.nickname}"
+                              th:text="${settledUser.user.nickname}">default nickname</a></b>
+                    </div>
+                    <div class="correction-comment-body">
+                        <div>
+                            <span>Mentor Count :  </span>
+                            <b th:text="${settledUser.mentorSettles.size()}"></b>
+                        </div>
+                        <div>
+                            <span>Mentee Count :  </span>
+                            <b th:text="${settledUser.menteeSettles.size()}"></b>
+                        </div>
+                        <div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div align="right">
+                <button class="btn btn-primary" th:onclick="onclick_pay_wallet([[${settledUser}]])">지급 완료
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 <div layout:fragment="custom-footer">
+    <div th:replace="fragment/team_viewer_modal :: script"></div>
+    <script>
+        function onclick_pay_wallet(info) {
+            let settles = [];
+            info.mentorSettles.forEach(o => {
+                settles.push({id: o.id,});
+            })
+            info.menteeSettles.forEach(o => {
+                settles.push({id: o.id,});
+            })
+            request_pay_wallet(settles, info.user.id);
+        }
+
+        function request_pay_wallet(request_settle, settleUserId) {
+            fetch('/api/v1/settle/pay-wallet', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(request_settle),
+            }).then(function (response) {
+                if (response.status !== 200)
+                    throw new Error(response.status + ' : ' + response.statusText);
+                return response.json();
+            }).then(function (responseJson) {
+                if (responseJson.statusCode !== 200) {
+                    alert('정상처리되지 않았습니다.\n' +
+                        '재시도하거나 아래의 원인을 확인해주세요.\n' +
+                        '원인 : ' + responseJson.message);
+                    window.location.headers = "/admin/settle_history"
+                } else {
+                    let item = document.getElementById('settleUser' + settleUserId);
+                    item.hidden = true;
+                    check_settle_left();
+                }
+            }).catch(function (error) {
+                alert('정상등록되지 않았습지다.\n' +
+                    '복사 및 새로고침을 시도 해도 해당 문제가 반복된다면 아래의 원인을 [GitHub issue] 로 남겨주세요.\n' +
+                    '원인 : ' + error);
+                window.location.headers = "/admin/settle_history"
+            });
+        }
+
+        function check_settle_left() {
+            let count = 0;
+            document.querySelectorAll('.correction-item').forEach(o => {
+                if (!o.hidden)
+                    count++;
+            })
+            if (count == 0) {
+                window.location.href = '/admin/settle_history';
+            }
+        }
+    </script>
 </div>
 </html>

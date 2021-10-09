@@ -40,4 +40,11 @@ public class Settle extends BaseTime {
         this.status = status;
         this.walletPaid = walletPaid;
     }
+
+    public boolean payWallet() {
+        if (walletPaid)
+            return false;
+        walletPaid = true;
+        return true;
+    }
 }
