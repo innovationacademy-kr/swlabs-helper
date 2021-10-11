@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -157,5 +158,10 @@ public class ReviewService {
         return ReviewNeedSettleCountResponseDto.builder()
                 .count(count)
                 .build();
+    }
+
+    public void updateReviewsTimeoutBatch(LocalDateTime now) {
+        List<Review> reviews = reviewRepo.findReviewsByCreatedIsBeforeAndStatusEquals(now.minusDays(7), ReviewStatus.WAIT);
+        reviews.forEach(o -> reviewRepo.save(o.timeout()));
     }
 }
