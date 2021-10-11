@@ -150,6 +150,8 @@ public class ReviewServiewBatchTest {
     }
 
     private void createReview() {
+        team.updateTeamReview();
+        teamRepo.save(team);
         reviewList = userList.stream()
                 .map(u -> {
                     Review review = Review.builder()

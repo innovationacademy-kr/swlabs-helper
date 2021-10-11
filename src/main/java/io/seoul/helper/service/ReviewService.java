@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -160,8 +162,20 @@ public class ReviewService {
                 .build();
     }
 
+    @Transactional
     public void updateReviewsTimeoutBatch(LocalDateTime now) {
         List<Review> reviews = reviewRepo.findReviewsByCreatedIsBeforeAndStatusEquals(now.minusDays(7), ReviewStatus.WAIT);
-        reviews.forEach(o -> reviewRepo.save(o.timeout()));
+        Set<Long> teamIds = new HashSet<>();
+        reviews.forEach(o -> {
+            Review r = reviewRepo.save(o.timeout());
+            teamIds.add(r.getTeam().getId());
+        });
+        teamIds.forEach(o -> {
+            try {
+                teamInnerService.endTeam(o);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
