@@ -1,6 +1,7 @@
 package io.seoul.helper.repository.review;
 
 import io.seoul.helper.domain.review.Review;
+import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.user.User;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,4 +36,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "GROUP BY r.status"
     )
     Long getReviewNeedSettleCount();
+
+    List<Review> findReviewsByCreatedIsBeforeAndStatusEquals(LocalDateTime created, ReviewStatus status);
 }

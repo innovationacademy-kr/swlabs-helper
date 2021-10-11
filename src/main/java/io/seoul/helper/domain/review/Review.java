@@ -53,4 +53,10 @@ public class Review extends BaseTime {
         this.status = ReviewStatus.UPDATED;
         return this;
     }
+
+    public Review timeout() {
+        if (status.equals(ReviewStatus.WAIT))
+            this.status = ReviewStatus.TIMEOUT;
+        return this;
+    }
 }
