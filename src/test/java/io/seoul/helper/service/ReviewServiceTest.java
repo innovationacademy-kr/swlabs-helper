@@ -211,6 +211,7 @@ public class ReviewServiceTest {
                 .build());
     }
 
+
     private List<TeamReviewRequestDto.MemberParticipation> getMembersParticipation(Long teamId) {
         List<TeamReviewRequestDto.MemberParticipation> list = new ArrayList<>();
         return memberRepo.findMembersByTeam(teamRepo.getById(teamId)).stream()
