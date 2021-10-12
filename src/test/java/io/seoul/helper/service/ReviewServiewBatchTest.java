@@ -10,6 +10,7 @@ import io.seoul.helper.domain.review.ReviewStatus;
 import io.seoul.helper.domain.review.Score;
 import io.seoul.helper.domain.team.Team;
 import io.seoul.helper.domain.team.TeamLocation;
+import io.seoul.helper.domain.team.TeamStatus;
 import io.seoul.helper.domain.user.Role;
 import io.seoul.helper.domain.user.User;
 import io.seoul.helper.repository.member.MemberRepository;
@@ -181,17 +182,48 @@ public class ReviewServiewBatchTest {
 
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     public void reviewTimeoutTestNotWork() {
+        assertEquals(team.getStatus(), TeamStatus.REVIEW);
         reviewService.updateReviewsTimeoutBatch(LocalDateTime.now().plusDays(6));
         reviewList.forEach(o -> assertNotEquals(o.getStatus(), ReviewStatus.TIMEOUT));
+        assertEquals(team.getStatus(), TeamStatus.REVIEW);
     }
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     public void reviewTimeoutTest() {
+        assertEquals(team.getStatus(), TeamStatus.REVIEW);
         reviewService.updateReviewsTimeoutBatch(LocalDateTime.now().plusDays(7));
         reviewList.forEach(o -> checkReviewUpdated(reviewRepo.getById(o.getId())));
+        assertEquals(team.getStatus(), TeamStatus.END);
+    }
+
+    @Test
+    @Transactional
+    public void reviewAllTimeoutTest() {
+        assertEquals(team.getStatus(), TeamStatus.REVIEW);
+        List<Review> removeList = new ArrayList<>();
+        List<Review> addList = new ArrayList<>();
+        reviewList.stream()
+                .filter(o -> o.getStatus() == ReviewStatus.UPDATED)
+                .forEach(o -> {
+                    Review review = reviewRepo.save(Review.builder()
+                            .description(o.getDescription())
+                            .score(o.getScore())
+                            .team(o.getTeam())
+                            .user(o.getUser())
+                            .status(ReviewStatus.WAIT)
+                            .build());
+                    reviewRepo.delete(o);
+                    removeList.add(o);
+                    addList.add(review);
+                });
+        reviewList.removeAll(removeList);
+        reviewList.addAll(addList);
+        reviewService.updateReviewsTimeoutBatch(LocalDateTime.now().plusDays(8));
+        reviewList.forEach(o -> assertEquals(reviewRepo.getById(o.getId()).getStatus(), ReviewStatus.TIMEOUT));
+        assertEquals(team.getStatus(), TeamStatus.END);
     }
 
     private void checkReviewUpdated(Review target) {
