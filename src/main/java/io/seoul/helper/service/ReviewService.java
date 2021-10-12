@@ -41,12 +41,12 @@ public class ReviewService {
     private final UserRepository userRepo;
 
     @Transactional
-    public List<Long> createReviews(Long teamId) {
+    public List<Long> createReviews(Long teamId) throws Exception {
         Team team = teamRepo.getById(teamId);
         List<Member> members = memberRepo.findMembersByTeam(team);
 
         List<Review> reviews = members.stream()
-                .filter(Member::getParticipation)
+                .filter(m -> m.getParticipation())
                 .map(m -> Review.builder()
                         .status(ReviewStatus.WAIT)
                         .team(team)
@@ -168,16 +168,14 @@ public class ReviewService {
         Set<Long> teamIds = new HashSet<>();
         reviews.forEach(o -> {
             Review r = reviewRepo.save(o.timeout());
-            log.info("Review #{} updated to {}", o.getId(), o.getStatus());
             teamIds.add(r.getTeam().getId());
         });
         teamIds.forEach(o -> {
             try {
                 teamInnerService.endTeam(o);
             } catch (Exception e) {
-                log.error("Fail to end team : {}", e.getMessage());
+                throw new RuntimeException(e);
             }
         });
-        log.info("UpdateReviewsTimeoutBatch successfully end");
     }
 }
